@@ -230,6 +230,8 @@ export default function DataManagementPage() {
     selectedParameters: [] as string[]
   });
   const [parameterSearchTerm, setParameterSearchTerm] = useState("");
+  const [parameterFilterType, setParameterFilterType] = useState<"all" | "mnemonic" | "customName" | "customDescription" | "ataChapter">("all");
+  const [ataChapterFilter, setAtaChapterFilter] = useState("");
 
   const isPrimaryTab = primaryTabs.some(t => t.id === activeTab);
 
@@ -414,11 +416,38 @@ export default function DataManagementPage() {
     }));
   };
 
-  // 过滤参数列表用于模板选择
-  const filteredParametersForTemplate = baseParameterData.filter(param =>
-    param.mnemonic.toLowerCase().includes(parameterSearchTerm.toLowerCase()) ||
-    param.portName.toLowerCase().includes(parameterSearchTerm.toLowerCase())
-  );
+  // 过滤参数列表用于模板选择 - 支持多种筛选方式
+  const filteredParametersForTemplate = baseParameterData.filter(param => {
+    const searchLower = parameterSearchTerm.toLowerCase();
+    const ataFilterLower = ataChapterFilter.toLowerCase();
+    
+    // ATA章节筛选
+    if (ataFilterLower && !param.ataChapter.toLowerCase().includes(ataFilterLower)) {
+      return false;
+    }
+    
+    // 搜索词筛选
+    if (!searchLower) return true;
+    
+    switch (parameterFilterType) {
+      case "mnemonic":
+        return param.mnemonic.toLowerCase().includes(searchLower) ||
+               param.portName.toLowerCase().includes(searchLower);
+      case "customName":
+        return param.customName.toLowerCase().includes(searchLower);
+      case "customDescription":
+        return param.customDescription.toLowerCase().includes(searchLower);
+      case "ataChapter":
+        return param.ataChapter.toLowerCase().includes(searchLower);
+      case "all":
+      default:
+        return param.mnemonic.toLowerCase().includes(searchLower) ||
+               param.portName.toLowerCase().includes(searchLower) ||
+               param.customName.toLowerCase().includes(searchLower) ||
+               param.customDescription.toLowerCase().includes(searchLower) ||
+               param.ataChapter.toLowerCase().includes(searchLower);
+    }
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -1082,7 +1111,7 @@ export default function DataManagementPage() {
 
       {/* 模板编辑对话框 */}
       <Dialog open={templateDialogOpen} onOpenChange={setTemplateDialogOpen}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+        <DialogContent className="max-w-6xl w-[95vw] h-[90vh] overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle>{editingTemplate ? "编辑模板" : "新增模板"}</DialogTitle>
             <DialogDescription>
@@ -1092,7 +1121,7 @@ export default function DataManagementPage() {
           
           <div className="flex-1 overflow-y-auto py-4 space-y-6">
             {/* 基本信息 */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="template-name">模板名称</Label>
                 <Input
@@ -1111,16 +1140,15 @@ export default function DataManagementPage() {
                   placeholder="例如：49"
                 />
               </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="template-lru">LRU（涉及部件）</Label>
-              <Input
-                id="template-lru"
-                value={templateForm.lru}
-                onChange={(e) => setTemplateForm(prev => ({ ...prev, lru: e.target.value }))}
-                placeholder="例如：APU, EGT传感器（多个用逗号分隔）"
-              />
+              <div className="space-y-2">
+                <Label htmlFor="template-lru">LRU（涉及部件）</Label>
+                <Input
+                  id="template-lru"
+                  value={templateForm.lru}
+                  onChange={(e) => setTemplateForm(prev => ({ ...prev, lru: e.target.value }))}
+                  placeholder="例如：APU, EGT传感器"
+                />
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -1130,38 +1158,78 @@ export default function DataManagementPage() {
                 value={templateForm.description}
                 onChange={(e) => setTemplateForm(prev => ({ ...prev, description: e.target.value }))}
                 placeholder="描述模板的用途和监控目标..."
-                rows={3}
+                rows={2}
               />
             </div>
 
             {/* 核心参数选择 */}
-            <div className="space-y-3">
+            <div className="space-y-3 flex-1">
               <div className="flex items-center justify-between">
-                <Label>核心参数配置</Label>
+                <Label className="text-base font-medium">核心参数配置</Label>
                 <Badge variant="outline" className="bg-emerald-50 text-emerald-600">
                   已选择 {templateForm.selectedParameters.length} 个参数
                 </Badge>
               </div>
               
-              {/* 搜索框 */}
-              <div className="relative">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="搜索参数 MNEMONIC 或 PORT NAME..."
-                  value={parameterSearchTerm}
-                  onChange={(e) => setParameterSearchTerm(e.target.value)}
-                  className="pl-8"
-                />
+              {/* 筛选区域 */}
+              <div className="flex flex-wrap gap-3 p-4 bg-muted/30 rounded-lg border">
+                <div className="flex items-center gap-2">
+                  <Label className="text-sm text-muted-foreground whitespace-nowrap">筛选方式:</Label>
+                  <Select value={parameterFilterType} onValueChange={(v: typeof parameterFilterType) => setParameterFilterType(v)}>
+                    <SelectTrigger className="w-[140px] h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">全部字段</SelectItem>
+                      <SelectItem value="mnemonic">MNEMONIC</SelectItem>
+                      <SelectItem value="customName">参数名</SelectItem>
+                      <SelectItem value="customDescription">参数释义</SelectItem>
+                      <SelectItem value="ataChapter">ATA章节</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="relative flex-1 min-w-[200px]">
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="搜索参数..."
+                    value={parameterSearchTerm}
+                    onChange={(e) => setParameterSearchTerm(e.target.value)}
+                    className="pl-8 h-8"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Label className="text-sm text-muted-foreground whitespace-nowrap">ATA章节:</Label>
+                  <Input
+                    placeholder="如: 72"
+                    value={ataChapterFilter}
+                    onChange={(e) => setAtaChapterFilter(e.target.value)}
+                    className="w-[100px] h-8"
+                  />
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-8"
+                  onClick={() => {
+                    setParameterSearchTerm("");
+                    setAtaChapterFilter("");
+                    setParameterFilterType("all");
+                  }}
+                >
+                  <X className="h-4 w-4 mr-1" />
+                  清除筛选
+                </Button>
               </div>
 
               {/* 已选参数标签 */}
               {templateForm.selectedParameters.length > 0 && (
-                <div className="flex flex-wrap gap-2 p-3 bg-muted/50 rounded-lg">
+                <div className="flex flex-wrap gap-2 p-3 bg-primary/5 rounded-lg border border-primary/20">
+                  <span className="text-sm text-muted-foreground mr-2">已选参数:</span>
                   {templateForm.selectedParameters.map((mnemonic) => (
                     <Badge
                       key={mnemonic}
                       variant="secondary"
-                      className="gap-1 cursor-pointer hover:bg-destructive/10 hover:text-destructive"
+                      className="gap-1 cursor-pointer hover:bg-destructive/10 hover:text-destructive transition-colors"
                       onClick={() => toggleParameterSelection(mnemonic)}
                     >
                       {mnemonic}
@@ -1172,45 +1240,72 @@ export default function DataManagementPage() {
               )}
 
               {/* 参数列表 */}
-              <ScrollArea className="h-[280px] border rounded-lg">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[50px] sticky top-0 bg-background">选择</TableHead>
-                      <TableHead className="w-[100px] sticky top-0 bg-background">MNEMONIC</TableHead>
-                      <TableHead className="w-[140px] sticky top-0 bg-background">PORT NAME</TableHead>
-                      <TableHead className="w-[100px] sticky top-0 bg-background">信号类型</TableHead>
-                      <TableHead className="w-[80px] sticky top-0 bg-background">单位</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredParametersForTemplate.map((param) => (
-                      <TableRow
-                        key={param.id}
-                        className={`cursor-pointer hover:bg-muted/50 ${
-                          templateForm.selectedParameters.includes(param.mnemonic) ? "bg-primary/5" : ""
-                        }`}
-                        onClick={() => toggleParameterSelection(param.mnemonic)}
-                      >
-                        <TableCell>
-                          <Checkbox
-                            checked={templateForm.selectedParameters.includes(param.mnemonic)}
-                            onCheckedChange={() => toggleParameterSelection(param.mnemonic)}
-                          />
-                        </TableCell>
-                        <TableCell className="font-mono text-sm font-medium">{param.mnemonic}</TableCell>
-                        <TableCell className="font-mono text-xs text-muted-foreground">{param.portName}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="text-xs">
-                            {param.signalType}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">{param.unit || "-"}</TableCell>
+              <div className="border rounded-lg overflow-hidden">
+                <ScrollArea className="h-[380px]">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-muted/50">
+                        <TableHead className="w-[50px] sticky top-0 bg-muted/50">选择</TableHead>
+                        <TableHead className="w-[120px] sticky top-0 bg-muted/50">MNEMONIC</TableHead>
+                        <TableHead className="w-[160px] sticky top-0 bg-muted/50">PORT NAME</TableHead>
+                        <TableHead className="w-[100px] sticky top-0 bg-muted/50">信号类型</TableHead>
+                        <TableHead className="w-[80px] sticky top-0 bg-muted/50">单位</TableHead>
+                        <TableHead className="w-[120px] sticky top-0 bg-muted/50 text-blue-600">参数名</TableHead>
+                        <TableHead className="w-[180px] sticky top-0 bg-muted/50 text-blue-600">参数释义</TableHead>
+                        <TableHead className="w-[80px] sticky top-0 bg-muted/50 text-blue-600">ATA章节</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </ScrollArea>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredParametersForTemplate.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                            没有找到匹配的参数
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        filteredParametersForTemplate.map((param) => (
+                          <TableRow
+                            key={param.id}
+                            className={`cursor-pointer hover:bg-muted/50 transition-colors ${
+                              templateForm.selectedParameters.includes(param.mnemonic) ? "bg-primary/5" : ""
+                            }`}
+                            onClick={() => toggleParameterSelection(param.mnemonic)}
+                          >
+                            <TableCell>
+                              <Checkbox
+                                checked={templateForm.selectedParameters.includes(param.mnemonic)}
+                                onCheckedChange={() => toggleParameterSelection(param.mnemonic)}
+                              />
+                            </TableCell>
+                            <TableCell className="font-mono text-sm font-medium">{param.mnemonic}</TableCell>
+                            <TableCell className="font-mono text-xs text-muted-foreground">{param.portName}</TableCell>
+                            <TableCell>
+                              <Badge variant="outline" className="text-xs">
+                                {param.signalType}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-muted-foreground">{param.unit || "-"}</TableCell>
+                            <TableCell className="text-blue-600 font-medium">{param.customName || "-"}</TableCell>
+                            <TableCell className="text-sm text-muted-foreground max-w-[180px] truncate" title={param.customDescription}>
+                              {param.customDescription || "-"}
+                            </TableCell>
+                            <TableCell>
+                              {param.ataChapter ? (
+                                <Badge variant="outline" className="bg-blue-50 text-blue-600 text-xs">
+                                  {param.ataChapter}
+                                </Badge>
+                              ) : "-"}
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </ScrollArea>
+              </div>
+              <div className="text-xs text-muted-foreground">
+                共 {filteredParametersForTemplate.length} 条参数 {parameterSearchTerm || ataChapterFilter ? `（已筛选，总共 ${baseParameterData.length} 条）` : ""}
+              </div>
             </div>
           </div>
 
