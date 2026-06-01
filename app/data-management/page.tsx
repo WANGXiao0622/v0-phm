@@ -1111,7 +1111,7 @@ export default function DataManagementPage() {
 
       {/* 模板编辑对话框 */}
       <Dialog open={templateDialogOpen} onOpenChange={setTemplateDialogOpen}>
-        <DialogContent className="max-w-[98vw] w-[98vw] h-[92vh] overflow-hidden flex flex-col">
+        <DialogContent className="!max-w-[1600px] w-[95vw] h-[92vh] overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle>{editingTemplate ? "编辑模板" : "新增模板"}</DialogTitle>
             <DialogDescription>
