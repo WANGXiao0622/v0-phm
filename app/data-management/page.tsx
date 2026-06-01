@@ -26,6 +26,9 @@ import {
   Save,
   Check,
   X,
+  Filter,
+  Calendar,
+  FolderDown,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -81,11 +84,14 @@ const apiData = [
 
 // WQAR 数据
 const wqarData = [
-  { id: 1, flightNo: "MU5123", registration: "B-1234", date: "2024-01-15", route: "PVG-PEK", fileSize: "256MB", status: "parsed", parameters: 2450 },
-  { id: 2, flightNo: "MU5678", registration: "B-5678", date: "2024-01-15", route: "PVG-CAN", fileSize: "189MB", status: "parsing", parameters: 0 },
-  { id: 3, flightNo: "MU2234", registration: "B-9012", date: "2024-01-14", route: "PEK-SHA", fileSize: "312MB", status: "parsed", parameters: 3120 },
-  { id: 4, flightNo: "MU3345", registration: "B-3456", date: "2024-01-14", route: "CAN-CTU", fileSize: "178MB", status: "error", parameters: 0 },
-  { id: 5, flightNo: "MU4456", registration: "B-7890", date: "2024-01-13", route: "SHA-SZX", fileSize: "245MB", status: "parsed", parameters: 2890 },
+  { id: 1, flightNo: "MU5123", registration: "B-1234", date: "2024-01-15 14:32:45", route: "PVG-PEK", fileSize: "256MB", status: "parsed", parameters: 2450 },
+  { id: 2, flightNo: "MU5678", registration: "B-5678", date: "2024-01-15 10:15:22", route: "PVG-CAN", fileSize: "189MB", status: "parsing", parameters: 0 },
+  { id: 3, flightNo: "MU2234", registration: "B-9012", date: "2024-01-14 18:45:33", route: "PEK-SHA", fileSize: "312MB", status: "parsed", parameters: 3120 },
+  { id: 4, flightNo: "MU3345", registration: "B-3456", date: "2024-01-14 09:20:18", route: "CAN-CTU", fileSize: "178MB", status: "error", parameters: 0 },
+  { id: 5, flightNo: "MU4456", registration: "B-7890", date: "2024-01-13 16:08:55", route: "SHA-SZX", fileSize: "245MB", status: "parsed", parameters: 2890 },
+  { id: 6, flightNo: "MU6789", registration: "B-1234", date: "2024-01-13 08:30:12", route: "PEK-CAN", fileSize: "278MB", status: "parsed", parameters: 2680 },
+  { id: 7, flightNo: "MU7890", registration: "B-5678", date: "2024-01-12 22:15:40", route: "SHA-PEK", fileSize: "198MB", status: "parsed", parameters: 2150 },
+  { id: 8, flightNo: "MU8901", registration: "B-9012", date: "2024-01-12 14:50:28", route: "CAN-SHA", fileSize: "265MB", status: "parsed", parameters: 2780 },
 ];
 
 // 模板数据类型
@@ -232,6 +238,21 @@ export default function DataManagementPage() {
   const [parameterSearchTerm, setParameterSearchTerm] = useState("");
   const [parameterFilterType, setParameterFilterType] = useState<"all" | "mnemonic" | "customName" | "customDescription" | "ataChapter">("all");
   const [ataChapterFilter, setAtaChapterFilter] = useState("");
+
+  // WQAR下载对话框状态
+  const [downloadDialogOpen, setDownloadDialogOpen] = useState(false);
+  const [downloadFilters, setDownloadFilters] = useState({
+    startDate: "",
+    endDate: "",
+    registration: ""
+  });
+  
+  // WQAR筛选状态
+  const [wqarFilters, setWqarFilters] = useState({
+    registration: "",
+    startDate: "",
+    endDate: ""
+  });
 
   const isPrimaryTab = primaryTabs.some(t => t.id === activeTab);
 
@@ -449,6 +470,58 @@ export default function DataManagementPage() {
     }
   });
 
+  // WQAR数据筛选
+  const filteredWqarData = wqarData.filter(item => {
+    // 注册号筛选
+    if (wqarFilters.registration && !item.registration.toLowerCase().includes(wqarFilters.registration.toLowerCase())) {
+      return false;
+    }
+    // 时间范围筛选
+    const itemDate = item.date.split(" ")[0];
+    if (wqarFilters.startDate && itemDate < wqarFilters.startDate) {
+      return false;
+    }
+    if (wqarFilters.endDate && itemDate > wqarFilters.endDate) {
+      return false;
+    }
+    // 搜索词筛选
+    if (searchTerm && activeTab === "wqar") {
+      return item.flightNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+             item.registration.toLowerCase().includes(searchTerm.toLowerCase());
+    }
+    return true;
+  });
+
+  // 计算下载数据统计
+  const calculateDownloadStats = () => {
+    const filtered = wqarData.filter(item => {
+      if (downloadFilters.registration && !item.registration.toLowerCase().includes(downloadFilters.registration.toLowerCase())) {
+        return false;
+      }
+      const itemDate = item.date.split(" ")[0];
+      if (downloadFilters.startDate && itemDate < downloadFilters.startDate) {
+        return false;
+      }
+      if (downloadFilters.endDate && itemDate > downloadFilters.endDate) {
+        return false;
+      }
+      return true;
+    });
+    
+    const totalSize = filtered.reduce((acc, item) => {
+      const size = parseInt(item.fileSize.replace("MB", ""));
+      return acc + size;
+    }, 0);
+    
+    return {
+      count: filtered.length,
+      totalSize: totalSize >= 1024 ? `${(totalSize / 1024).toFixed(2)} GB` : `${totalSize} MB`
+    };
+  };
+
+  // 获取所有注册号列表
+  const registrationList = [...new Set(wqarData.map(item => item.registration))];
+
   return (
     <div className="min-h-screen bg-background">
       {/* 顶部标题栏 */}
@@ -619,10 +692,62 @@ export default function DataManagementPage() {
                     <RefreshCw className="h-4 w-4" />
                     刷新
                   </Button>
-                  <Button size="sm" className="gap-1">
-                    <Upload className="h-4 w-4" />
-                    上传数据
+                  <Button size="sm" className="gap-1" onClick={() => setDownloadDialogOpen(true)}>
+                    <Download className="h-4 w-4" />
+                    下载数据
                   </Button>
+                </div>
+              </div>
+              
+              {/* 筛选区域 */}
+              <div className="flex flex-wrap items-center gap-3 mt-3 pt-3 border-t border-border">
+                <div className="flex items-center gap-2">
+                  <Filter className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">筛选:</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Label className="text-sm text-muted-foreground">注册号:</Label>
+                  <Select value={wqarFilters.registration} onValueChange={(v) => setWqarFilters(prev => ({ ...prev, registration: v === " " ? "" : v }))}>
+                    <SelectTrigger className="w-[120px] h-8">
+                      <SelectValue placeholder="全部" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value=" ">全部</SelectItem>
+                      {registrationList.map(reg => (
+                        <SelectItem key={reg} value={reg}>{reg}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Label className="text-sm text-muted-foreground">开始日期:</Label>
+                  <Input
+                    type="date"
+                    value={wqarFilters.startDate}
+                    onChange={(e) => setWqarFilters(prev => ({ ...prev, startDate: e.target.value }))}
+                    className="w-[140px] h-8"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Label className="text-sm text-muted-foreground">结束日期:</Label>
+                  <Input
+                    type="date"
+                    value={wqarFilters.endDate}
+                    onChange={(e) => setWqarFilters(prev => ({ ...prev, endDate: e.target.value }))}
+                    className="w-[140px] h-8"
+                  />
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8"
+                  onClick={() => setWqarFilters({ registration: "", startDate: "", endDate: "" })}
+                >
+                  <X className="h-4 w-4 mr-1" />
+                  清除筛选
+                </Button>
+                <div className="ml-auto text-sm text-muted-foreground">
+                  共 {filteredWqarData.length} 条记录
                 </div>
               </div>
             </CardHeader>
@@ -632,7 +757,7 @@ export default function DataManagementPage() {
                   <TableRow>
                     <TableHead className="w-[100px]">航班号</TableHead>
                     <TableHead className="w-[100px]">注册号</TableHead>
-                    <TableHead className="w-[100px]">日期</TableHead>
+                    <TableHead className="w-[160px]">日期时间</TableHead>
                     <TableHead className="w-[120px]">航线</TableHead>
                     <TableHead className="w-[80px]">文件大小</TableHead>
                     <TableHead className="w-[80px]">状态</TableHead>
@@ -641,11 +766,15 @@ export default function DataManagementPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {wqarData.map((item) => (
+                  {filteredWqarData.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell className="font-medium">{item.flightNo}</TableCell>
-                      <TableCell>{item.registration}</TableCell>
-                      <TableCell className="text-muted-foreground">{item.date}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="bg-blue-50 text-blue-600">
+                          {item.registration}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground font-mono text-sm">{item.date}</TableCell>
                       <TableCell>{item.route}</TableCell>
                       <TableCell>{item.fileSize}</TableCell>
                       <TableCell>{getStatusBadge(item.status)}</TableCell>
@@ -1104,6 +1233,104 @@ export default function DataManagementPage() {
             </Button>
             <Button onClick={() => doSave(syncInfo.parameterId, syncInfo.mnemonic, true)}>
               同步到所有航司
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* WQAR数据下载对话框 */}
+      <Dialog open={downloadDialogOpen} onOpenChange={setDownloadDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FolderDown className="h-5 w-5 text-primary" />
+              下载WQAR数据
+            </DialogTitle>
+            <DialogDescription>
+              选择下载数据的范围和条件
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            {/* 注册号选择 */}
+            <div className="space-y-2">
+              <Label>注册号</Label>
+              <Select 
+                value={downloadFilters.registration} 
+                onValueChange={(v) => setDownloadFilters(prev => ({ ...prev, registration: v === " " ? "" : v }))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="全部注册号" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value=" ">全部注册号</SelectItem>
+                  {registrationList.map(reg => (
+                    <SelectItem key={reg} value={reg}>{reg}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* 时间范围 */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>开始日期</Label>
+                <Input
+                  type="date"
+                  value={downloadFilters.startDate}
+                  onChange={(e) => setDownloadFilters(prev => ({ ...prev, startDate: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>结束日期</Label>
+                <Input
+                  type="date"
+                  value={downloadFilters.endDate}
+                  onChange={(e) => setDownloadFilters(prev => ({ ...prev, endDate: e.target.value }))}
+                />
+              </div>
+            </div>
+
+            {/* 统计信息 */}
+            <div className="p-4 bg-muted/50 rounded-lg border space-y-3">
+              <h4 className="text-sm font-medium flex items-center gap-2">
+                <Database className="h-4 w-4" />
+                数据统计
+              </h4>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">数据条数:</span>
+                  <span className="font-medium">{calculateDownloadStats().count} 条</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">数据大小:</span>
+                  <span className="font-medium">{calculateDownloadStats().totalSize}</span>
+                </div>
+              </div>
+              <div className="pt-2 border-t">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">下载位置:</span>
+                  <span className="font-mono text-xs bg-muted px-2 py-1 rounded">/data/WQAR/C919</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDownloadDialogOpen(false)}>
+              取消
+            </Button>
+            <Button 
+              className="gap-1"
+              disabled={calculateDownloadStats().count === 0}
+              onClick={() => {
+                // 模拟下载
+                setDownloadDialogOpen(false);
+                setDownloadFilters({ startDate: "", endDate: "", registration: "" });
+              }}
+            >
+              <Download className="h-4 w-4" />
+              开始下载
             </Button>
           </DialogFooter>
         </DialogContent>
