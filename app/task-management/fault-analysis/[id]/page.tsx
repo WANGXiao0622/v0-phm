@@ -52,18 +52,18 @@ const ataTemplateMapping: Record<string, string> = {
 
 // 模板数据
 const templates = [
-  { id: "template1", name: "发动机振动分析", params: ["N1", "N2", "EGT", "VIB"] },
-  { id: "template2", name: "燃油系统分析", params: ["FF", "FQT", "FP", "FOT"] },
-  { id: "template3", name: "液压系统分析", params: ["HYD_P", "HYD_Q", "HYD_T"] },
-  { id: "template4", name: "电气系统分析", params: ["V_AC", "V_DC", "FREQ", "LOAD"] },
+  { id: "template1", name: "APU EGT超温", params: ["N1", "N2", "EGT", "VIB"] },
+  { id: "template2", name: "刹车系统降级", params: ["FF", "FQT", "FP", "FOT"] },
+  { id: "template3", name: "HPV开关响应", params: ["HYD_P", "HYD_Q", "HYD_T"] },
+  { id: "template4", name: "PRSOV故障", params: ["V_AC", "V_DC", "FREQ", "LOAD"] },
 ];
 
 // 模型数据
 const models = [
-  { id: "model1", name: "发动机健康预测模型" },
-  { id: "model2", name: "故障根因分析模型" },
-  { id: "model3", name: "趋势预测模型" },
-  { id: "model4", name: "异常检测模型" },
+  { id: "model1", name: "APU防喘阀性能监控模型" },
+  { id: "model2", name: "刹车系统控制性能监控模型" },
+  { id: "model3", name: "HPV性能监控模型" },
+  { id: "model4", name: "PRSOV故障诊断预测模型" },
 ];
 
 // 模拟参数图表数据 - 用于多图展示
@@ -533,7 +533,7 @@ export default function FaultAnalysisPage() {
                     <div className="bg-secondary/30 rounded-lg p-3 border border-border">
                       <div className="text-sm font-medium mb-2 flex items-center gap-2">
                         <span className="h-2 w-2 rounded-full bg-purple-500"></span>
-                        性能趋势综合分析
+                        性能指标
                       </div>
                       <ResponsiveContainer width="100%" height={180}>
                         <AreaChart data={trendChartData}>
@@ -659,11 +659,11 @@ export default function FaultAnalysisPage() {
               <div className="space-y-3">
                 {/* 第一排：两张并排图表 */}
                 <div className="grid grid-cols-2 gap-3">
-                  {/* 图表1: 实际值vs预测值 */}
+                  {/* 图表1 */}
                   <div className="bg-secondary/30 rounded-lg p-3 border border-border">
                     <div className="text-sm font-medium mb-2 flex items-center gap-2">
                       <span className="h-2 w-2 rounded-full bg-blue-500"></span>
-                      实际值 vs 预测值
+                      xxx
                     </div>
                     <ResponsiveContainer width="100%" height={180}>
                       <AreaChart data={modelChartData}>
@@ -686,11 +686,11 @@ export default function FaultAnalysisPage() {
                     </ResponsiveContainer>
                   </div>
 
-                  {/* 图表2: 健康指数 */}
+                  {/* 图表2 */}
                   <div className="bg-secondary/30 rounded-lg p-3 border border-border">
                     <div className="text-sm font-medium mb-2 flex items-center gap-2">
                       <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
-                      健康指数监控
+                      xxx
                     </div>
                     <ResponsiveContainer width="100%" height={180}>
                       <AreaChart data={healthIndexData}>
@@ -718,7 +718,7 @@ export default function FaultAnalysisPage() {
                 <div className="bg-secondary/30 rounded-lg p-3 border border-border">
                   <div className="text-sm font-medium mb-2 flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-purple-500"></span>
-                    异常检测得分
+                    xxx
                   </div>
                   <ResponsiveContainer width="100%" height={180}>
                     <AreaChart data={anomalyData}>
