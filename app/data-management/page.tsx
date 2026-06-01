@@ -156,23 +156,23 @@ interface FaultRecord {
 }
 
 const faultData: FaultRecord[] = [
-  { id: 1, faultCode: "2100-01", cmsMessage: "PACK 1 FAULT", registration: "B-1234", airline: "幸福航空", airlineCode: "UEA", ataChapter: "21", faultDate: "2024-01-15 14:32:00", flightNo: "UEA5123", route: "PVG-PEK", severity: "high", status: "analyzed", analysisId: "FA-2024-0156" },
+  { id: 1, faultCode: "2100-01", cmsMessage: "PACK 1 FAULT", registration: "B-1234", airline: "成都航空", airlineCode: "UEA", ataChapter: "21", faultDate: "2024-01-15 14:32:00", flightNo: "UEA5123", route: "PVG-PEK", severity: "high", status: "analyzed", analysisId: "FA-2024-0156" },
   { id: 2, faultCode: "3600-05", cmsMessage: "BLEED 1 OVHT", registration: "B-5678", airline: "东方航空", airlineCode: "CES", ataChapter: "36", faultDate: "2024-01-15 10:15:00", flightNo: "MU5678", route: "PVG-CAN", severity: "high", status: "pending" },
-  { id: 3, faultCode: "2700-12", cmsMessage: "ELAC 1 FAULT", registration: "B-9012", airline: "幸福航空", airlineCode: "UEA", ataChapter: "27", faultDate: "2024-01-14 18:45:00", flightNo: "UEA2234", route: "PEK-SHA", severity: "medium", status: "analyzed", analysisId: "FA-2024-0148" },
+  { id: 3, faultCode: "2700-12", cmsMessage: "ELAC 1 FAULT", registration: "B-9012", airline: "成都航空", airlineCode: "UEA", ataChapter: "27", faultDate: "2024-01-14 18:45:00", flightNo: "UEA2234", route: "PEK-SHA", severity: "medium", status: "analyzed", analysisId: "FA-2024-0148" },
   { id: 4, faultCode: "3200-08", cmsMessage: "BRAKE TEMP HI", registration: "B-3456", airline: "南方航空", airlineCode: "CSN", ataChapter: "32", faultDate: "2024-01-14 09:20:00", flightNo: "CZ3345", route: "CAN-CTU", severity: "medium", status: "no_qar" },
   { id: 5, faultCode: "4900-03", cmsMessage: "APU EGT OVLM", registration: "B-7890", airline: "东方航空", airlineCode: "CES", ataChapter: "49", faultDate: "2024-01-13 16:08:00", flightNo: "MU4456", route: "SHA-SZX", severity: "high", status: "analyzed", analysisId: "FA-2024-0142" },
-  { id: 6, faultCode: "7200-15", cmsMessage: "ENG 1 VIB HI", registration: "B-1234", airline: "幸福航空", airlineCode: "UEA", ataChapter: "72", faultDate: "2024-01-13 08:30:00", flightNo: "UEA6789", route: "PEK-CAN", severity: "high", status: "pending" },
+  { id: 6, faultCode: "7200-15", cmsMessage: "ENG 1 VIB HI", registration: "B-1234", airline: "成都航空", airlineCode: "UEA", ataChapter: "72", faultDate: "2024-01-13 08:30:00", flightNo: "UEA6789", route: "PEK-CAN", severity: "high", status: "pending" },
   { id: 7, faultCode: "2900-06", cmsMessage: "HYD SYS 1 LO PR", registration: "B-5678", airline: "东方航空", airlineCode: "CES", ataChapter: "29", faultDate: "2024-01-12 22:15:00", flightNo: "MU7890", route: "SHA-PEK", severity: "medium", status: "ignored" },
-  { id: 8, faultCode: "2400-09", cmsMessage: "GEN 1 FAULT", registration: "B-9012", airline: "幸福航空", airlineCode: "UEA", ataChapter: "24", faultDate: "2024-01-12 14:50:00", flightNo: "UEA8901", route: "CAN-SHA", severity: "low", status: "analyzed", analysisId: "FA-2024-0135" },
+  { id: 8, faultCode: "2400-09", cmsMessage: "GEN 1 FAULT", registration: "B-9012", airline: "成都航空", airlineCode: "UEA", ataChapter: "24", faultDate: "2024-01-12 14:50:00", flightNo: "UEA8901", route: "CAN-SHA", severity: "low", status: "analyzed", analysisId: "FA-2024-0135" },
   { id: 9, faultCode: "3600-02", cmsMessage: "PRSOV 1 FAULT", registration: "B-3456", airline: "南方航空", airlineCode: "CSN", ataChapter: "36", faultDate: "2024-01-12 10:30:00", flightNo: "CZ9012", route: "CTU-PVG", severity: "medium", status: "pending" },
   { id: 10, faultCode: "2100-08", cmsMessage: "DUCT OVHT", registration: "B-7890", airline: "东方航空", airlineCode: "CES", ataChapter: "21", faultDate: "2024-01-11 15:45:00", flightNo: "MU1234", route: "PEK-CAN", severity: "high", status: "no_qar" },
-  { id: 11, faultCode: "3200-03", cmsMessage: "LGCIU 1 FAULT", registration: "B-1234", airline: "幸福航空", airlineCode: "UEA", ataChapter: "32", faultDate: "2024-01-11 09:20:00", flightNo: "UEA5678", route: "SHA-PEK", severity: "low", status: "analyzed", analysisId: "FA-2024-0128" },
+  { id: 11, faultCode: "3200-03", cmsMessage: "LGCIU 1 FAULT", registration: "B-1234", airline: "成都航空", airlineCode: "UEA", ataChapter: "32", faultDate: "2024-01-11 09:20:00", flightNo: "UEA5678", route: "SHA-PEK", severity: "low", status: "analyzed", analysisId: "FA-2024-0128" },
   { id: 12, faultCode: "4900-07", cmsMessage: "APU FIRE DET", registration: "B-5678", airline: "东方航空", airlineCode: "CES", ataChapter: "49", faultDate: "2024-01-10 18:00:00", flightNo: "MU2345", route: "CAN-PVG", severity: "high", status: "analyzed", analysisId: "FA-2024-0122" },
 ];
 
 // 航司列表
 const airlineList = [
-  { code: "UEA", name: "幸福航空" },
+  { code: "UEA", name: "成都航空" },
   { code: "CES", name: "东方航空" },
   { code: "CSN", name: "南方航空" },
   { code: "CCA", name: "中国国际航空" },
@@ -1506,15 +1506,13 @@ export default function DataManagementPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-[100px]">故障代码</TableHead>
                       <TableHead className="w-[160px]">CMS信息</TableHead>
                       <TableHead className="w-[80px]">注册号</TableHead>
-                      <TableHead className="w-[100px]">航司</TableHead>
+                      <TableHead className="w-[140px]">航司</TableHead>
                       <TableHead className="w-[80px]">ATA</TableHead>
                       <TableHead className="w-[150px]">故障时间</TableHead>
                       <TableHead className="w-[100px]">航班号</TableHead>
                       <TableHead className="w-[100px]">航线</TableHead>
-                      <TableHead className="w-[60px]">严重度</TableHead>
                       <TableHead className="w-[90px]">状态</TableHead>
                       <TableHead className="w-[80px]">操作</TableHead>
                     </TableRow>
@@ -1522,14 +1520,13 @@ export default function DataManagementPage() {
                   <TableBody>
                     {filteredFaultData.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={11} className="text-center py-8 text-muted-foreground">
+                        <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
                           没有找到匹配的故障记录
                         </TableCell>
                       </TableRow>
                     ) : (
                       filteredFaultData.map((item) => (
                         <TableRow key={item.id}>
-                          <TableCell className="font-mono text-sm font-medium">{item.faultCode}</TableCell>
                           <TableCell className="font-medium">{item.cmsMessage}</TableCell>
                           <TableCell>
                             <Badge variant="outline" className="bg-blue-50 text-blue-600">
@@ -1537,8 +1534,7 @@ export default function DataManagementPage() {
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            <span className="text-sm">{item.airline}</span>
-                            <span className="text-xs text-muted-foreground ml-1">({item.airlineCode})</span>
+                            <span className="text-sm">{item.airline}（{item.airlineCode}）</span>
                           </TableCell>
                           <TableCell>
                             <Badge variant="outline" className="bg-purple-50 text-purple-600">
@@ -1548,7 +1544,6 @@ export default function DataManagementPage() {
                           <TableCell className="text-muted-foreground font-mono text-sm">{item.faultDate}</TableCell>
                           <TableCell>{item.flightNo}</TableCell>
                           <TableCell>{item.route}</TableCell>
-                          <TableCell>{getSeverityBadge(item.severity)}</TableCell>
                           <TableCell>{getFaultStatusBadge(item.status)}</TableCell>
                           <TableCell>
                             <div className="flex items-center gap-1">
