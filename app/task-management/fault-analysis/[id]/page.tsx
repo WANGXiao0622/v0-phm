@@ -21,6 +21,9 @@ import {
   Send,
   Users,
   Activity,
+  ChevronLeft,
+  Plane,
+  Plus,
 } from "lucide-react";
 import {
   LineChart,
@@ -49,38 +52,88 @@ const ataTemplateMapping: Record<string, string> = {
 
 // 模板数据
 const templates = [
-  { id: "template1", name: "发动机振动分析", params: ["N1", "N2", "EGT", "VIB"] },
-  { id: "template2", name: "燃油系统分析", params: ["FF", "FQT", "FP", "FOT"] },
-  { id: "template3", name: "液压系统分析", params: ["HYD_P", "HYD_Q", "HYD_T"] },
-  { id: "template4", name: "电气系统分析", params: ["V_AC", "V_DC", "FREQ", "LOAD"] },
+  { id: "template1", name: "APU EGT超温", params: ["N1", "N2", "EGT", "VIB"] },
+  { id: "template2", name: "刹车系统降级", params: ["FF", "FQT", "FP", "FOT"] },
+  { id: "template3", name: "HPV开关响应", params: ["HYD_P", "HYD_Q", "HYD_T"] },
+  { id: "template4", name: "PRSOV故障", params: ["V_AC", "V_DC", "FREQ", "LOAD"] },
 ];
 
 // 模型数据
 const models = [
-  { id: "model1", name: "发动机健康预测模型" },
-  { id: "model2", name: "故障根因分析模型" },
-  { id: "model3", name: "趋势预测模型" },
-  { id: "model4", name: "异常检测模型" },
+  { id: "model1", name: "APU防喘阀性能监控模型" },
+  { id: "model2", name: "刹车系统控制性能监控模型" },
+  { id: "model3", name: "HPV性能监控模型" },
+  { id: "model4", name: "PRSOV故障诊断预测模型" },
 ];
 
-// 模拟参数图表数据
-const generateChartData = () => {
+// 模拟参数图表数据 - 用于多图展示
+const generateChartData = (segmentIndex: number = 0) => {
+  const baseN1 = 85 + segmentIndex * 2;
+  const baseN2 = 88 + segmentIndex * 1.5;
   return Array.from({ length: 20 }, (_, i) => ({
     time: `T${i + 1}`,
-    N1: 85 + Math.random() * 10,
-    N2: 88 + Math.random() * 8,
-    EGT: 650 + Math.random() * 50,
+    N1: baseN1 + Math.random() * 10,
+    N2: baseN2 + Math.random() * 8,
+    EGT: 650 + segmentIndex * 10 + Math.random() * 50,
     VIB: 1.2 + Math.random() * 0.8,
   }));
 };
 
-// 模拟模型分析图表数据
+// 生成EGT专项图表数据
+const generateEGTChartData = (segmentIndex: number = 0) => {
+  return Array.from({ length: 20 }, (_, i) => ({
+    time: `T${i + 1}`,
+    EGT1: 640 + segmentIndex * 8 + Math.random() * 40,
+    EGT2: 645 + segmentIndex * 8 + Math.random() * 35,
+    limit: 700,
+  }));
+};
+
+// 生成综合趋势图表数据
+const generateTrendChartData = (segmentIndex: number = 0) => {
+  return Array.from({ length: 20 }, (_, i) => ({
+    time: `T${i + 1}`,
+    performance: 92 - segmentIndex * 2 + Math.random() * 5,
+    baseline: 95,
+    trend: 90 - segmentIndex * 1.5 - (i * 0.1),
+  }));
+};
+
+// 模拟航段数据
+const flightSegments = [
+  { id: "seg1", registration: "B-104X", startTime: "2026-05-20 07:56:21", departure: "PEK", arrival: "SHA", filename: "B-104X_20260520_075621.csv" },
+  { id: "seg2", registration: "B-104X", startTime: "2026-05-20 10:32:15", departure: "SHA", arrival: "CAN", filename: "B-104X_20260520_103215.csv" },
+  { id: "seg3", registration: "B-104X", startTime: "2026-05-20 14:18:42", departure: "CAN", arrival: "PEK", filename: "B-104X_20260520_141842.csv" },
+  { id: "seg4", registration: "B-104Y", startTime: "2026-05-21 08:05:33", departure: "PEK", arrival: "CTU", filename: "B-104Y_20260521_080533.csv" },
+  { id: "seg5", registration: "B-104Y", startTime: "2026-05-21 12:45:18", departure: "CTU", arrival: "SHA", filename: "B-104Y_20260521_124518.csv" },
+];
+
+// 模拟模型分析图表数据 - 用于多图展示
 const generateModelChartData = () => {
   return Array.from({ length: 15 }, (_, i) => ({
     time: `${i + 1}:00`,
     actual: 75 + Math.random() * 15,
     predicted: 78 + Math.random() * 12,
     threshold: 90,
+  }));
+};
+
+// 生成模型健康指数数据
+const generateHealthIndexData = () => {
+  return Array.from({ length: 15 }, (_, i) => ({
+    time: `${i + 1}:00`,
+    healthIndex: 85 + Math.random() * 10,
+    warning: 80,
+    critical: 70,
+  }));
+};
+
+// 生成模型异常检测数据
+const generateAnomalyData = () => {
+  return Array.from({ length: 15 }, (_, i) => ({
+    time: `${i + 1}:00`,
+    score: Math.random() * 100,
+    anomalyThreshold: 75,
   }));
 };
 
@@ -94,19 +147,69 @@ export default function FaultAnalysisPage() {
   const [isLoadingTemplate, setIsLoadingTemplate] = useState(false);
   const [isLoadingModel, setIsLoadingModel] = useState(false);
   const [templateChartData, setTemplateChartData] = useState<ReturnType<typeof generateChartData>>([]);
+  const [egtChartData, setEgtChartData] = useState<ReturnType<typeof generateEGTChartData>>([]);
+  const [trendChartData, setTrendChartData] = useState<ReturnType<typeof generateTrendChartData>>([]);
   const [modelChartData, setModelChartData] = useState<ReturnType<typeof generateModelChartData>>([]);
+  const [healthIndexData, setHealthIndexData] = useState<ReturnType<typeof generateHealthIndexData>>([]);
+  const [anomalyData, setAnomalyData] = useState<ReturnType<typeof generateAnomalyData>>([]);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  
+  // 航段筛选相关状态
+  const [showSegmentFilter, setShowSegmentFilter] = useState(false);
+  const [currentSegmentIndex, setCurrentSegmentIndex] = useState(2); // 当前航段索引（故障发生航段）
+  const [loadedSegments, setLoadedSegments] = useState<number[]>([]); // 已加载的航段索引列表
 
   // 获取推荐的模板ID
   const recommendedTemplateId = ataTemplateMapping[currentATA] || null;
 
   const handleTemplateSelect = (templateId: string) => {
     setSelectedTemplate(templateId);
+    setShowSegmentFilter(true);
     setIsLoadingTemplate(true);
+    // 初始加载当前航段
+    setLoadedSegments([currentSegmentIndex]);
     setTimeout(() => {
-      setTemplateChartData(generateChartData());
+      setTemplateChartData(generateChartData(currentSegmentIndex));
+      setEgtChartData(generateEGTChartData(currentSegmentIndex));
+      setTrendChartData(generateTrendChartData(currentSegmentIndex));
       setIsLoadingTemplate(false);
     }, 1000);
+  };
+
+  // 加载前一个航段（向后按钮）
+  const loadPreviousSegment = () => {
+    if (currentSegmentIndex > 0) {
+      const newIndex = currentSegmentIndex - 1;
+      if (!loadedSegments.includes(newIndex)) {
+        setLoadedSegments(prev => [...prev, newIndex].sort((a, b) => a - b));
+      }
+      setCurrentSegmentIndex(newIndex);
+      setIsLoadingTemplate(true);
+      setTimeout(() => {
+        setTemplateChartData(generateChartData(newIndex));
+        setEgtChartData(generateEGTChartData(newIndex));
+        setTrendChartData(generateTrendChartData(newIndex));
+        setIsLoadingTemplate(false);
+      }, 800);
+    }
+  };
+
+  // 加载后一个航段（向前按钮）
+  const loadNextSegment = () => {
+    if (currentSegmentIndex < flightSegments.length - 1) {
+      const newIndex = currentSegmentIndex + 1;
+      if (!loadedSegments.includes(newIndex)) {
+        setLoadedSegments(prev => [...prev, newIndex].sort((a, b) => a - b));
+      }
+      setCurrentSegmentIndex(newIndex);
+      setIsLoadingTemplate(true);
+      setTimeout(() => {
+        setTemplateChartData(generateChartData(newIndex));
+        setEgtChartData(generateEGTChartData(newIndex));
+        setTrendChartData(generateTrendChartData(newIndex));
+        setIsLoadingTemplate(false);
+      }, 800);
+    }
   };
 
   const handleModelLoad = () => {
@@ -114,6 +217,8 @@ export default function FaultAnalysisPage() {
     setIsLoadingModel(true);
     setTimeout(() => {
       setModelChartData(generateModelChartData());
+      setHealthIndexData(generateHealthIndexData());
+      setAnomalyData(generateAnomalyData());
       setIsLoadingModel(false);
     }, 1500);
   };
@@ -285,7 +390,7 @@ export default function FaultAnalysisPage() {
             </div>
 
             {selectedTemplate && (
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <div className="flex items-center gap-2 text-sm">
                   <span className="text-muted-foreground">已加载参数:</span>
                   <span className="text-foreground">
@@ -293,32 +398,163 @@ export default function FaultAnalysisPage() {
                   </span>
                 </div>
 
+                {/* 航段筛选模块 */}
+                {showSegmentFilter && (
+                  <div className="flex items-center gap-3 p-3 bg-secondary/30 rounded-lg border border-border">
+                    <div className="flex items-center gap-2">
+                      <Plane className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-medium">航段筛选</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={loadPreviousSegment}
+                        disabled={currentSegmentIndex === 0 || isLoadingTemplate}
+                        className="h-8"
+                      >
+                        <ChevronLeft className="h-4 w-4 mr-1" />
+                        向后
+                      </Button>
+                      
+                      <div className="px-4 py-2 bg-background border rounded-md min-w-[280px] text-center">
+                        <div className="text-sm font-medium">
+                          {flightSegments[currentSegmentIndex].startTime}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {flightSegments[currentSegmentIndex].departure} - {flightSegments[currentSegmentIndex].arrival}
+                        </div>
+                      </div>
+                      
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={loadNextSegment}
+                        disabled={currentSegmentIndex === flightSegments.length - 1 || isLoadingTemplate}
+                        className="h-8"
+                      >
+                        向前
+                        <ChevronRight className="h-4 w-4 ml-1" />
+                      </Button>
+                    </div>
+
+                    <div className="ml-auto flex items-center gap-2 text-xs">
+                      <span className="text-muted-foreground whitespace-nowrap">已加载航段:</span>
+                      <div className="flex flex-wrap gap-1">
+                        {loadedSegments.map((idx) => (
+                          <Badge 
+                            key={idx} 
+                            variant={idx === currentSegmentIndex ? "default" : "outline"}
+                            className="text-xs cursor-pointer font-mono"
+                            onClick={() => {
+                              setCurrentSegmentIndex(idx);
+                              setIsLoadingTemplate(true);
+                              setTimeout(() => {
+                                setTemplateChartData(generateChartData(idx));
+                                setEgtChartData(generateEGTChartData(idx));
+                                setTrendChartData(generateTrendChartData(idx));
+                                setIsLoadingTemplate(false);
+                              }, 500);
+                            }}
+                          >
+                            {flightSegments[idx].filename}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {isLoadingTemplate ? (
                   <div className="flex items-center justify-center h-[200px] bg-secondary/50 rounded-lg">
                     <RefreshCw className="h-6 w-6 animate-spin text-primary" />
                     <span className="ml-2 text-muted-foreground text-sm">加载参数数据中...</span>
                   </div>
                 ) : templateChartData.length > 0 ? (
-                  <div className="bg-secondary/30 rounded-lg p-2">
-                    <ResponsiveContainer width="100%" height={200}>
-                      <LineChart data={templateChartData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                        <XAxis dataKey="time" stroke="#6b7280" fontSize={11} />
-                        <YAxis stroke="#6b7280" fontSize={11} />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "#fff",
-                            border: "1px solid #e5e7eb",
-                            borderRadius: "6px",
-                            fontSize: "12px",
-                          }}
-                        />
-                        <Legend wrapperStyle={{ fontSize: "12px" }} />
-                        <Line type="monotone" dataKey="N1" stroke="#3b82f6" strokeWidth={2} dot={false} />
-                        <Line type="monotone" dataKey="N2" stroke="#10b981" strokeWidth={2} dot={false} />
-                        <Line type="monotone" dataKey="VIB" stroke="#f59e0b" strokeWidth={2} dot={false} />
-                      </LineChart>
-                    </ResponsiveContainer>
+                  <div className="space-y-3">
+                    {/* 第一排：两张并排图表 */}
+                    <div className="grid grid-cols-2 gap-3">
+                      {/* 图表1: N1/N2转速 */}
+                      <div className="bg-secondary/30 rounded-lg p-3 border border-border">
+                        <div className="text-sm font-medium mb-2 flex items-center gap-2">
+                          <span className="h-2 w-2 rounded-full bg-blue-500"></span>
+                          N1/N2 转速趋势
+                        </div>
+                        <ResponsiveContainer width="100%" height={180}>
+                          <LineChart data={templateChartData}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                            <XAxis dataKey="time" stroke="#6b7280" fontSize={10} />
+                            <YAxis stroke="#6b7280" fontSize={10} />
+                            <Tooltip
+                              contentStyle={{
+                                backgroundColor: "#fff",
+                                border: "1px solid #e5e7eb",
+                                borderRadius: "6px",
+                                fontSize: "11px",
+                              }}
+                            />
+                            <Legend wrapperStyle={{ fontSize: "11px" }} />
+                            <Line type="monotone" dataKey="N1" stroke="#3b82f6" strokeWidth={2} dot={false} name="N1%" />
+                            <Line type="monotone" dataKey="N2" stroke="#10b981" strokeWidth={2} dot={false} name="N2%" />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      </div>
+
+                      {/* 图表2: EGT温度 */}
+                      <div className="bg-secondary/30 rounded-lg p-3 border border-border">
+                        <div className="text-sm font-medium mb-2 flex items-center gap-2">
+                          <span className="h-2 w-2 rounded-full bg-orange-500"></span>
+                          EGT 排气温度
+                        </div>
+                        <ResponsiveContainer width="100%" height={180}>
+                          <AreaChart data={egtChartData}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                            <XAxis dataKey="time" stroke="#6b7280" fontSize={10} />
+                            <YAxis stroke="#6b7280" fontSize={10} />
+                            <Tooltip
+                              contentStyle={{
+                                backgroundColor: "#fff",
+                                border: "1px solid #e5e7eb",
+                                borderRadius: "6px",
+                                fontSize: "11px",
+                              }}
+                            />
+                            <Legend wrapperStyle={{ fontSize: "11px" }} />
+                            <Area type="monotone" dataKey="EGT1" stroke="#f97316" fill="#f97316" fillOpacity={0.2} name="EGT1" />
+                            <Area type="monotone" dataKey="EGT2" stroke="#ea580c" fill="#ea580c" fillOpacity={0.2} name="EGT2" />
+                            <Line type="monotone" dataKey="limit" stroke="#ef4444" strokeDasharray="5 5" name="限制值" dot={false} />
+                          </AreaChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+
+                    {/* 第二排：一张图表 */}
+                    <div className="bg-secondary/30 rounded-lg p-3 border border-border">
+                      <div className="text-sm font-medium mb-2 flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-purple-500"></span>
+                        性能指标
+                      </div>
+                      <ResponsiveContainer width="100%" height={180}>
+                        <AreaChart data={trendChartData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                          <XAxis dataKey="time" stroke="#6b7280" fontSize={10} />
+                          <YAxis stroke="#6b7280" fontSize={10} domain={[60, 100]} />
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: "#fff",
+                              border: "1px solid #e5e7eb",
+                              borderRadius: "6px",
+                              fontSize: "11px",
+                            }}
+                          />
+                          <Legend wrapperStyle={{ fontSize: "11px" }} />
+                          <Area type="monotone" dataKey="performance" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.2} name="性能指数" />
+                          <Line type="monotone" dataKey="baseline" stroke="#22c55e" strokeDasharray="5 5" name="基线" dot={false} />
+                          <Line type="monotone" dataKey="trend" stroke="#ef4444" strokeWidth={2} name="趋势线" dot={false} />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
                   </div>
                 ) : null}
               </div>
@@ -420,26 +656,89 @@ export default function FaultAnalysisPage() {
                 <span className="ml-2 text-muted-foreground text-sm">模型分析中...</span>
               </div>
             ) : modelChartData.length > 0 ? (
-              <div className="bg-secondary/30 rounded-lg p-2">
-                <ResponsiveContainer width="100%" height={200}>
-                  <AreaChart data={modelChartData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                    <XAxis dataKey="time" stroke="#6b7280" fontSize={11} />
-                    <YAxis stroke="#6b7280" fontSize={11} />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "#fff",
-                        border: "1px solid #e5e7eb",
-                        borderRadius: "6px",
-                        fontSize: "12px",
-                      }}
-                    />
-                    <Legend wrapperStyle={{ fontSize: "12px" }} />
-                    <Area type="monotone" dataKey="actual" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.2} name="实际值" />
-                    <Area type="monotone" dataKey="predicted" stroke="#10b981" fill="#10b981" fillOpacity={0.2} name="预测值" />
-                    <Line type="monotone" dataKey="threshold" stroke="#ef4444" strokeDasharray="5 5" name="阈值" dot={false} />
-                  </AreaChart>
-                </ResponsiveContainer>
+              <div className="space-y-3">
+                {/* 第一排：两张并排图表 */}
+                <div className="grid grid-cols-2 gap-3">
+                  {/* 图表1 */}
+                  <div className="bg-secondary/30 rounded-lg p-3 border border-border">
+                    <div className="text-sm font-medium mb-2 flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full bg-blue-500"></span>
+                      xxx
+                    </div>
+                    <ResponsiveContainer width="100%" height={180}>
+                      <AreaChart data={modelChartData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                        <XAxis dataKey="time" stroke="#6b7280" fontSize={10} />
+                        <YAxis stroke="#6b7280" fontSize={10} />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: "#fff",
+                            border: "1px solid #e5e7eb",
+                            borderRadius: "6px",
+                            fontSize: "11px",
+                          }}
+                        />
+                        <Legend wrapperStyle={{ fontSize: "11px" }} />
+                        <Area type="monotone" dataKey="actual" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.2} name="实际值" />
+                        <Area type="monotone" dataKey="predicted" stroke="#10b981" fill="#10b981" fillOpacity={0.2} name="预测值" />
+                        <Line type="monotone" dataKey="threshold" stroke="#ef4444" strokeDasharray="5 5" name="阈值" dot={false} />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  {/* 图表2 */}
+                  <div className="bg-secondary/30 rounded-lg p-3 border border-border">
+                    <div className="text-sm font-medium mb-2 flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
+                      xxx
+                    </div>
+                    <ResponsiveContainer width="100%" height={180}>
+                      <AreaChart data={healthIndexData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                        <XAxis dataKey="time" stroke="#6b7280" fontSize={10} />
+                        <YAxis stroke="#6b7280" fontSize={10} domain={[50, 100]} />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: "#fff",
+                            border: "1px solid #e5e7eb",
+                            borderRadius: "6px",
+                            fontSize: "11px",
+                          }}
+                        />
+                        <Legend wrapperStyle={{ fontSize: "11px" }} />
+                        <Area type="monotone" dataKey="healthIndex" stroke="#10b981" fill="#10b981" fillOpacity={0.3} name="健康指数" />
+                        <Line type="monotone" dataKey="warning" stroke="#f59e0b" strokeDasharray="5 5" name="警告线" dot={false} />
+                        <Line type="monotone" dataKey="critical" stroke="#ef4444" strokeDasharray="5 5" name="临界线" dot={false} />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                {/* 第二排：一张图表 */}
+                <div className="bg-secondary/30 rounded-lg p-3 border border-border">
+                  <div className="text-sm font-medium mb-2 flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-purple-500"></span>
+                    xxx
+                  </div>
+                  <ResponsiveContainer width="100%" height={180}>
+                    <AreaChart data={anomalyData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                      <XAxis dataKey="time" stroke="#6b7280" fontSize={10} />
+                      <YAxis stroke="#6b7280" fontSize={10} domain={[0, 100]} />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "#fff",
+                          border: "1px solid #e5e7eb",
+                          borderRadius: "6px",
+                          fontSize: "11px",
+                        }}
+                      />
+                      <Legend wrapperStyle={{ fontSize: "11px" }} />
+                      <Area type="monotone" dataKey="score" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.3} name="异常得分" />
+                      <Line type="monotone" dataKey="anomalyThreshold" stroke="#ef4444" strokeDasharray="5 5" name="异常阈值" dot={false} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-6 text-muted-foreground bg-secondary/30 rounded-lg">
