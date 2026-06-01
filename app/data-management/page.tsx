@@ -29,6 +29,8 @@ import {
   Filter,
   Calendar,
   FolderDown,
+  AlertTriangle,
+  ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -71,6 +73,7 @@ const secondaryTabs = [
   { id: "parameter", name: "参数配置", icon: Sliders },
   { id: "template", name: "模板配置", icon: FileText },
   { id: "metadata", name: "元数据配置", icon: Tags },
+  { id: "fault", name: "故障统计", icon: AlertTriangle },
 ];
 
 // API 数据
@@ -133,6 +136,46 @@ const metadataData = [
   { id: 4, tableName: "maintenance_record", displayName: "维修记录表", description: "存储维修工作记录，包括工卡号、维修动作、工时等", records: 45620, fields: 38, lastSync: "2024-01-14 18:00:00" },
   { id: 5, tableName: "part_change_log", displayName: "部件更换记录表", description: "存储部件更换历史，包括件号、序号、装机位置等", records: 12350, fields: 25, lastSync: "2024-01-15 10:00:00" },
   { id: 6, tableName: "parameter_definition", displayName: "参数定义表", description: "存储WQAR参数定义，包括参数名、单位、采样率等", records: 3850, fields: 18, lastSync: "2024-01-12 08:00:00" },
+];
+
+// 故障统计数据
+interface FaultRecord {
+  id: number;
+  faultCode: string;
+  cmsMessage: string;
+  registration: string;
+  airline: string;
+  airlineCode: string;
+  ataChapter: string;
+  faultDate: string;
+  flightNo: string;
+  route: string;
+  severity: "high" | "medium" | "low";
+  status: "analyzed" | "pending" | "ignored" | "no_qar";
+  analysisId?: string; // 如果已分析，关联的分析ID
+}
+
+const faultData: FaultRecord[] = [
+  { id: 1, faultCode: "2100-01", cmsMessage: "PACK 1 FAULT", registration: "B-1234", airline: "幸福航空", airlineCode: "UEA", ataChapter: "21", faultDate: "2024-01-15 14:32:00", flightNo: "UEA5123", route: "PVG-PEK", severity: "high", status: "analyzed", analysisId: "FA-2024-0156" },
+  { id: 2, faultCode: "3600-05", cmsMessage: "BLEED 1 OVHT", registration: "B-5678", airline: "东方航空", airlineCode: "CES", ataChapter: "36", faultDate: "2024-01-15 10:15:00", flightNo: "MU5678", route: "PVG-CAN", severity: "high", status: "pending" },
+  { id: 3, faultCode: "2700-12", cmsMessage: "ELAC 1 FAULT", registration: "B-9012", airline: "幸福航空", airlineCode: "UEA", ataChapter: "27", faultDate: "2024-01-14 18:45:00", flightNo: "UEA2234", route: "PEK-SHA", severity: "medium", status: "analyzed", analysisId: "FA-2024-0148" },
+  { id: 4, faultCode: "3200-08", cmsMessage: "BRAKE TEMP HI", registration: "B-3456", airline: "南方航空", airlineCode: "CSN", ataChapter: "32", faultDate: "2024-01-14 09:20:00", flightNo: "CZ3345", route: "CAN-CTU", severity: "medium", status: "no_qar" },
+  { id: 5, faultCode: "4900-03", cmsMessage: "APU EGT OVLM", registration: "B-7890", airline: "东方航空", airlineCode: "CES", ataChapter: "49", faultDate: "2024-01-13 16:08:00", flightNo: "MU4456", route: "SHA-SZX", severity: "high", status: "analyzed", analysisId: "FA-2024-0142" },
+  { id: 6, faultCode: "7200-15", cmsMessage: "ENG 1 VIB HI", registration: "B-1234", airline: "幸福航空", airlineCode: "UEA", ataChapter: "72", faultDate: "2024-01-13 08:30:00", flightNo: "UEA6789", route: "PEK-CAN", severity: "high", status: "pending" },
+  { id: 7, faultCode: "2900-06", cmsMessage: "HYD SYS 1 LO PR", registration: "B-5678", airline: "东方航空", airlineCode: "CES", ataChapter: "29", faultDate: "2024-01-12 22:15:00", flightNo: "MU7890", route: "SHA-PEK", severity: "medium", status: "ignored" },
+  { id: 8, faultCode: "2400-09", cmsMessage: "GEN 1 FAULT", registration: "B-9012", airline: "幸福航空", airlineCode: "UEA", ataChapter: "24", faultDate: "2024-01-12 14:50:00", flightNo: "UEA8901", route: "CAN-SHA", severity: "low", status: "analyzed", analysisId: "FA-2024-0135" },
+  { id: 9, faultCode: "3600-02", cmsMessage: "PRSOV 1 FAULT", registration: "B-3456", airline: "南方航空", airlineCode: "CSN", ataChapter: "36", faultDate: "2024-01-12 10:30:00", flightNo: "CZ9012", route: "CTU-PVG", severity: "medium", status: "pending" },
+  { id: 10, faultCode: "2100-08", cmsMessage: "DUCT OVHT", registration: "B-7890", airline: "东方航空", airlineCode: "CES", ataChapter: "21", faultDate: "2024-01-11 15:45:00", flightNo: "MU1234", route: "PEK-CAN", severity: "high", status: "no_qar" },
+  { id: 11, faultCode: "3200-03", cmsMessage: "LGCIU 1 FAULT", registration: "B-1234", airline: "幸福航空", airlineCode: "UEA", ataChapter: "32", faultDate: "2024-01-11 09:20:00", flightNo: "UEA5678", route: "SHA-PEK", severity: "low", status: "analyzed", analysisId: "FA-2024-0128" },
+  { id: 12, faultCode: "4900-07", cmsMessage: "APU FIRE DET", registration: "B-5678", airline: "东方航空", airlineCode: "CES", ataChapter: "49", faultDate: "2024-01-10 18:00:00", flightNo: "MU2345", route: "CAN-PVG", severity: "high", status: "analyzed", analysisId: "FA-2024-0122" },
+];
+
+// 航司列表
+const airlineList = [
+  { code: "UEA", name: "幸福航空" },
+  { code: "CES", name: "东方航空" },
+  { code: "CSN", name: "南方航空" },
+  { code: "CCA", name: "中国国际航空" },
 ];
 
 // 参数版本数据
@@ -252,6 +295,16 @@ export default function DataManagementPage() {
     registration: "",
     startDate: "",
     endDate: ""
+  });
+
+  // 故障筛选状态
+  const [faultFilters, setFaultFilters] = useState({
+    startDate: "",
+    endDate: "",
+    airline: "",
+    registration: "",
+    cmsMessage: "",
+    status: ""
   });
 
   const isPrimaryTab = primaryTabs.some(t => t.id === activeTab);
@@ -522,6 +575,65 @@ export default function DataManagementPage() {
   // 获取所有注册号列表
   const registrationList = [...new Set(wqarData.map(item => item.registration))];
 
+  // 故障数据筛选
+  const filteredFaultData = faultData.filter(item => {
+    // 时间范围筛选
+    const itemDate = item.faultDate.split(" ")[0];
+    if (faultFilters.startDate && itemDate < faultFilters.startDate) return false;
+    if (faultFilters.endDate && itemDate > faultFilters.endDate) return false;
+    // 航司筛选
+    if (faultFilters.airline && item.airlineCode !== faultFilters.airline) return false;
+    // 注册号筛选
+    if (faultFilters.registration && !item.registration.toLowerCase().includes(faultFilters.registration.toLowerCase())) return false;
+    // CMS信息筛选
+    if (faultFilters.cmsMessage && !item.cmsMessage.toLowerCase().includes(faultFilters.cmsMessage.toLowerCase())) return false;
+    // 状态筛选
+    if (faultFilters.status && item.status !== faultFilters.status) return false;
+    return true;
+  });
+
+  // 故障统计计算
+  const faultStats = {
+    total: filteredFaultData.length,
+    analyzed: filteredFaultData.filter(f => f.status === "analyzed").length,
+    pending: filteredFaultData.filter(f => f.status === "pending").length,
+    ignored: filteredFaultData.filter(f => f.status === "ignored").length,
+    noQar: filteredFaultData.filter(f => f.status === "no_qar").length,
+  };
+
+  // 获取故障注册号列表
+  const faultRegistrationList = [...new Set(faultData.map(item => item.registration))];
+
+  // 故障状态徽章
+  const getFaultStatusBadge = (status: string) => {
+    switch (status) {
+      case "analyzed":
+        return <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200">已分析</Badge>;
+      case "pending":
+        return <Badge className="bg-amber-100 text-amber-700 border-amber-200">待分析</Badge>;
+      case "ignored":
+        return <Badge className="bg-gray-100 text-gray-600 border-gray-200">已忽略</Badge>;
+      case "no_qar":
+        return <Badge className="bg-red-100 text-red-700 border-red-200">暂无QAR</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
+
+  // 故障严重程度徽章
+  const getSeverityBadge = (severity: string) => {
+    switch (severity) {
+      case "high":
+        return <Badge className="bg-red-100 text-red-700 border-red-200">高</Badge>;
+      case "medium":
+        return <Badge className="bg-amber-100 text-amber-700 border-amber-200">中</Badge>;
+      case "low":
+        return <Badge className="bg-blue-100 text-blue-700 border-blue-200">低</Badge>;
+      default:
+        return <Badge variant="outline">{severity}</Badge>;
+    }
+  };
+  
   return (
     <div className="min-h-screen bg-background">
       {/* 顶部标题栏 */}
@@ -1207,6 +1319,261 @@ export default function DataManagementPage() {
             </CardContent>
           </Card>
         )}
+
+        {/* 故障统计 */}
+        {activeTab === "fault" && (
+          <div className="space-y-4">
+            {/* 统计卡片 */}
+            <div className="grid grid-cols-5 gap-4">
+              <Card className="border border-border">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">所有故障</p>
+                      <p className="text-2xl font-bold mt-1">{faultStats.total}</p>
+                    </div>
+                    <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                      <AlertTriangle className="h-5 w-5 text-blue-600" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="border border-border">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">已完成分析</p>
+                      <p className="text-2xl font-bold mt-1 text-emerald-600">{faultStats.analyzed}</p>
+                    </div>
+                    <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                      <Check className="h-5 w-5 text-emerald-600" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="border border-border">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">待分析</p>
+                      <p className="text-2xl font-bold mt-1 text-amber-600">{faultStats.pending}</p>
+                    </div>
+                    <div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center">
+                      <Calendar className="h-5 w-5 text-amber-600" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="border border-border">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">已忽略</p>
+                      <p className="text-2xl font-bold mt-1 text-gray-600">{faultStats.ignored}</p>
+                    </div>
+                    <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
+                      <X className="h-5 w-5 text-gray-600" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="border border-border">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">暂无QAR数据</p>
+                      <p className="text-2xl font-bold mt-1 text-red-600">{faultStats.noQar}</p>
+                    </div>
+                    <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
+                      <Database className="h-5 w-5 text-red-600" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* 故障列表 */}
+            <Card className="border border-border">
+              <CardHeader className="border-b border-border py-3 px-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4 text-primary" />
+                    故障统计
+                  </CardTitle>
+                  <div className="flex items-center gap-2">
+                    <Button size="sm" variant="outline" className="gap-1">
+                      <Download className="h-4 w-4" />
+                      导出
+                    </Button>
+                    <Button size="sm" variant="outline" className="gap-1">
+                      <RefreshCw className="h-4 w-4" />
+                      刷新
+                    </Button>
+                  </div>
+                </div>
+
+                {/* 筛选区域 */}
+                <div className="flex flex-wrap items-center gap-3 mt-3 pt-3 border-t border-border">
+                  <div className="flex items-center gap-2">
+                    <Filter className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">筛选:</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm text-muted-foreground">开始日期:</Label>
+                    <Input
+                      type="date"
+                      value={faultFilters.startDate}
+                      onChange={(e) => setFaultFilters(prev => ({ ...prev, startDate: e.target.value }))}
+                      className="w-[140px] h-8"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm text-muted-foreground">结束日期:</Label>
+                    <Input
+                      type="date"
+                      value={faultFilters.endDate}
+                      onChange={(e) => setFaultFilters(prev => ({ ...prev, endDate: e.target.value }))}
+                      className="w-[140px] h-8"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm text-muted-foreground">航司:</Label>
+                    <Select value={faultFilters.airline} onValueChange={(v) => setFaultFilters(prev => ({ ...prev, airline: v === " " ? "" : v }))}>
+                      <SelectTrigger className="w-[120px] h-8">
+                        <SelectValue placeholder="全部" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value=" ">全部</SelectItem>
+                        {airlineList.map(a => (
+                          <SelectItem key={a.code} value={a.code}>{a.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm text-muted-foreground">注册号:</Label>
+                    <Select value={faultFilters.registration} onValueChange={(v) => setFaultFilters(prev => ({ ...prev, registration: v === " " ? "" : v }))}>
+                      <SelectTrigger className="w-[100px] h-8">
+                        <SelectValue placeholder="全部" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value=" ">全部</SelectItem>
+                        {faultRegistrationList.map(reg => (
+                          <SelectItem key={reg} value={reg}>{reg}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm text-muted-foreground">CMS:</Label>
+                    <Input
+                      placeholder="搜索CMS信息..."
+                      value={faultFilters.cmsMessage}
+                      onChange={(e) => setFaultFilters(prev => ({ ...prev, cmsMessage: e.target.value }))}
+                      className="w-[150px] h-8"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm text-muted-foreground">状态:</Label>
+                    <Select value={faultFilters.status} onValueChange={(v) => setFaultFilters(prev => ({ ...prev, status: v === " " ? "" : v }))}>
+                      <SelectTrigger className="w-[100px] h-8">
+                        <SelectValue placeholder="全部" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value=" ">全部</SelectItem>
+                        <SelectItem value="analyzed">已分析</SelectItem>
+                        <SelectItem value="pending">待分析</SelectItem>
+                        <SelectItem value="ignored">已忽略</SelectItem>
+                        <SelectItem value="no_qar">暂无QAR</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8"
+                    onClick={() => setFaultFilters({ startDate: "", endDate: "", airline: "", registration: "", cmsMessage: "", status: "" })}
+                  >
+                    <X className="h-4 w-4 mr-1" />
+                    清除筛选
+                  </Button>
+                  <div className="ml-auto text-sm text-muted-foreground">
+                    共 {filteredFaultData.length} 条记录
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[100px]">故障代码</TableHead>
+                      <TableHead className="w-[160px]">CMS信息</TableHead>
+                      <TableHead className="w-[80px]">注册号</TableHead>
+                      <TableHead className="w-[100px]">航司</TableHead>
+                      <TableHead className="w-[80px]">ATA</TableHead>
+                      <TableHead className="w-[150px]">故障时间</TableHead>
+                      <TableHead className="w-[100px]">航班号</TableHead>
+                      <TableHead className="w-[100px]">航线</TableHead>
+                      <TableHead className="w-[60px]">严重度</TableHead>
+                      <TableHead className="w-[90px]">状态</TableHead>
+                      <TableHead className="w-[80px]">操作</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredFaultData.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={11} className="text-center py-8 text-muted-foreground">
+                          没有找到匹配的故障记录
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      filteredFaultData.map((item) => (
+                        <TableRow key={item.id}>
+                          <TableCell className="font-mono text-sm font-medium">{item.faultCode}</TableCell>
+                          <TableCell className="font-medium">{item.cmsMessage}</TableCell>
+                          <TableCell>
+                            <Badge variant="outline" className="bg-blue-50 text-blue-600">
+                              {item.registration}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <span className="text-sm">{item.airline}</span>
+                            <span className="text-xs text-muted-foreground ml-1">({item.airlineCode})</span>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline" className="bg-purple-50 text-purple-600">
+                              {item.ataChapter}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-muted-foreground font-mono text-sm">{item.faultDate}</TableCell>
+                          <TableCell>{item.flightNo}</TableCell>
+                          <TableCell>{item.route}</TableCell>
+                          <TableCell>{getSeverityBadge(item.severity)}</TableCell>
+                          <TableCell>{getFaultStatusBadge(item.status)}</TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-1">
+                              {item.status === "analyzed" && item.analysisId ? (
+                                <Link href={`/task-management?analysisId=${item.analysisId}`}>
+                                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title="查看分析详情">
+                                    <ExternalLink className="h-3.5 w-3.5 text-blue-600" />
+                                  </Button>
+                                </Link>
+                              ) : (
+                                <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title="查看详情">
+                                  <Eye className="h-3.5 w-3.5" />
+                                </Button>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </main>
 
       {/* 同步确认对话框 */}
@@ -1392,7 +1759,7 @@ export default function DataManagementPage() {
             {/* 核心参数选择 */}
             <div className="space-y-3 flex-1">
               <div className="flex items-center justify-between">
-                <Label className="text-base font-medium">核心参数配置</Label>
+                <Label className="text-base font-medium">核心参���配置</Label>
                 <Badge variant="outline" className="bg-emerald-50 text-emerald-600">
                   已选择 {templateForm.selectedParameters.length} 个参数
                 </Badge>
