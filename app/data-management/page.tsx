@@ -436,7 +436,7 @@ export default function DataManagementPage() {
     setTemplateDialogOpen(true);
   };
 
-  // 打开编辑模板对话框
+  // 打开编辑模��对话框
   const openEditTemplateDialog = (template: TemplateConfig) => {
     setEditingTemplate(template);
     setTemplateForm({
@@ -1285,7 +1285,7 @@ export default function DataManagementPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[180px]">表名</TableHead>
+                    <TableHead className="w-[180px]">表��</TableHead>
                     <TableHead className="w-[160px]">显示名称</TableHead>
                     <TableHead>描述</TableHead>
                     <TableHead className="w-[100px]">记录数</TableHead>
@@ -1467,7 +1467,7 @@ export default function DataManagementPage() {
                         </Popover>
                       </TableHead>
                       
-                      {/* 注册号 - 下拉选择筛选 */}
+                      {/* 注册号 - 直接选项列表 */}
                       <TableHead className="w-[80px]">
                         <Popover>
                           <PopoverTrigger asChild>
@@ -1476,26 +1476,33 @@ export default function DataManagementPage() {
                               <ChevronDown className={`h-3 w-3 ${faultFilters.registration ? "text-primary" : "text-muted-foreground"}`} />
                             </Button>
                           </PopoverTrigger>
-                          <PopoverContent className="w-[150px] p-3" align="start">
-                            <div className="space-y-2">
-                              <Label className="text-xs text-muted-foreground">选择注册号</Label>
-                              <Select value={faultFilters.registration || " "} onValueChange={(v) => setFaultFilters(prev => ({ ...prev, registration: v === " " ? "" : v }))}>
-                                <SelectTrigger className="h-8">
-                                  <SelectValue placeholder="全部" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value=" ">全部</SelectItem>
-                                  {faultRegistrationList.map(reg => (
-                                    <SelectItem key={reg} value={reg}>{reg}</SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                          <PopoverContent className="w-[100px] p-1" align="start">
+                            <div className="flex flex-col">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className={`justify-start h-8 px-2 ${!faultFilters.registration ? "bg-accent" : ""}`}
+                                onClick={() => setFaultFilters(prev => ({ ...prev, registration: "" }))}
+                              >
+                                全部
+                              </Button>
+                              {faultRegistrationList.map(reg => (
+                                <Button
+                                  key={reg}
+                                  variant="ghost"
+                                  size="sm"
+                                  className={`justify-start h-8 px-2 ${faultFilters.registration === reg ? "bg-accent" : ""}`}
+                                  onClick={() => setFaultFilters(prev => ({ ...prev, registration: reg }))}
+                                >
+                                  {reg}
+                                </Button>
+                              ))}
                             </div>
                           </PopoverContent>
                         </Popover>
                       </TableHead>
                       
-                      {/* 航司 - 下拉选择筛选 */}
+                      {/* 航司 - 直接选项列表 */}
                       <TableHead className="w-[140px]">
                         <Popover>
                           <PopoverTrigger asChild>
@@ -1504,26 +1511,33 @@ export default function DataManagementPage() {
                               <ChevronDown className={`h-3 w-3 ${faultFilters.airline ? "text-primary" : "text-muted-foreground"}`} />
                             </Button>
                           </PopoverTrigger>
-                          <PopoverContent className="w-[150px] p-3" align="start">
-                            <div className="space-y-2">
-                              <Label className="text-xs text-muted-foreground">选择航司</Label>
-                              <Select value={faultFilters.airline || " "} onValueChange={(v) => setFaultFilters(prev => ({ ...prev, airline: v === " " ? "" : v }))}>
-                                <SelectTrigger className="h-8">
-                                  <SelectValue placeholder="全部" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value=" ">全部</SelectItem>
-                                  {airlineList.map(a => (
-                                    <SelectItem key={a.code} value={a.code}>{a.name}</SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                          <PopoverContent className="w-[120px] p-1" align="start">
+                            <div className="flex flex-col">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className={`justify-start h-8 px-2 ${!faultFilters.airline ? "bg-accent" : ""}`}
+                                onClick={() => setFaultFilters(prev => ({ ...prev, airline: "" }))}
+                              >
+                                全部
+                              </Button>
+                              {airlineList.map(a => (
+                                <Button
+                                  key={a.code}
+                                  variant="ghost"
+                                  size="sm"
+                                  className={`justify-start h-8 px-2 ${faultFilters.airline === a.code ? "bg-accent" : ""}`}
+                                  onClick={() => setFaultFilters(prev => ({ ...prev, airline: a.code }))}
+                                >
+                                  {a.name}
+                                </Button>
+                              ))}
                             </div>
                           </PopoverContent>
                         </Popover>
                       </TableHead>
                       
-                      {/* ATA - 下拉选择筛选 */}
+                      {/* ATA - 直接选项列表 */}
                       <TableHead className="w-[80px]">
                         <Popover>
                           <PopoverTrigger asChild>
@@ -1532,20 +1546,27 @@ export default function DataManagementPage() {
                               <ChevronDown className={`h-3 w-3 ${faultFilters.ata ? "text-primary" : "text-muted-foreground"}`} />
                             </Button>
                           </PopoverTrigger>
-                          <PopoverContent className="w-[120px] p-3" align="start">
-                            <div className="space-y-2">
-                              <Label className="text-xs text-muted-foreground">选择ATA</Label>
-                              <Select value={faultFilters.ata || " "} onValueChange={(v) => setFaultFilters(prev => ({ ...prev, ata: v === " " ? "" : v }))}>
-                                <SelectTrigger className="h-8">
-                                  <SelectValue placeholder="全部" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value=" ">全部</SelectItem>
-                                  {faultAtaList.map(ata => (
-                                    <SelectItem key={ata} value={ata}>ATA {ata}</SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                          <PopoverContent className="w-[90px] p-1" align="start">
+                            <div className="flex flex-col">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className={`justify-start h-8 px-2 ${!faultFilters.ata ? "bg-accent" : ""}`}
+                                onClick={() => setFaultFilters(prev => ({ ...prev, ata: "" }))}
+                              >
+                                全部
+                              </Button>
+                              {faultAtaList.map(ata => (
+                                <Button
+                                  key={ata}
+                                  variant="ghost"
+                                  size="sm"
+                                  className={`justify-start h-8 px-2 ${faultFilters.ata === ata ? "bg-accent" : ""}`}
+                                  onClick={() => setFaultFilters(prev => ({ ...prev, ata: ata }))}
+                                >
+                                  ATA {ata}
+                                </Button>
+                              ))}
                             </div>
                           </PopoverContent>
                         </Popover>
@@ -1588,7 +1609,7 @@ export default function DataManagementPage() {
                       <TableHead className="w-[100px]">航班号</TableHead>
                       <TableHead className="w-[100px]">航线</TableHead>
                       
-                      {/* 状态 - 下拉选择筛选 */}
+                      {/* 状态 - 直接选项列表 */}
                       <TableHead className="w-[90px]">
                         <Popover>
                           <PopoverTrigger asChild>
@@ -1597,21 +1618,48 @@ export default function DataManagementPage() {
                               <ChevronDown className={`h-3 w-3 ${faultFilters.status ? "text-primary" : "text-muted-foreground"}`} />
                             </Button>
                           </PopoverTrigger>
-                          <PopoverContent className="w-[140px] p-3" align="start">
-                            <div className="space-y-2">
-                              <Label className="text-xs text-muted-foreground">选择状态</Label>
-                              <Select value={faultFilters.status || " "} onValueChange={(v) => setFaultFilters(prev => ({ ...prev, status: v === " " ? "" : v }))}>
-                                <SelectTrigger className="h-8">
-                                  <SelectValue placeholder="全部" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value=" ">全部</SelectItem>
-                                  <SelectItem value="analyzed">已分析</SelectItem>
-                                  <SelectItem value="pending">待分析</SelectItem>
-                                  <SelectItem value="ignored">已忽略</SelectItem>
-                                  <SelectItem value="no_qar">暂无QAR</SelectItem>
-                                </SelectContent>
-                              </Select>
+                          <PopoverContent className="w-[100px] p-1" align="start">
+                            <div className="flex flex-col">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className={`justify-start h-8 px-2 ${!faultFilters.status ? "bg-accent" : ""}`}
+                                onClick={() => setFaultFilters(prev => ({ ...prev, status: "" }))}
+                              >
+                                全部
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className={`justify-start h-8 px-2 ${faultFilters.status === "analyzed" ? "bg-accent" : ""}`}
+                                onClick={() => setFaultFilters(prev => ({ ...prev, status: "analyzed" }))}
+                              >
+                                已分析
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className={`justify-start h-8 px-2 ${faultFilters.status === "pending" ? "bg-accent" : ""}`}
+                                onClick={() => setFaultFilters(prev => ({ ...prev, status: "pending" }))}
+                              >
+                                待分析
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className={`justify-start h-8 px-2 ${faultFilters.status === "ignored" ? "bg-accent" : ""}`}
+                                onClick={() => setFaultFilters(prev => ({ ...prev, status: "ignored" }))}
+                              >
+                                已忽略
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className={`justify-start h-8 px-2 ${faultFilters.status === "no_qar" ? "bg-accent" : ""}`}
+                                onClick={() => setFaultFilters(prev => ({ ...prev, status: "no_qar" }))}
+                              >
+                                暂无QAR
+                              </Button>
                             </div>
                           </PopoverContent>
                         </Popover>
