@@ -85,11 +85,10 @@ const wqarData = [
 
 // 模板数据
 const templateData = [
-  { id: 1, name: "发动机振动分析模板", ataChapter: "72", parameters: 45, version: "v2.3", updatedAt: "2024-01-10", status: "active" },
-  { id: 2, name: "燃油系统分析模板", ataChapter: "28", parameters: 32, version: "v1.8", updatedAt: "2024-01-08", status: "active" },
-  { id: 3, name: "液压系统分析模板", ataChapter: "29", parameters: 28, version: "v2.0", updatedAt: "2024-01-05", status: "active" },
-  { id: 4, name: "电气系统分析模板", ataChapter: "24", parameters: 38, version: "v1.5", updatedAt: "2024-01-03", status: "draft" },
-  { id: 5, name: "起落架分析模板", ataChapter: "32", parameters: 22, version: "v1.2", updatedAt: "2024-01-01", status: "active" },
+  { id: 1, name: "APU EGT超温", ataChapter: "49", coreParameters: 12, description: "监控APU排气温度超限情况，用于预测APU性能衰退", lru: "APU", version: "v2.3", updatedAt: "2024-01-10", status: "active" },
+  { id: 2, name: "HPV开关响应", ataChapter: "36", coreParameters: 8, description: "监控高压活门开关响应时间及状态，检测气源系统异常", lru: "HPV, PRSOV", version: "v1.8", updatedAt: "2024-01-08", status: "active" },
+  { id: 3, name: "PRSOV开关响应", ataChapter: "36", coreParameters: 10, description: "监控引气预冷器出口活门响应，评估活门健康状态", lru: "PRSOV, FAV", version: "v2.0", updatedAt: "2024-01-05", status: "active" },
+  { id: 4, name: "刹车温度不一致", ataChapter: "32", coreParameters: 16, description: "监控各轮刹车温度差异，识别刹车磨损不均或传感器故障", lru: "BSCU, 刹车组件", version: "v1.5", updatedAt: "2024-01-03", status: "active" },
 ];
 
 // 存储数据
@@ -101,14 +100,14 @@ const storageData = [
   { id: 5, name: "日志归档", path: "/data/logs/archive", size: "89GB", files: 15600, type: "日志", retention: "180天" },
 ];
 
-// 元数据
+// 元数据 - 业务元数据表
 const metadataData = [
-  { id: 1, category: "ATA章节", items: 78, description: "飞机系统ATA章节编码", lastSync: "2024-01-15 08:00:00" },
-  { id: 2, category: "机型代码", items: 12, description: "支持的飞机机型代码", lastSync: "2024-01-14 08:00:00" },
-  { id: 3, category: "机场代码", items: 456, description: "国内外机场IATA代码", lastSync: "2024-01-15 06:00:00" },
-  { id: 4, category: "故障代码", items: 1240, description: "标准故障代码库", lastSync: "2024-01-13 08:00:00" },
-  { id: 5, category: "参数定义", items: 3850, description: "WQAR参数标准定义", lastSync: "2024-01-12 08:00:00" },
-  { id: 6, category: "维修动作", items: 520, description: "标准维修动作代码", lastSync: "2024-01-11 08:00:00" },
+  { id: 1, tableName: "fleet_meta", displayName: "机队元数据表", description: "存储机队基本信息，包括机型、注册号、机龄等", records: 156, fields: 28, lastSync: "2024-01-15 08:00:00" },
+  { id: 2, tableName: "flight_info", displayName: "航班信息表", description: "存储航班基本信息，包括航班号、航线、起降时间等", records: 125840, fields: 42, lastSync: "2024-01-15 14:30:00" },
+  { id: 3, tableName: "fault_report", displayName: "故障报告表", description: "存储故障报告信息，包括故障代码、描述、处理措施等", records: 8920, fields: 35, lastSync: "2024-01-15 12:00:00" },
+  { id: 4, tableName: "maintenance_record", displayName: "维修记录表", description: "存储维修工作记录，包括工卡号、维修动作、工时等", records: 45620, fields: 38, lastSync: "2024-01-14 18:00:00" },
+  { id: 5, tableName: "part_change_log", displayName: "部件更换记录表", description: "存储部件更换历史，包括件号、序号、装机位置等", records: 12350, fields: 25, lastSync: "2024-01-15 10:00:00" },
+  { id: 6, tableName: "parameter_definition", displayName: "参数定义表", description: "存储WQAR参数定义，包括参数名、单位、采样率等", records: 3850, fields: 18, lastSync: "2024-01-12 08:00:00" },
 ];
 
 // 参数版本数据
@@ -805,9 +804,11 @@ export default function DataManagementPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[200px]">模板名称</TableHead>
+                    <TableHead className="w-[180px]">模板名称</TableHead>
                     <TableHead className="w-[100px]">ATA章节</TableHead>
-                    <TableHead className="w-[100px]">参数数量</TableHead>
+                    <TableHead className="w-[250px]">模板描述</TableHead>
+                    <TableHead className="w-[140px]">LRU</TableHead>
+                    <TableHead className="w-[100px]">核心参数</TableHead>
                     <TableHead className="w-[80px]">版本</TableHead>
                     <TableHead className="w-[120px]">更新时间</TableHead>
                     <TableHead className="w-[80px]">状态</TableHead>
@@ -823,7 +824,21 @@ export default function DataManagementPage() {
                           ATA {item.ataChapter}
                         </Badge>
                       </TableCell>
-                      <TableCell>{item.parameters}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{item.description}</TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-1">
+                          {item.lru.split(", ").map((part, idx) => (
+                            <Badge key={idx} variant="outline" className="bg-amber-50 text-amber-700 text-xs">
+                              {part}
+                            </Badge>
+                          ))}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="bg-emerald-50 text-emerald-600">
+                          {item.coreParameters}
+                        </Badge>
+                      </TableCell>
                       <TableCell className="text-muted-foreground">{item.version}</TableCell>
                       <TableCell className="text-muted-foreground">{item.updatedAt}</TableCell>
                       <TableCell>{getStatusBadge(item.status)}</TableCell>
@@ -845,23 +860,28 @@ export default function DataManagementPage() {
           </Card>
         )}
 
-        {/* 元数据配置 */}
+        {/* 元数据列表 */}
         {activeTab === "metadata" && (
           <Card className="border border-border">
             <CardHeader className="border-b border-border py-3 px-4">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base flex items-center gap-2">
                   <Tags className="h-4 w-4 text-primary" />
-                  元数据配置
+                  元数据列表
                 </CardTitle>
                 <div className="flex items-center gap-2">
+                  <div className="relative">
+                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="搜索表名..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-8 h-8 w-[200px]"
+                    />
+                  </div>
                   <Button size="sm" variant="outline" className="gap-1">
                     <RefreshCw className="h-4 w-4" />
                     同步全部
-                  </Button>
-                  <Button size="sm" className="gap-1">
-                    <Plus className="h-4 w-4" />
-                    新增类别
                   </Button>
                 </div>
               </div>
@@ -870,33 +890,41 @@ export default function DataManagementPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[140px]">类别</TableHead>
+                    <TableHead className="w-[180px]">表名</TableHead>
+                    <TableHead className="w-[160px]">显示名称</TableHead>
                     <TableHead>描述</TableHead>
-                    <TableHead className="w-[100px]">条目数</TableHead>
-                    <TableHead className="w-[180px]">最后同步</TableHead>
+                    <TableHead className="w-[100px]">记录数</TableHead>
+                    <TableHead className="w-[80px]">字段数</TableHead>
+                    <TableHead className="w-[160px]">最后同步</TableHead>
                     <TableHead className="w-[120px]">操作</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {metadataData.map((item) => (
                     <TableRow key={item.id}>
-                      <TableCell className="font-medium">{item.category}</TableCell>
-                      <TableCell className="text-muted-foreground">{item.description}</TableCell>
+                      <TableCell className="font-mono text-sm font-medium text-blue-600">{item.tableName}</TableCell>
+                      <TableCell className="font-medium">{item.displayName}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{item.description}</TableCell>
                       <TableCell>
-                        <Badge variant="outline" className="bg-blue-50 text-blue-600">
-                          {item.items.toLocaleString()}
+                        <Badge variant="outline" className="bg-emerald-50 text-emerald-600">
+                          {item.records.toLocaleString()}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">
+                          {item.fields}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-xs text-muted-foreground">{item.lastSync}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
-                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title="查看表结构">
                             <Eye className="h-3.5 w-3.5" />
                           </Button>
-                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
-                            <Edit className="h-3.5 w-3.5" />
+                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title="查询数据">
+                            <Search className="h-3.5 w-3.5" />
                           </Button>
-                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title="同步">
                             <RefreshCw className="h-3.5 w-3.5" />
                           </Button>
                         </div>
