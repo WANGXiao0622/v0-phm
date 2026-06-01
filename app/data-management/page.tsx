@@ -49,7 +49,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 // 第一行标签页 - 基本不需要更改的数据
 const primaryTabs = [
@@ -83,12 +88,26 @@ const wqarData = [
   { id: 5, flightNo: "MU4456", registration: "B-7890", date: "2024-01-13", route: "SHA-SZX", fileSize: "245MB", status: "parsed", parameters: 2890 },
 ];
 
-// 模板数据
-const templateData = [
-  { id: 1, name: "APU EGT超温", ataChapter: "49", coreParameters: 12, description: "监控APU排气温度超限情况，用于预测APU性能衰退", lru: "APU", version: "v2.3", updatedAt: "2024-01-10", status: "active" },
-  { id: 2, name: "HPV开关响应", ataChapter: "36", coreParameters: 8, description: "监控高压活门开关响应时间及状态，检测气源系统异常", lru: "HPV, PRSOV", version: "v1.8", updatedAt: "2024-01-08", status: "active" },
-  { id: 3, name: "PRSOV开关响应", ataChapter: "36", coreParameters: 10, description: "监控引气预冷器出口活门响应，评估活门健康状态", lru: "PRSOV, FAV", version: "v2.0", updatedAt: "2024-01-05", status: "active" },
-  { id: 4, name: "刹车温度不一致", ataChapter: "32", coreParameters: 16, description: "监控各轮刹车温度差异，识别刹车磨损不均或传感器故障", lru: "BSCU, 刹车组件", version: "v1.5", updatedAt: "2024-01-03", status: "active" },
+// 模板数据类型
+interface TemplateConfig {
+  id: number;
+  name: string;
+  ataChapter: string;
+  coreParameters: number;
+  description: string;
+  lru: string;
+  version: string;
+  updatedAt: string;
+  status: string;
+  selectedParameters: string[]; // 存储选中的参数MNEMONIC
+}
+
+// 初始模板数据
+const initialTemplateData: TemplateConfig[] = [
+  { id: 1, name: "APU EGT超温", ataChapter: "49", coreParameters: 12, description: "监控APU排气温度超限情况，用于预测APU性能衰退", lru: "APU", version: "v2.3", updatedAt: "2024-01-10", status: "active", selectedParameters: ["EGT_1", "EGT_2", "N1_1", "N2_1"] },
+  { id: 2, name: "HPV开关响应", ataChapter: "36", coreParameters: 8, description: "监控高压活门开关响应时间及状态，检测气源系统异常", lru: "HPV, PRSOV", version: "v1.8", updatedAt: "2024-01-08", status: "active", selectedParameters: ["N1_1", "N1_2", "FF_1", "FF_2"] },
+  { id: 3, name: "PRSOV开关响应", ataChapter: "36", coreParameters: 10, description: "监控引气预冷器出口活门响应，评估活门健康状态", lru: "PRSOV, FAV", version: "v2.0", updatedAt: "2024-01-05", status: "active", selectedParameters: ["N2_1", "N2_2", "OIP_1", "OIT_1"] },
+  { id: 4, name: "刹车温度不一致", ataChapter: "32", coreParameters: 16, description: "监控各轮刹车温度差异，识别刹车磨损不均或传感器故障", lru: "BSCU, 刹车组件", version: "v1.5", updatedAt: "2024-01-03", status: "active", selectedParameters: ["ALT", "IAS", "MACH"] },
 ];
 
 // 存储数据
@@ -199,6 +218,19 @@ export default function DataManagementPage() {
   const [syncDialogOpen, setSyncDialogOpen] = useState(false);
   const [syncInfo, setSyncInfo] = useState<{parameterId: number; mnemonic: string; affectedAirlines: string[]}>({ parameterId: 0, mnemonic: "", affectedAirlines: [] });
 
+  // 模板编辑状态
+  const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
+  const [templates, setTemplates] = useState<TemplateConfig[]>(initialTemplateData);
+  const [editingTemplate, setEditingTemplate] = useState<TemplateConfig | null>(null);
+  const [templateForm, setTemplateForm] = useState({
+    name: "",
+    ataChapter: "",
+    description: "",
+    lru: "",
+    selectedParameters: [] as string[]
+  });
+  const [parameterSearchTerm, setParameterSearchTerm] = useState("");
+
   const isPrimaryTab = primaryTabs.some(t => t.id === activeTab);
 
   const getStatusBadge = (status: string) => {
@@ -305,6 +337,87 @@ export default function DataManagementPage() {
     param.mnemonic.toLowerCase().includes(searchTerm.toLowerCase()) ||
     param.portName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     param.customName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // 打开新增模板对话框
+  const openNewTemplateDialog = () => {
+    setEditingTemplate(null);
+    setTemplateForm({
+      name: "",
+      ataChapter: "",
+      description: "",
+      lru: "",
+      selectedParameters: []
+    });
+    setParameterSearchTerm("");
+    setTemplateDialogOpen(true);
+  };
+
+  // 打开编辑模板对话框
+  const openEditTemplateDialog = (template: TemplateConfig) => {
+    setEditingTemplate(template);
+    setTemplateForm({
+      name: template.name,
+      ataChapter: template.ataChapter,
+      description: template.description,
+      lru: template.lru,
+      selectedParameters: [...template.selectedParameters]
+    });
+    setParameterSearchTerm("");
+    setTemplateDialogOpen(true);
+  };
+
+  // 保存模板
+  const saveTemplate = () => {
+    if (editingTemplate) {
+      // 编辑现有模板
+      setTemplates(prev => prev.map(t => 
+        t.id === editingTemplate.id 
+          ? {
+              ...t,
+              name: templateForm.name,
+              ataChapter: templateForm.ataChapter,
+              description: templateForm.description,
+              lru: templateForm.lru,
+              selectedParameters: templateForm.selectedParameters,
+              coreParameters: templateForm.selectedParameters.length,
+              updatedAt: new Date().toISOString().split('T')[0]
+            }
+          : t
+      ));
+    } else {
+      // 新增模板
+      const newTemplate: TemplateConfig = {
+        id: Math.max(...templates.map(t => t.id)) + 1,
+        name: templateForm.name,
+        ataChapter: templateForm.ataChapter,
+        description: templateForm.description,
+        lru: templateForm.lru,
+        selectedParameters: templateForm.selectedParameters,
+        coreParameters: templateForm.selectedParameters.length,
+        version: "v1.0",
+        updatedAt: new Date().toISOString().split('T')[0],
+        status: "active"
+      };
+      setTemplates(prev => [...prev, newTemplate]);
+    }
+    setTemplateDialogOpen(false);
+  };
+
+  // 切换参数选择
+  const toggleParameterSelection = (mnemonic: string) => {
+    setTemplateForm(prev => ({
+      ...prev,
+      selectedParameters: prev.selectedParameters.includes(mnemonic)
+        ? prev.selectedParameters.filter(p => p !== mnemonic)
+        : [...prev.selectedParameters, mnemonic]
+    }));
+  };
+
+  // 过滤参数列表用于模板选择
+  const filteredParametersForTemplate = baseParameterData.filter(param =>
+    param.mnemonic.toLowerCase().includes(parameterSearchTerm.toLowerCase()) ||
+    param.portName.toLowerCase().includes(parameterSearchTerm.toLowerCase())
   );
 
   return (
@@ -547,7 +660,7 @@ export default function DataManagementPage() {
               </div>
             </CardHeader>
             <CardContent className="p-4">
-              {/* 存储概览 */}
+              {/* 存储��览 */}
               <div className="grid grid-cols-4 gap-4 mb-4">
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                   <div className="text-2xl font-semibold text-blue-700">12.5 TB</div>
@@ -793,7 +906,7 @@ export default function DataManagementPage() {
                       className="pl-8 h-8 w-[200px]"
                     />
                   </div>
-                  <Button size="sm" className="gap-1">
+                  <Button size="sm" className="gap-1" onClick={openNewTemplateDialog}>
                     <Plus className="h-4 w-4" />
                     新增模板
                   </Button>
@@ -816,7 +929,7 @@ export default function DataManagementPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {templateData.map((item) => (
+                  {templates.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell className="font-medium">{item.name}</TableCell>
                       <TableCell>
@@ -847,7 +960,7 @@ export default function DataManagementPage() {
                           <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
                             <Eye className="h-3.5 w-3.5" />
                           </Button>
-                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => openEditTemplateDialog(item)}>
                             <Edit className="h-3.5 w-3.5" />
                           </Button>
                         </div>
@@ -962,6 +1075,155 @@ export default function DataManagementPage() {
             </Button>
             <Button onClick={() => doSave(syncInfo.parameterId, syncInfo.mnemonic, true)}>
               同步到所有航司
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* 模板编辑对话框 */}
+      <Dialog open={templateDialogOpen} onOpenChange={setTemplateDialogOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle>{editingTemplate ? "编辑模板" : "新增模板"}</DialogTitle>
+            <DialogDescription>
+              配置模板基本信息并选择核心参数
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="flex-1 overflow-y-auto py-4 space-y-6">
+            {/* 基本信息 */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="template-name">模板名称</Label>
+                <Input
+                  id="template-name"
+                  value={templateForm.name}
+                  onChange={(e) => setTemplateForm(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="例如：APU EGT超温"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="template-ata">ATA章节</Label>
+                <Input
+                  id="template-ata"
+                  value={templateForm.ataChapter}
+                  onChange={(e) => setTemplateForm(prev => ({ ...prev, ataChapter: e.target.value }))}
+                  placeholder="例如：49"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="template-lru">LRU（涉及部件）</Label>
+              <Input
+                id="template-lru"
+                value={templateForm.lru}
+                onChange={(e) => setTemplateForm(prev => ({ ...prev, lru: e.target.value }))}
+                placeholder="例如：APU, EGT传感器（多个用逗号分隔）"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="template-description">模板描述</Label>
+              <Textarea
+                id="template-description"
+                value={templateForm.description}
+                onChange={(e) => setTemplateForm(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="描述模板的用途和监控目标..."
+                rows={3}
+              />
+            </div>
+
+            {/* 核心参数选择 */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label>核心参数配置</Label>
+                <Badge variant="outline" className="bg-emerald-50 text-emerald-600">
+                  已选择 {templateForm.selectedParameters.length} 个参数
+                </Badge>
+              </div>
+              
+              {/* 搜索框 */}
+              <div className="relative">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="搜索参数 MNEMONIC 或 PORT NAME..."
+                  value={parameterSearchTerm}
+                  onChange={(e) => setParameterSearchTerm(e.target.value)}
+                  className="pl-8"
+                />
+              </div>
+
+              {/* 已选参数标签 */}
+              {templateForm.selectedParameters.length > 0 && (
+                <div className="flex flex-wrap gap-2 p-3 bg-muted/50 rounded-lg">
+                  {templateForm.selectedParameters.map((mnemonic) => (
+                    <Badge
+                      key={mnemonic}
+                      variant="secondary"
+                      className="gap-1 cursor-pointer hover:bg-destructive/10 hover:text-destructive"
+                      onClick={() => toggleParameterSelection(mnemonic)}
+                    >
+                      {mnemonic}
+                      <X className="h-3 w-3" />
+                    </Badge>
+                  ))}
+                </div>
+              )}
+
+              {/* 参数列表 */}
+              <ScrollArea className="h-[280px] border rounded-lg">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[50px] sticky top-0 bg-background">选择</TableHead>
+                      <TableHead className="w-[100px] sticky top-0 bg-background">MNEMONIC</TableHead>
+                      <TableHead className="w-[140px] sticky top-0 bg-background">PORT NAME</TableHead>
+                      <TableHead className="w-[100px] sticky top-0 bg-background">信号类型</TableHead>
+                      <TableHead className="w-[80px] sticky top-0 bg-background">单位</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredParametersForTemplate.map((param) => (
+                      <TableRow
+                        key={param.id}
+                        className={`cursor-pointer hover:bg-muted/50 ${
+                          templateForm.selectedParameters.includes(param.mnemonic) ? "bg-primary/5" : ""
+                        }`}
+                        onClick={() => toggleParameterSelection(param.mnemonic)}
+                      >
+                        <TableCell>
+                          <Checkbox
+                            checked={templateForm.selectedParameters.includes(param.mnemonic)}
+                            onCheckedChange={() => toggleParameterSelection(param.mnemonic)}
+                          />
+                        </TableCell>
+                        <TableCell className="font-mono text-sm font-medium">{param.mnemonic}</TableCell>
+                        <TableCell className="font-mono text-xs text-muted-foreground">{param.portName}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className="text-xs">
+                            {param.signalType}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">{param.unit || "-"}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </ScrollArea>
+            </div>
+          </div>
+
+          <DialogFooter className="border-t pt-4">
+            <Button variant="outline" onClick={() => setTemplateDialogOpen(false)}>
+              取消
+            </Button>
+            <Button 
+              onClick={saveTemplate}
+              disabled={!templateForm.name || !templateForm.ataChapter || templateForm.selectedParameters.length === 0}
+            >
+              <Save className="h-4 w-4 mr-2" />
+              保存模板
             </Button>
           </DialogFooter>
         </DialogContent>
