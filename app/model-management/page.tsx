@@ -106,7 +106,7 @@ const modelData: ModelData[] = [
       { name: "warning_level", type: "float", description: "预警等级阈值", required: false },
     ],
     applicabilityDetail: [
-      { airline: "幸福航空", airlineCode: "UEA", enabled: true },
+      { airline: "成都航空", airlineCode: "UEA", enabled: true },
       { airline: "东方航空", airlineCode: "CES", enabled: true },
       { airline: "南方航空", airlineCode: "CSN", enabled: false },
     ],
@@ -134,7 +134,7 @@ const modelData: ModelData[] = [
       { name: "stuck_threshold", type: "float", description: "卡滞判定阈值", required: true },
     ],
     applicabilityDetail: [
-      { airline: "幸福航空", airlineCode: "UEA", enabled: true },
+      { airline: "成都航空", airlineCode: "UEA", enabled: true },
       { airline: "东方航空", airlineCode: "CES", enabled: true },
     ],
     parameterMapping: [
@@ -160,7 +160,7 @@ const modelData: ModelData[] = [
       { name: "anomaly_threshold", type: "float", description: "异常检测阈值", required: true },
     ],
     applicabilityDetail: [
-      { airline: "幸福航空", airlineCode: "UEA", enabled: true },
+      { airline: "成都航空", airlineCode: "UEA", enabled: true },
     ],
     parameterMapping: [
       { modelParam: "PRSOV_STATE", wqarParam: "PRSOV_STATUS", transformation: "状态编码" },
@@ -185,7 +185,7 @@ const modelData: ModelData[] = [
       { name: "trend_sensitivity", type: "float", description: "趋势敏感度", required: false },
     ],
     applicabilityDetail: [
-      { airline: "幸福航空", airlineCode: "UEA", enabled: true },
+      { airline: "成都航空", airlineCode: "UEA", enabled: true },
       { airline: "东方航空", airlineCode: "CES", enabled: true },
       { airline: "南方航空", airlineCode: "CSN", enabled: true },
     ],
@@ -212,7 +212,7 @@ const modelData: ModelData[] = [
       { name: "freq_bands", type: "array", description: "监控频段范围", required: true },
     ],
     applicabilityDetail: [
-      { airline: "幸福航空", airlineCode: "UEA", enabled: true },
+      { airline: "成都航空", airlineCode: "UEA", enabled: true },
       { airline: "东方航空", airlineCode: "CES", enabled: true },
     ],
     parameterMapping: [
@@ -238,7 +238,7 @@ const modelData: ModelData[] = [
       { name: "pressure_drop_threshold", type: "float", description: "压降阈值(psi)", required: true },
     ],
     applicabilityDetail: [
-      { airline: "幸福航空", airlineCode: "UEA", enabled: true },
+      { airline: "成都航空", airlineCode: "UEA", enabled: true },
     ],
     parameterMapping: [
       { modelParam: "HYD_QTY", wqarParam: "HYD_FLUID_QTY", transformation: "直接映射" },
@@ -263,7 +263,7 @@ const modelData: ModelData[] = [
       { name: "degradation_rate", type: "float", description: "衰退率阈值", required: false },
     ],
     applicabilityDetail: [
-      { airline: "幸福航空", airlineCode: "UEA", enabled: true },
+      { airline: "成都航空", airlineCode: "UEA", enabled: true },
       { airline: "东方航空", airlineCode: "CES", enabled: true },
       { airline: "南方航空", airlineCode: "CSN", enabled: true },
     ],
@@ -311,7 +311,7 @@ const modelData: ModelData[] = [
       { name: "position_error", type: "float", description: "位置误差阈值(deg)", required: true },
     ],
     applicabilityDetail: [
-      { airline: "幸福航空", airlineCode: "UEA", enabled: true },
+      { airline: "成都航空", airlineCode: "UEA", enabled: true },
       { airline: "东方航空", airlineCode: "CES", enabled: true },
     ],
     parameterMapping: [
@@ -358,7 +358,7 @@ const modelData: ModelData[] = [
       { name: "extend_time_limit", type: "int", description: "放下时间限制(s)", required: true },
     ],
     applicabilityDetail: [
-      { airline: "幸福航空", airlineCode: "UEA", enabled: true },
+      { airline: "成都航空", airlineCode: "UEA", enabled: true },
       { airline: "东方航空", airlineCode: "CES", enabled: true },
       { airline: "南方航空", airlineCode: "CSN", enabled: true },
     ],
@@ -385,7 +385,7 @@ const modelData: ModelData[] = [
       { name: "overload_threshold", type: "float", description: "过载阈值(kW)", required: true },
     ],
     applicabilityDetail: [
-      { airline: "幸福航空", airlineCode: "UEA", enabled: true },
+      { airline: "成都航空", airlineCode: "UEA", enabled: true },
     ],
     parameterMapping: [
       { modelParam: "GEN_LOAD", wqarParam: "GEN_POWER_OUT", transformation: "直接映射" },

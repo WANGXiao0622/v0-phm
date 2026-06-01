@@ -49,7 +49,7 @@ const myTemplates = [
 // 我的参数配置数据
 const myParameterConfigs = [
   { id: 1, version: "311A-ARJ-B01-01", name: "基本版本", configuredParams: 45, lastModified: "2024-01-10" },
-  { id: 2, version: "311E-CUH-B01-01", name: "幸福航空", configuredParams: 52, lastModified: "2024-01-12" },
+  { id: 2, version: "311E-CUH-B01-01", name: "成都航空", configuredParams: 52, lastModified: "2024-01-12" },
   { id: 3, version: "3115-CES-B01-01", name: "东航", configuredParams: 48, lastModified: "2024-01-08" },
 ];
 

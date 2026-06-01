@@ -195,11 +195,11 @@ interface ParameterVersion {
 
 const parameterVersions: ParameterVersion[] = [
   { id: "base", code: "311A-ARJ-B01-01", airline: "ARJ", airlineName: "基本版本", isBase: true },
-  { id: "cuh", code: "311E-CUH-B01-01", airline: "CUH", airlineName: "幸福航空", isBase: false },
+  { id: "cuh", code: "311E-CUH-B01-01", airline: "CUH", airlineName: "成都航空", isBase: false },
   { id: "ces", code: "3115-CES-B01-01", airline: "CES", airlineName: "中国东方航空", isBase: false },
   { id: "csc", code: "311F-CSC-B01-01", airline: "CSC", airlineName: "中国南方航空", isBase: false },
   { id: "cca", code: "311G-CCA-B01-01", airline: "CCA", airlineName: "中国国际航空", isBase: false },
-  { id: "ckk", code: "311H-CKK-B01-01", airline: "CKK", airlineName: "中国货运航空", isBase: false },
+  { id: "ckk", code: "311H-CKK-B01-01", airline: "CKK", airlineName: "中国货���航空", isBase: false },
 ];
 
 // 参数配置数据类型
@@ -1285,7 +1285,7 @@ export default function DataManagementPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[180px]">表��</TableHead>
+                    <TableHead className="w-[180px]">����</TableHead>
                     <TableHead className="w-[160px]">显示名称</TableHead>
                     <TableHead>描述</TableHead>
                     <TableHead className="w-[100px]">记录数</TableHead>
