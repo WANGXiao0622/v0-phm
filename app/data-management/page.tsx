@@ -216,21 +216,21 @@ interface ParameterConfig {
 
 // 基本参数配置数据 - 所有航司共享的基础数据
 const baseParameterData: ParameterConfig[] = [
-  { id: 1, parameterAssignment: "001", mnemonic: "N1_1", portName: "ENG1_N1", signalType: "ANALOG", unit: "%", customName: "", customDescription: "", ataChapter: "" },
-  { id: 2, parameterAssignment: "002", mnemonic: "N2_1", portName: "ENG1_N2", signalType: "ANALOG", unit: "%", customName: "", customDescription: "", ataChapter: "" },
-  { id: 3, parameterAssignment: "003", mnemonic: "EGT_1", portName: "ENG1_EGT", signalType: "ANALOG", unit: "°C", customName: "", customDescription: "", ataChapter: "" },
-  { id: 4, parameterAssignment: "004", mnemonic: "FF_1", portName: "ENG1_FF", signalType: "ANALOG", unit: "kg/h", customName: "", customDescription: "", ataChapter: "" },
-  { id: 5, parameterAssignment: "005", mnemonic: "OIP_1", portName: "ENG1_OIL_PRESS", signalType: "ANALOG", unit: "PSI", customName: "", customDescription: "", ataChapter: "" },
-  { id: 6, parameterAssignment: "006", mnemonic: "OIT_1", portName: "ENG1_OIL_TEMP", signalType: "ANALOG", unit: "°C", customName: "", customDescription: "", ataChapter: "" },
-  { id: 7, parameterAssignment: "007", mnemonic: "VIB_N1_1", portName: "ENG1_VIB_N1", signalType: "ANALOG", unit: "mil", customName: "", customDescription: "", ataChapter: "" },
-  { id: 8, parameterAssignment: "008", mnemonic: "VIB_N2_1", portName: "ENG1_VIB_N2", signalType: "ANALOG", unit: "mil", customName: "", customDescription: "", ataChapter: "" },
-  { id: 9, parameterAssignment: "009", mnemonic: "N1_2", portName: "ENG2_N1", signalType: "ANALOG", unit: "%", customName: "", customDescription: "", ataChapter: "" },
-  { id: 10, parameterAssignment: "010", mnemonic: "N2_2", portName: "ENG2_N2", signalType: "ANALOG", unit: "%", customName: "", customDescription: "", ataChapter: "" },
-  { id: 11, parameterAssignment: "011", mnemonic: "EGT_2", portName: "ENG2_EGT", signalType: "ANALOG", unit: "°C", customName: "", customDescription: "", ataChapter: "" },
-  { id: 12, parameterAssignment: "012", mnemonic: "FF_2", portName: "ENG2_FF", signalType: "ANALOG", unit: "kg/h", customName: "", customDescription: "", ataChapter: "" },
-  { id: 13, parameterAssignment: "013", mnemonic: "ALT", portName: "ALTITUDE", signalType: "DIGITAL", unit: "ft", customName: "", customDescription: "", ataChapter: "" },
-  { id: 14, parameterAssignment: "014", mnemonic: "IAS", portName: "IND_AIRSPEED", signalType: "DIGITAL", unit: "kts", customName: "", customDescription: "", ataChapter: "" },
-  { id: 15, parameterAssignment: "015", mnemonic: "MACH", portName: "MACH_NUMBER", signalType: "DIGITAL", unit: "", customName: "", customDescription: "", ataChapter: "" },
+  { id: 1, parameterAssignment: "001", mnemonic: "N1_1", portName: "ENG1_N1", signalType: "BNR", unit: "%", customName: "", customDescription: "", ataChapter: "" },
+  { id: 2, parameterAssignment: "002", mnemonic: "N2_1", portName: "ENG1_N2", signalType: "BNR", unit: "%", customName: "", customDescription: "", ataChapter: "" },
+  { id: 3, parameterAssignment: "003", mnemonic: "EGT_1", portName: "ENG1_EGT", signalType: "BNR", unit: "°C", customName: "", customDescription: "", ataChapter: "" },
+  { id: 4, parameterAssignment: "004", mnemonic: "FF_1", portName: "ENG1_FF", signalType: "BNR", unit: "kg/h", customName: "", customDescription: "", ataChapter: "" },
+  { id: 5, parameterAssignment: "005", mnemonic: "OIP_1", portName: "ENG1_OIL_PRESS", signalType: "BNR", unit: "PSI", customName: "", customDescription: "", ataChapter: "" },
+  { id: 6, parameterAssignment: "006", mnemonic: "OIT_1", portName: "ENG1_OIL_TEMP", signalType: "BNR", unit: "°C", customName: "", customDescription: "", ataChapter: "" },
+  { id: 7, parameterAssignment: "007", mnemonic: "VIB_N1_1", portName: "ENG1_VIB_N1", signalType: "BNR", unit: "mil", customName: "", customDescription: "", ataChapter: "" },
+  { id: 8, parameterAssignment: "008", mnemonic: "VIB_N2_1", portName: "ENG1_VIB_N2", signalType: "BNR", unit: "mil", customName: "", customDescription: "", ataChapter: "" },
+  { id: 9, parameterAssignment: "009", mnemonic: "N1_2", portName: "ENG2_N1", signalType: "BNR", unit: "%", customName: "", customDescription: "", ataChapter: "" },
+  { id: 10, parameterAssignment: "010", mnemonic: "N2_2", portName: "ENG2_N2", signalType: "BNR", unit: "%", customName: "", customDescription: "", ataChapter: "" },
+  { id: 11, parameterAssignment: "011", mnemonic: "EGT_2", portName: "ENG2_EGT", signalType: "BNR", unit: "°C", customName: "", customDescription: "", ataChapter: "" },
+  { id: 12, parameterAssignment: "012", mnemonic: "FF_2", portName: "ENG2_FF", signalType: "BNR", unit: "kg/h", customName: "", customDescription: "", ataChapter: "" },
+  { id: 13, parameterAssignment: "013", mnemonic: "ALT", portName: "ALTITUDE", signalType: "DIS", unit: "ft", customName: "", customDescription: "", ataChapter: "" },
+  { id: 14, parameterAssignment: "014", mnemonic: "IAS", portName: "IND_AIRSPEED", signalType: "DIS", unit: "kts", customName: "", customDescription: "", ataChapter: "" },
+  { id: 15, parameterAssignment: "015", mnemonic: "MACH", portName: "MACH_NUMBER", signalType: "INT", unit: "", customName: "", customDescription: "", ataChapter: "" },
 ];
 
 // 各航司的自定义配置数据
@@ -1084,9 +1084,13 @@ export default function DataManagementPage() {
                         <TableCell className="font-mono text-xs font-medium">{param.mnemonic}</TableCell>
                         <TableCell className="font-mono text-xs text-muted-foreground">{param.portName}</TableCell>
                         <TableCell>
-                          <Badge variant="outline" className={param.signalType === "ANALOG" ? "bg-amber-50 text-amber-600" : "bg-sky-50 text-sky-600"}>
-                            {param.signalType}
-                          </Badge>
+<Badge variant="outline" className={
+                                  param.signalType === "BNR" ? "bg-amber-50 text-amber-600" : 
+                                  param.signalType === "DIS" ? "bg-sky-50 text-sky-600" : 
+                                  "bg-purple-50 text-purple-600"
+                                }>
+                                  {param.signalType}
+                                </Badge>
                         </TableCell>
                         <TableCell className="text-xs">{param.unit || "-"}</TableCell>
                         <TableCell className="w-[1px] bg-primary/10 p-0"></TableCell>
@@ -1277,7 +1281,7 @@ export default function DataManagementPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-[180px]">����</TableHead>
-                    <TableHead className="w-[160px]">显示名称</TableHead>
+                    <TableHead className="w-[160px]">��示名称</TableHead>
                     <TableHead>描述</TableHead>
                     <TableHead className="w-[100px]">记录数</TableHead>
                     <TableHead className="w-[80px]">字段数</TableHead>
@@ -1905,7 +1909,7 @@ export default function DataManagementPage() {
               {/* 筛选区域 */}
               <div className="flex flex-wrap gap-3 p-4 bg-muted/30 rounded-lg border">
                 <div className="flex items-center gap-2">
-                  <Label className="text-sm text-muted-foreground whitespace-nowrap">筛选方式:</Label>
+                  <Label className="text-sm text-muted-foreground whitespace-nowrap">筛选���式:</Label>
                   <Select value={parameterFilterType} onValueChange={(v: typeof parameterFilterType) => setParameterFilterType(v)}>
                     <SelectTrigger className="w-[140px] h-8">
                       <SelectValue />
