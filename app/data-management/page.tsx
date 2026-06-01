@@ -1242,17 +1242,17 @@ export default function DataManagementPage() {
               {/* 参数列表 */}
               <div className="border rounded-lg overflow-hidden">
                 <ScrollArea className="h-[380px]">
-                  <Table>
+                  <Table className="w-full table-fixed">
                     <TableHeader>
                       <TableRow className="bg-muted/50">
-                        <TableHead className="w-[50px] sticky top-0 bg-muted/50">选择</TableHead>
-                        <TableHead className="w-[120px] sticky top-0 bg-muted/50">MNEMONIC</TableHead>
-                        <TableHead className="w-[160px] sticky top-0 bg-muted/50">PORT NAME</TableHead>
-                        <TableHead className="w-[100px] sticky top-0 bg-muted/50">信号类型</TableHead>
-                        <TableHead className="w-[80px] sticky top-0 bg-muted/50">单位</TableHead>
-                        <TableHead className="w-[120px] sticky top-0 bg-muted/50 text-blue-600">参数名</TableHead>
-                        <TableHead className="w-[180px] sticky top-0 bg-muted/50 text-blue-600">参数释义</TableHead>
-                        <TableHead className="w-[80px] sticky top-0 bg-muted/50 text-blue-600">ATA章节</TableHead>
+                        <TableHead className="w-[60px] sticky top-0 bg-muted/50">选择</TableHead>
+                        <TableHead className="w-[12%] sticky top-0 bg-muted/50">MNEMONIC</TableHead>
+                        <TableHead className="w-[18%] sticky top-0 bg-muted/50">PORT NAME</TableHead>
+                        <TableHead className="w-[10%] sticky top-0 bg-muted/50">信号类型</TableHead>
+                        <TableHead className="w-[8%] sticky top-0 bg-muted/50">单位</TableHead>
+                        <TableHead className="w-[14%] sticky top-0 bg-muted/50 text-blue-600">参数名</TableHead>
+                        <TableHead className="w-[26%] sticky top-0 bg-muted/50 text-blue-600">参数释义</TableHead>
+                        <TableHead className="w-[8%] sticky top-0 bg-muted/50 text-blue-600">ATA章节</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -1285,8 +1285,8 @@ export default function DataManagementPage() {
                               </Badge>
                             </TableCell>
                             <TableCell className="text-muted-foreground">{param.unit || "-"}</TableCell>
-                            <TableCell className="text-blue-600 font-medium">{param.customName || "-"}</TableCell>
-                            <TableCell className="text-sm text-muted-foreground max-w-[180px] truncate" title={param.customDescription}>
+                            <TableCell className="text-blue-600 font-medium truncate">{param.customName || "-"}</TableCell>
+                            <TableCell className="text-sm text-muted-foreground truncate" title={param.customDescription}>
                               {param.customDescription || "-"}
                             </TableCell>
                             <TableCell>
