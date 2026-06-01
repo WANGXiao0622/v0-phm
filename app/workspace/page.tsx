@@ -98,7 +98,7 @@ const modelTasks = [
   {
     id: "M2024001",
     type: "model" as const,
-    title: "发动机性能基线建立",
+    title: "完成PRSOV故障诊断模型航线故障统计与参数确认",
     source: "C919",
     deadline: "2024-02-15",
     status: "processing",
@@ -106,7 +106,7 @@ const modelTasks = [
   {
     id: "M2024002",
     type: "model" as const,
-    title: "APU启动特性分析",
+    title: "完成HPV故障诊断模型原理与模型可行性分析",
     source: "C909",
     deadline: "2024-02-20",
     status: "pending",
@@ -114,7 +114,7 @@ const modelTasks = [
   {
     id: "M2024003",
     type: "model" as const,
-    title: "航线数据质量评估",
+    title: "完成HPV故障诊断模型开发与部署",
     source: "运行支持",
     deadline: "2024-01-30",
     status: "completed",
@@ -122,7 +122,7 @@ const modelTasks = [
   {
     id: "M2024004",
     type: "model" as const,
-    title: "预测性维护算法验证",
+    title: "完成C919健康管理模型验证流程梳理",
     source: "创新平台",
     deadline: "2024-03-01",
     status: "processing",
@@ -130,7 +130,7 @@ const modelTasks = [
   {
     id: "M2024005",
     type: "model" as const,
-    title: "测试数据格式转换工具",
+    title: "完成C919健康管理模型验证评审要求",
     source: "其它",
     deadline: "2024-02-10",
     status: "pending",
@@ -142,7 +142,7 @@ const otherTasks = [
   {
     id: "O2024001",
     type: "other" as const,
-    title: "整理2023年度故障分析报告汇总",
+    title: "完成本月模型开发进展汇报ppt",
     time: "2024-01-16",
     delivery: "PPT报告",
     status: "processing",
@@ -150,25 +150,25 @@ const otherTasks = [
   {
     id: "O2024002",
     type: "other" as const,
-    title: "参加部门技术交流会议",
+    title: "完成健康管理与性能监控平台需求分析报告",
     time: "2024-01-18",
-    delivery: "会议纪要",
+    delivery: "Word文档",
     status: "pending",
   },
   {
     id: "O2024003",
     type: "other" as const,
-    title: "新员工培训材料准备",
+    title: "完成健康管理与性能监控平台技术报告",
     time: "2024-01-10",
-    delivery: "培训文档",
+    delivery: "Word文档",
     status: "completed",
   },
   {
     id: "O2024004",
     type: "other" as const,
-    title: "系统使用手册更新",
+    title: "完成健康管理与性能监控平台原型开发",
     time: "2024-01-20",
-    delivery: "Word文档",
+    delivery: "系统原型",
     status: "pending",
   },
 ];
