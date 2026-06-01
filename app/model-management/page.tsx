@@ -25,6 +25,7 @@ import {
   Wrench,
   ArrowLeft,
   X,
+  Save,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -48,10 +49,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Textarea } from "@/components/ui/textarea";
 
 // ATA章节分类
 const ataChapters = [
@@ -436,9 +439,12 @@ export default function ModelManagementPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedModel, setSelectedModel] = useState<ModelData | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editFormData, setEditFormData] = useState<ModelData | null>(null);
+  const [models, setModels] = useState<ModelData[]>(modelData);
 
   // 筛选模型数据
-  const filteredModels = modelData.filter((model) => {
+  const filteredModels = models.filter((model) => {
     // ATA筛选
     if (selectedAta !== "all" && model.ataChapter !== selectedAta) {
       return false;
@@ -462,7 +468,37 @@ export default function ModelManagementPage() {
   // 打开模型详情
   const openModelDetail = (model: ModelData) => {
     setSelectedModel(model);
+    setEditFormData(model);
+    setIsEditing(false);
     setDetailDialogOpen(true);
+  };
+
+  // 开始编辑
+  const startEditing = () => {
+    setEditFormData(selectedModel);
+    setIsEditing(true);
+  };
+
+  // 取消编辑
+  const cancelEditing = () => {
+    setEditFormData(selectedModel);
+    setIsEditing(false);
+  };
+
+  // 保存编辑
+  const saveEditing = () => {
+    if (editFormData) {
+      setModels(prev => prev.map(m => m.id === editFormData.id ? editFormData : m));
+      setSelectedModel(editFormData);
+      setIsEditing(false);
+    }
+  };
+
+  // 更新表单数据
+  const updateFormField = (field: keyof ModelData, value: string) => {
+    if (editFormData) {
+      setEditFormData({ ...editFormData, [field]: value });
+    }
   };
 
   return (
@@ -622,27 +658,18 @@ export default function ModelManagementPage() {
                           </TableCell>
                           <TableCell>{getStatusBadge(model.status)}</TableCell>
                           <TableCell>
-                            <div className="flex items-center gap-1">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-7 w-7 p-0"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  openModelDetail(model);
-                                }}
-                              >
-                                <Eye className="h-3.5 w-3.5" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-7 w-7 p-0"
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <Edit className="h-3.5 w-3.5" />
-                              </Button>
-                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 w-7 p-0"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openModelDetail(model);
+                              }}
+                              title="查看详情"
+                            >
+                              <Eye className="h-3.5 w-3.5" />
+                            </Button>
                           </TableCell>
                         </TableRow>
                       ))
@@ -656,22 +683,44 @@ export default function ModelManagementPage() {
       </main>
 
       {/* 模型详情对话框 */}
-      <Dialog open={detailDialogOpen} onOpenChange={setDetailDialogOpen}>
+      <Dialog open={detailDialogOpen} onOpenChange={(open) => {
+        setDetailDialogOpen(open);
+        if (!open) {
+          setIsEditing(false);
+        }
+      }}>
         <DialogContent className="!max-w-[1000px] w-[90vw] h-[85vh] overflow-hidden flex flex-col">
           <DialogHeader className="border-b pb-4">
             <div className="flex items-center justify-between">
               <div>
                 <DialogTitle className="text-lg flex items-center gap-2">
                   <Cpu className="h-5 w-5 text-primary" />
-                  {selectedModel?.name}
+                  {isEditing ? "编辑模型" : selectedModel?.name}
                 </DialogTitle>
                 <DialogDescription className="mt-1">
-                  {selectedModel?.description}
+                  {isEditing ? "修改模型配置信息" : selectedModel?.description}
                 </DialogDescription>
               </div>
               <div className="flex items-center gap-2">
-                {selectedModel && getStatusBadge(selectedModel.status)}
-                <Badge variant="outline">{selectedModel?.version}</Badge>
+                {!isEditing && selectedModel && getStatusBadge(selectedModel.status)}
+                {!isEditing && <Badge variant="outline">{selectedModel?.version}</Badge>}
+                {isEditing ? (
+                  <>
+                    <Button variant="outline" size="sm" onClick={cancelEditing} className="gap-1">
+                      <X className="h-4 w-4" />
+                      取消
+                    </Button>
+                    <Button size="sm" onClick={saveEditing} className="gap-1">
+                      <Save className="h-4 w-4" />
+                      保存
+                    </Button>
+                  </>
+                ) : (
+                  <Button variant="outline" size="sm" onClick={startEditing} className="gap-1">
+                    <Edit className="h-4 w-4" />
+                    编辑
+                  </Button>
+                )}
               </div>
             </div>
           </DialogHeader>
@@ -703,39 +752,95 @@ export default function ModelManagementPage() {
                     <div className="space-y-4">
                       <div className="p-4 bg-muted/30 rounded-lg border">
                         <Label className="text-muted-foreground text-xs">模型名称</Label>
-                        <p className="font-medium mt-1">{selectedModel?.name}</p>
+                        {isEditing ? (
+                          <Input 
+                            value={editFormData?.name || ""} 
+                            onChange={(e) => updateFormField("name", e.target.value)}
+                            className="mt-1"
+                          />
+                        ) : (
+                          <p className="font-medium mt-1">{selectedModel?.name}</p>
+                        )}
                       </div>
                       <div className="p-4 bg-muted/30 rounded-lg border">
                         <Label className="text-muted-foreground text-xs">ATA章节</Label>
-                        <p className="font-medium mt-1">ATA {selectedModel?.ataChapter} - {selectedModel?.ataName}</p>
+                        {isEditing ? (
+                          <div className="grid grid-cols-2 gap-2 mt-1">
+                            <Input 
+                              value={editFormData?.ataChapter || ""} 
+                              onChange={(e) => updateFormField("ataChapter", e.target.value)}
+                              placeholder="章节号"
+                            />
+                            <Input 
+                              value={editFormData?.ataName || ""} 
+                              onChange={(e) => updateFormField("ataName", e.target.value)}
+                              placeholder="章节名称"
+                            />
+                          </div>
+                        ) : (
+                          <p className="font-medium mt-1">ATA {selectedModel?.ataChapter} - {selectedModel?.ataName}</p>
+                        )}
                       </div>
                       <div className="p-4 bg-muted/30 rounded-lg border">
                         <Label className="text-muted-foreground text-xs">LRU部件</Label>
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          {selectedModel?.lru.split(", ").map((part, idx) => (
-                            <Badge key={idx} variant="outline" className="bg-amber-50 text-amber-700">
-                              <Wrench className="h-3 w-3 mr-1" />
-                              {part}
-                            </Badge>
-                          ))}
-                        </div>
+                        {isEditing ? (
+                          <Input 
+                            value={editFormData?.lru || ""} 
+                            onChange={(e) => updateFormField("lru", e.target.value)}
+                            className="mt-1"
+                            placeholder="多个部件用逗号分隔"
+                          />
+                        ) : (
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            {selectedModel?.lru.split(", ").map((part, idx) => (
+                              <Badge key={idx} variant="outline" className="bg-amber-50 text-amber-700">
+                                <Wrench className="h-3 w-3 mr-1" />
+                                {part}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className="space-y-4">
                       <div className="p-4 bg-muted/30 rounded-lg border">
                         <Label className="text-muted-foreground text-xs">版本信息</Label>
-                        <p className="font-medium mt-1 flex items-center gap-2">
-                          <GitBranch className="h-4 w-4" />
-                          {selectedModel?.version}
-                        </p>
+                        {isEditing ? (
+                          <Input 
+                            value={editFormData?.version || ""} 
+                            onChange={(e) => updateFormField("version", e.target.value)}
+                            className="mt-1"
+                          />
+                        ) : (
+                          <p className="font-medium mt-1 flex items-center gap-2">
+                            <GitBranch className="h-4 w-4" />
+                            {selectedModel?.version}
+                          </p>
+                        )}
                       </div>
                       <div className="p-4 bg-muted/30 rounded-lg border">
                         <Label className="text-muted-foreground text-xs">适用机型</Label>
-                        <p className="font-medium mt-1">
-                          <Badge variant="outline" className="bg-purple-50 text-purple-600">
-                            {selectedModel?.aircraftType}
-                          </Badge>
-                        </p>
+                        {isEditing ? (
+                          <Select 
+                            value={editFormData?.aircraftType || ""} 
+                            onValueChange={(value) => updateFormField("aircraftType", value)}
+                          >
+                            <SelectTrigger className="mt-1">
+                              <SelectValue placeholder="选择机型" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="C909">C909</SelectItem>
+                              <SelectItem value="C919">C919</SelectItem>
+                              <SelectItem value="C909/C919">C909/C919</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <p className="font-medium mt-1">
+                            <Badge variant="outline" className="bg-purple-50 text-purple-600">
+                              {selectedModel?.aircraftType}
+                            </Badge>
+                          </p>
+                        )}
                       </div>
                       <div className="p-4 bg-muted/30 rounded-lg border">
                         <Label className="text-muted-foreground text-xs">最后更新</Label>
@@ -745,15 +850,33 @@ export default function ModelManagementPage() {
                   </div>
                   <div className="p-4 bg-muted/30 rounded-lg border">
                     <Label className="text-muted-foreground text-xs">模型描述</Label>
-                    <p className="mt-2 text-sm">{selectedModel?.description}</p>
+                    {isEditing ? (
+                      <Textarea 
+                        value={editFormData?.description || ""} 
+                        onChange={(e) => updateFormField("description", e.target.value)}
+                        className="mt-2"
+                        rows={3}
+                      />
+                    ) : (
+                      <p className="mt-2 text-sm">{selectedModel?.description}</p>
+                    )}
                   </div>
                   <div className="p-4 bg-muted/30 rounded-lg border">
                     <Label className="text-muted-foreground text-xs">适用航司</Label>
-                    <p className="mt-2 text-sm">
-                      <Badge variant="outline" className={selectedModel?.applicability === "ALL" ? "bg-emerald-50 text-emerald-600" : ""}>
-                        {selectedModel?.applicability}
-                      </Badge>
-                    </p>
+                    {isEditing ? (
+                      <Input 
+                        value={editFormData?.applicability || ""} 
+                        onChange={(e) => updateFormField("applicability", e.target.value)}
+                        className="mt-2"
+                        placeholder="如: ALL 或 UEA, CES"
+                      />
+                    ) : (
+                      <p className="mt-2 text-sm">
+                        <Badge variant="outline" className={selectedModel?.applicability === "ALL" ? "bg-emerald-50 text-emerald-600" : ""}>
+                          {selectedModel?.applicability}
+                        </Badge>
+                      </p>
+                    )}
                   </div>
                 </TabsContent>
 
@@ -764,9 +887,18 @@ export default function ModelManagementPage() {
                       <Settings className="h-4 w-4 text-primary" />
                       模型开发思路
                     </h4>
-                    <p className="text-sm leading-relaxed text-muted-foreground">
-                      {selectedModel?.developmentApproach}
-                    </p>
+                    {isEditing ? (
+                      <Textarea 
+                        value={editFormData?.developmentApproach || ""} 
+                        onChange={(e) => updateFormField("developmentApproach", e.target.value)}
+                        rows={6}
+                        className="text-sm"
+                      />
+                    ) : (
+                      <p className="text-sm leading-relaxed text-muted-foreground">
+                        {selectedModel?.developmentApproach}
+                      </p>
+                    )}
                   </div>
                 </TabsContent>
 
