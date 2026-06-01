@@ -32,6 +32,10 @@ import {
   AlertTriangle,
   ExternalLink,
   ChevronDown,
+  Play,
+  Copy,
+  Globe,
+  Key,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -82,13 +86,29 @@ const secondaryTabs = [
   { id: "fault", name: "故障统计", icon: AlertTriangle },
 ];
 
+// API 数据类型
+interface ApiConfig {
+  id: number;
+  name: string;
+  endpoint: string;
+  method: string;
+  status: string;
+  calls: number;
+  lastCall: string;
+  description?: string;
+  authType?: string;
+  timeout?: number;
+  retryCount?: number;
+  headers?: string;
+}
+
 // API 数据
-const apiData = [
-  { id: 1, name: "飞行数据采集API", endpoint: "/api/v1/flight-data", method: "POST", status: "active", calls: 12580, lastCall: "2024-01-15 14:32:00" },
-  { id: 2, name: "WQAR数据上传API", endpoint: "/api/v1/wqar/upload", method: "POST", status: "active", calls: 8920, lastCall: "2024-01-15 14:28:00" },
-  { id: 3, name: "故障报告查询API", endpoint: "/api/v1/fault-report", method: "GET", status: "active", calls: 5640, lastCall: "2024-01-15 14:25:00" },
-  { id: 4, name: "模型预测API", endpoint: "/api/v1/model/predict", method: "POST", status: "inactive", calls: 3200, lastCall: "2024-01-14 18:00:00" },
-  { id: 5, name: "数据导出API", endpoint: "/api/v1/export", method: "GET", status: "active", calls: 1890, lastCall: "2024-01-15 12:00:00" },
+const initialApiData: ApiConfig[] = [
+  { id: 1, name: "飞行数据采集API", endpoint: "/api/v1/flight-data", method: "POST", status: "active", calls: 12580, lastCall: "2024-01-15 14:32:00", description: "用于采集飞行数据", authType: "Bearer Token", timeout: 30000, retryCount: 3 },
+  { id: 2, name: "WQAR数据上传API", endpoint: "/api/v1/wqar/upload", method: "POST", status: "active", calls: 8920, lastCall: "2024-01-15 14:28:00", description: "用于上传WQAR原始数据", authType: "API Key", timeout: 60000, retryCount: 2 },
+  { id: 3, name: "故障报告查询API", endpoint: "/api/v1/fault-report", method: "GET", status: "active", calls: 5640, lastCall: "2024-01-15 14:25:00", description: "查询故障报告记录", authType: "Bearer Token", timeout: 15000, retryCount: 3 },
+  { id: 4, name: "模型预测API", endpoint: "/api/v1/model/predict", method: "POST", status: "inactive", calls: 3200, lastCall: "2024-01-14 18:00:00", description: "调用模型进行故障预测", authType: "Bearer Token", timeout: 45000, retryCount: 1 },
+  { id: 5, name: "数据导出API", endpoint: "/api/v1/export", method: "GET", status: "active", calls: 1890, lastCall: "2024-01-15 12:00:00", description: "导出分析报告和数据", authType: "API Key", timeout: 120000, retryCount: 2 },
 ];
 
 // WQAR 数据
@@ -304,6 +324,101 @@ export default function DataManagementPage() {
     status: "",
     ata: ""
   });
+
+  // API 管理状态
+  const [apiList, setApiList] = useState<ApiConfig[]>(initialApiData);
+  const [apiDialogOpen, setApiDialogOpen] = useState(false);
+  const [apiDialogMode, setApiDialogMode] = useState<"create" | "edit" | "view">("create");
+  const [selectedApi, setSelectedApi] = useState<ApiConfig | null>(null);
+  const [apiForm, setApiForm] = useState({
+    name: "",
+    endpoint: "",
+    method: "GET",
+    description: "",
+    authType: "Bearer Token",
+    timeout: 30000,
+    retryCount: 3,
+    headers: ""
+  });
+  const [apiTestResult, setApiTestResult] = useState<{ status: "idle" | "loading" | "success" | "error"; message: string }>({ status: "idle", message: "" });
+
+  // 打开新增API弹窗
+  const openCreateApiDialog = () => {
+    setApiDialogMode("create");
+    setSelectedApi(null);
+    setApiForm({
+      name: "",
+      endpoint: "",
+      method: "GET",
+      description: "",
+      authType: "Bearer Token",
+      timeout: 30000,
+      retryCount: 3,
+      headers: ""
+    });
+    setApiTestResult({ status: "idle", message: "" });
+    setApiDialogOpen(true);
+  };
+
+  // 打开查看/编辑API弹窗
+  const openApiDialog = (api: ApiConfig, mode: "view" | "edit") => {
+    setApiDialogMode(mode);
+    setSelectedApi(api);
+    setApiForm({
+      name: api.name,
+      endpoint: api.endpoint,
+      method: api.method,
+      description: api.description || "",
+      authType: api.authType || "Bearer Token",
+      timeout: api.timeout || 30000,
+      retryCount: api.retryCount || 3,
+      headers: api.headers || ""
+    });
+    setApiTestResult({ status: "idle", message: "" });
+    setApiDialogOpen(true);
+  };
+
+  // 保存API配置
+  const saveApiConfig = () => {
+    if (apiDialogMode === "create") {
+      const newApi: ApiConfig = {
+        id: Math.max(...apiList.map(a => a.id)) + 1,
+        name: apiForm.name,
+        endpoint: apiForm.endpoint,
+        method: apiForm.method,
+        status: "active",
+        calls: 0,
+        lastCall: "-",
+        description: apiForm.description,
+        authType: apiForm.authType,
+        timeout: apiForm.timeout,
+        retryCount: apiForm.retryCount,
+        headers: apiForm.headers
+      };
+      setApiList([...apiList, newApi]);
+    } else if (apiDialogMode === "edit" && selectedApi) {
+      setApiList(apiList.map(api => 
+        api.id === selectedApi.id 
+          ? { ...api, ...apiForm }
+          : api
+      ));
+    }
+    setApiDialogOpen(false);
+  };
+
+  // 测试API连接
+  const testApiConnection = () => {
+    setApiTestResult({ status: "loading", message: "正在测试连接..." });
+    // 模拟API测试
+    setTimeout(() => {
+      const success = Math.random() > 0.3;
+      if (success) {
+        setApiTestResult({ status: "success", message: `连接成功! 响应时间: ${Math.floor(Math.random() * 500 + 100)}ms` });
+      } else {
+        setApiTestResult({ status: "error", message: "连接失败: 服务器无响应或超时" });
+      }
+    }, 1500);
+  };
 
   const isPrimaryTab = primaryTabs.some(t => t.id === activeTab);
 
@@ -733,7 +848,7 @@ export default function DataManagementPage() {
                       className="pl-8 h-8 w-[200px]"
                     />
                   </div>
-                  <Button size="sm" className="gap-1">
+                  <Button size="sm" className="gap-1" onClick={openCreateApiDialog}>
                     <Plus className="h-4 w-4" />
                     新增API
                   </Button>
@@ -754,7 +869,7 @@ export default function DataManagementPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {apiData.map((api) => (
+                  {apiList.map((api) => (
                     <TableRow key={api.id}>
                       <TableCell className="font-medium">{api.name}</TableCell>
                       <TableCell className="font-mono text-xs text-muted-foreground">{api.endpoint}</TableCell>
@@ -768,10 +883,10 @@ export default function DataManagementPage() {
                       <TableCell className="text-xs text-muted-foreground">{api.lastCall}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
-                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => openApiDialog(api, "view")}>
                             <Eye className="h-3.5 w-3.5" />
                           </Button>
-                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => openApiDialog(api, "edit")}>
                             <Edit className="h-3.5 w-3.5" />
                           </Button>
                         </div>
@@ -1349,7 +1464,7 @@ export default function DataManagementPage() {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">已完成分析</p>
+                      <p className="text-sm text-muted-foreground">已完成���析</p>
                       <p className="text-2xl font-bold mt-1 text-emerald-600">{faultStats.analyzed}</p>
                     </div>
                     <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center">
@@ -1716,6 +1831,229 @@ export default function DataManagementPage() {
           </div>
         )}
       </main>
+
+      {/* API配置对话框 */}
+      <Dialog open={apiDialogOpen} onOpenChange={setApiDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-hidden flex flex-col">
+          <DialogHeader className="border-b pb-4">
+            <DialogTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5 text-primary" />
+              {apiDialogMode === "create" ? "新增API" : apiDialogMode === "edit" ? "编辑API" : "查看API详情"}
+            </DialogTitle>
+            <DialogDescription>
+              {apiDialogMode === "create" ? "配置新的API接口信息" : apiDialogMode === "edit" ? "修改API配置参数" : "查看API配置详情和测试连接"}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <ScrollArea className="flex-1 px-1">
+            <div className="space-y-4 py-4">
+              {/* 基本信息 */}
+              <div className="space-y-4">
+                <h4 className="text-sm font-medium flex items-center gap-2">
+                  <Globe className="h-4 w-4 text-muted-foreground" />
+                  基本信息
+                </h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="api-name">API名称 *</Label>
+                    <Input
+                      id="api-name"
+                      value={apiForm.name}
+                      onChange={(e) => setApiForm({ ...apiForm, name: e.target.value })}
+                      placeholder="如: 飞行数据采集API"
+                      disabled={apiDialogMode === "view"}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="api-method">请求方法 *</Label>
+                    <Select 
+                      value={apiForm.method} 
+                      onValueChange={(v) => setApiForm({ ...apiForm, method: v })}
+                      disabled={apiDialogMode === "view"}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="GET">GET</SelectItem>
+                        <SelectItem value="POST">POST</SelectItem>
+                        <SelectItem value="PUT">PUT</SelectItem>
+                        <SelectItem value="DELETE">DELETE</SelectItem>
+                        <SelectItem value="PATCH">PATCH</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="api-endpoint">API端点 *</Label>
+                  <Input
+                    id="api-endpoint"
+                    value={apiForm.endpoint}
+                    onChange={(e) => setApiForm({ ...apiForm, endpoint: e.target.value })}
+                    placeholder="如: /api/v1/flight-data"
+                    className="font-mono"
+                    disabled={apiDialogMode === "view"}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="api-description">描述</Label>
+                  <Textarea
+                    id="api-description"
+                    value={apiForm.description}
+                    onChange={(e) => setApiForm({ ...apiForm, description: e.target.value })}
+                    placeholder="描述此API的用途和功能"
+                    rows={2}
+                    disabled={apiDialogMode === "view"}
+                  />
+                </div>
+              </div>
+
+              {/* 认证配置 */}
+              <div className="space-y-4 pt-2 border-t">
+                <h4 className="text-sm font-medium flex items-center gap-2">
+                  <Key className="h-4 w-4 text-muted-foreground" />
+                  认证配置
+                </h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="api-auth">认证方式</Label>
+                    <Select 
+                      value={apiForm.authType} 
+                      onValueChange={(v) => setApiForm({ ...apiForm, authType: v })}
+                      disabled={apiDialogMode === "view"}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="None">无认证</SelectItem>
+                        <SelectItem value="Bearer Token">Bearer Token</SelectItem>
+                        <SelectItem value="API Key">API Key</SelectItem>
+                        <SelectItem value="Basic Auth">Basic Auth</SelectItem>
+                        <SelectItem value="OAuth 2.0">OAuth 2.0</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="api-timeout">超时时间 (ms)</Label>
+                    <Input
+                      id="api-timeout"
+                      type="number"
+                      value={apiForm.timeout}
+                      onChange={(e) => setApiForm({ ...apiForm, timeout: parseInt(e.target.value) || 30000 })}
+                      disabled={apiDialogMode === "view"}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="api-retry">重试次数</Label>
+                    <Input
+                      id="api-retry"
+                      type="number"
+                      value={apiForm.retryCount}
+                      onChange={(e) => setApiForm({ ...apiForm, retryCount: parseInt(e.target.value) || 0 })}
+                      min={0}
+                      max={10}
+                      disabled={apiDialogMode === "view"}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>自定义Headers</Label>
+                    <Textarea
+                      value={apiForm.headers}
+                      onChange={(e) => setApiForm({ ...apiForm, headers: e.target.value })}
+                      placeholder='{"Content-Type": "application/json"}'
+                      rows={2}
+                      className="font-mono text-xs"
+                      disabled={apiDialogMode === "view"}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* API测试 */}
+              <div className="space-y-4 pt-2 border-t">
+                <h4 className="text-sm font-medium flex items-center gap-2">
+                  <Play className="h-4 w-4 text-muted-foreground" />
+                  连接测试
+                </h4>
+                <div className="flex items-center gap-4">
+                  <Button 
+                    variant="outline" 
+                    onClick={testApiConnection}
+                    disabled={apiTestResult.status === "loading" || !apiForm.endpoint}
+                    className="gap-2"
+                  >
+                    {apiTestResult.status === "loading" ? (
+                      <RefreshCw className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Play className="h-4 w-4" />
+                    )}
+                    测试连接
+                  </Button>
+                  {apiTestResult.status !== "idle" && (
+                    <div className={`flex items-center gap-2 text-sm ${
+                      apiTestResult.status === "success" ? "text-emerald-600" : 
+                      apiTestResult.status === "error" ? "text-red-600" : 
+                      "text-muted-foreground"
+                    }`}>
+                      {apiTestResult.status === "success" && <Check className="h-4 w-4" />}
+                      {apiTestResult.status === "error" && <X className="h-4 w-4" />}
+                      {apiTestResult.message}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* 如果是查看模式，显示调用统计 */}
+              {apiDialogMode === "view" && selectedApi && (
+                <div className="space-y-4 pt-2 border-t">
+                  <h4 className="text-sm font-medium flex items-center gap-2">
+                    <Activity className="h-4 w-4 text-muted-foreground" />
+                    调用统计
+                  </h4>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="bg-secondary/30 rounded-lg p-3 text-center">
+                      <div className="text-2xl font-bold text-primary">{selectedApi.calls.toLocaleString()}</div>
+                      <div className="text-xs text-muted-foreground">总调用次数</div>
+                    </div>
+                    <div className="bg-secondary/30 rounded-lg p-3 text-center">
+                      <div className="text-2xl font-bold">{selectedApi.status === "active" ? "运行中" : "已停用"}</div>
+                      <div className="text-xs text-muted-foreground">当前状态</div>
+                    </div>
+                    <div className="bg-secondary/30 rounded-lg p-3 text-center">
+                      <div className="text-sm font-medium">{selectedApi.lastCall}</div>
+                      <div className="text-xs text-muted-foreground">最后调用时间</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </ScrollArea>
+
+          <DialogFooter className="border-t pt-4">
+            <Button variant="outline" onClick={() => setApiDialogOpen(false)}>
+              {apiDialogMode === "view" ? "关闭" : "取消"}
+            </Button>
+            {apiDialogMode === "view" ? (
+              <Button onClick={() => setApiDialogMode("edit")} className="gap-1">
+                <Edit className="h-4 w-4" />
+                编辑
+              </Button>
+            ) : (
+              <Button 
+                onClick={saveApiConfig} 
+                disabled={!apiForm.name || !apiForm.endpoint}
+                className="gap-1"
+              >
+                <Save className="h-4 w-4" />
+                保存
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* 同步确认对话框 */}
       <Dialog open={syncDialogOpen} onOpenChange={setSyncDialogOpen}>
