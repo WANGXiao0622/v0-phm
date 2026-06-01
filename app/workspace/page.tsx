@@ -39,7 +39,7 @@ const faultTasks = [
   {
     id: "F2024001",
     type: "fault" as const,
-    title: "发动机N1转速异常波动",
+    title: "监控发现APU EGT温度高",
     time: "2024-01-15 14:32",
     ata: "72-31",
     registration: "B-1234",
@@ -50,7 +50,7 @@ const faultTasks = [
   {
     id: "F2024002",
     type: "fault" as const,
-    title: "液压系统压力偏低",
+    title: "航后检查有APU引气阀故障",
     time: "2024-01-14 09:15",
     ata: "29-11",
     registration: "B-5678",
@@ -61,7 +61,7 @@ const faultTasks = [
   {
     id: "F2024003",
     type: "fault" as const,
-    title: "电气系统电压不稳定",
+    title: "短停落地后有刹车降级信息",
     time: "2024-01-13 16:45",
     ata: "24-22",
     registration: "B-9012",
@@ -72,7 +72,7 @@ const faultTasks = [
   {
     id: "F2024004",
     type: "fault" as const,
-    title: "燃油流量传感器异常",
+    title: "落地滑跑阶段出现刹车不派遣",
     time: "2024-01-12 11:20",
     ata: "73-21",
     registration: "B-3456",
@@ -83,7 +83,7 @@ const faultTasks = [
   {
     id: "F2024005",
     type: "fault" as const,
-    title: "发动机振动值超标",
+    title: "双发启动后出现发动机引气故障",
     time: "2024-01-11 08:55",
     ata: "72-50",
     registration: "B-7890",
