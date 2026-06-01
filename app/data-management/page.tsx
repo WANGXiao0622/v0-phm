@@ -310,7 +310,8 @@ export default function DataManagementPage() {
     airline: "",
     registration: "",
     cmsMessage: "",
-    status: ""
+    status: "",
+    ata: ""
   });
 
   const isPrimaryTab = primaryTabs.some(t => t.id === activeTab);
@@ -595,6 +596,8 @@ export default function DataManagementPage() {
     if (faultFilters.cmsMessage && !item.cmsMessage.toLowerCase().includes(faultFilters.cmsMessage.toLowerCase())) return false;
     // 状态筛选
     if (faultFilters.status && item.status !== faultFilters.status) return false;
+    // ATA筛选
+    if (faultFilters.ata && item.ataChapter !== faultFilters.ata) return false;
     return true;
   });
 
@@ -609,6 +612,9 @@ export default function DataManagementPage() {
 
   // 获取故障注册号列表
   const faultRegistrationList = [...new Set(faultData.map(item => item.registration))];
+
+  // 获取故障ATA列表
+  const faultAtaList = [...new Set(faultData.map(item => item.ataChapter))].sort();
 
   // 故障状态徽章
   const getFaultStatusBadge = (status: string) => {
@@ -1410,12 +1416,12 @@ export default function DataManagementPage() {
                     <span className="text-sm text-muted-foreground">
                       共 {filteredFaultData.length} 条记录
                     </span>
-                    {(faultFilters.startDate || faultFilters.endDate || faultFilters.airline || faultFilters.registration || faultFilters.cmsMessage || faultFilters.status) && (
+                    {(faultFilters.startDate || faultFilters.endDate || faultFilters.airline || faultFilters.registration || faultFilters.cmsMessage || faultFilters.status || faultFilters.ata) && (
                       <Button
                         variant="ghost"
                         size="sm"
                         className="h-7 text-xs"
-                        onClick={() => setFaultFilters({ startDate: "", endDate: "", airline: "", registration: "", cmsMessage: "", status: "" })}
+                        onClick={() => setFaultFilters({ startDate: "", endDate: "", airline: "", registration: "", cmsMessage: "", status: "", ata: "" })}
                       >
                         <X className="h-3 w-3 mr-1" />
                         清除筛选
@@ -1517,7 +1523,33 @@ export default function DataManagementPage() {
                         </Popover>
                       </TableHead>
                       
-                      <TableHead className="w-[80px]">ATA</TableHead>
+                      {/* ATA - 下拉选择筛选 */}
+                      <TableHead className="w-[80px]">
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button variant="ghost" className="h-auto p-0 font-medium hover:bg-transparent flex items-center gap-1">
+                              ATA
+                              <ChevronDown className={`h-3 w-3 ${faultFilters.ata ? "text-primary" : "text-muted-foreground"}`} />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-[120px] p-3" align="start">
+                            <div className="space-y-2">
+                              <Label className="text-xs text-muted-foreground">选择ATA</Label>
+                              <Select value={faultFilters.ata || " "} onValueChange={(v) => setFaultFilters(prev => ({ ...prev, ata: v === " " ? "" : v }))}>
+                                <SelectTrigger className="h-8">
+                                  <SelectValue placeholder="全部" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value=" ">全部</SelectItem>
+                                  {faultAtaList.map(ata => (
+                                    <SelectItem key={ata} value={ata}>ATA {ata}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      </TableHead>
                       
                       {/* 故障时间 - 日期范围筛选 */}
                       <TableHead className="w-[150px]">
