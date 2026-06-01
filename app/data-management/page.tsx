@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -1577,7 +1578,7 @@ export default function DataManagementPage() {
                         <Popover>
                           <PopoverTrigger asChild>
                             <Button variant="ghost" className="h-auto p-0 font-medium hover:bg-transparent flex items-center gap-1">
-                              故障时间
+                              故障��间
                               <ChevronDown className={`h-3 w-3 ${faultFilters.startDate || faultFilters.endDate ? "text-primary" : "text-muted-foreground"}`} />
                             </Button>
                           </PopoverTrigger>
@@ -1849,7 +1850,7 @@ export default function DataManagementPage() {
         </DialogContent>
       </Dialog>
 
-      {/* 模板编辑对话框 */}
+      {/* 模板编��对话框 */}
       <Dialog open={templateDialogOpen} onOpenChange={setTemplateDialogOpen}>
         <DialogContent className="!max-w-[1600px] w-[95vw] h-[92vh] overflow-hidden flex flex-col">
           <DialogHeader>
