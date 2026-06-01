@@ -101,11 +101,11 @@ const generateTrendChartData = (segmentIndex: number = 0) => {
 
 // 模拟航段数据
 const flightSegments = [
-  { id: "seg1", flight: "CA1234", route: "PEK-SHA", date: "2024-01-15", phase: "巡航" },
-  { id: "seg2", flight: "CA1234", route: "PEK-SHA", date: "2024-01-15", phase: "下降" },
-  { id: "seg3", flight: "CA1235", route: "SHA-CAN", date: "2024-01-15", phase: "起飞" },
-  { id: "seg4", flight: "CA1235", route: "SHA-CAN", date: "2024-01-15", phase: "巡航" },
-  { id: "seg5", flight: "CA1236", route: "CAN-PEK", date: "2024-01-16", phase: "巡航" },
+  { id: "seg1", registration: "B-104X", startTime: "2026-05-20 07:56:21", departure: "PEK", arrival: "SHA", filename: "B-104X_20260520_075621.csv" },
+  { id: "seg2", registration: "B-104X", startTime: "2026-05-20 10:32:15", departure: "SHA", arrival: "CAN", filename: "B-104X_20260520_103215.csv" },
+  { id: "seg3", registration: "B-104X", startTime: "2026-05-20 14:18:42", departure: "CAN", arrival: "PEK", filename: "B-104X_20260520_141842.csv" },
+  { id: "seg4", registration: "B-104Y", startTime: "2026-05-21 08:05:33", departure: "PEK", arrival: "CTU", filename: "B-104Y_20260521_080533.csv" },
+  { id: "seg5", registration: "B-104Y", startTime: "2026-05-21 12:45:18", departure: "CTU", arrival: "SHA", filename: "B-104Y_20260521_124518.csv" },
 ];
 
 // 模拟模型分析图表数据 - 用于多图展示
@@ -400,53 +400,55 @@ export default function FaultAnalysisPage() {
 
                 {/* 航段筛选模块 */}
                 {showSegmentFilter && (
-                  <div className="flex items-center gap-3 p-3 bg-secondary/30 rounded-lg border border-border">
-                    <div className="flex items-center gap-2">
-                      <Plane className="h-4 w-4 text-primary" />
-                      <span className="text-sm font-medium">航段筛选</span>
-                    </div>
-                    
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={loadPreviousSegment}
-                        disabled={currentSegmentIndex === 0 || isLoadingTemplate}
-                        className="h-8"
-                      >
-                        <ChevronLeft className="h-4 w-4 mr-1" />
-                        向后
-                      </Button>
-                      
-                      <div className="px-3 py-1.5 bg-background border rounded-md min-w-[200px] text-center">
-                        <div className="text-sm font-medium">
-                          {flightSegments[currentSegmentIndex].flight} - {flightSegments[currentSegmentIndex].phase}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {flightSegments[currentSegmentIndex].route} | {flightSegments[currentSegmentIndex].date}
-                        </div>
+                  <div className="flex flex-col gap-3 p-3 bg-secondary/30 rounded-lg border border-border">
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
+                        <Plane className="h-4 w-4 text-primary" />
+                        <span className="text-sm font-medium">航段筛选</span>
                       </div>
                       
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={loadNextSegment}
-                        disabled={currentSegmentIndex === flightSegments.length - 1 || isLoadingTemplate}
-                        className="h-8"
-                      >
-                        向前
-                        <ChevronRight className="h-4 w-4 ml-1" />
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={loadPreviousSegment}
+                          disabled={currentSegmentIndex === 0 || isLoadingTemplate}
+                          className="h-8"
+                        >
+                          <ChevronLeft className="h-4 w-4 mr-1" />
+                          向后
+                        </Button>
+                        
+                        <div className="px-4 py-2 bg-background border rounded-md min-w-[280px] text-center">
+                          <div className="text-sm font-medium">
+                            {flightSegments[currentSegmentIndex].startTime}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {flightSegments[currentSegmentIndex].departure} - {flightSegments[currentSegmentIndex].arrival}
+                          </div>
+                        </div>
+                        
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={loadNextSegment}
+                          disabled={currentSegmentIndex === flightSegments.length - 1 || isLoadingTemplate}
+                          className="h-8"
+                        >
+                          向前
+                          <ChevronRight className="h-4 w-4 ml-1" />
+                        </Button>
+                      </div>
                     </div>
 
-                    <div className="ml-auto flex items-center gap-2 text-xs text-muted-foreground">
-                      <span>已加载航段:</span>
-                      <div className="flex gap-1">
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="text-muted-foreground">已加载航段:</span>
+                      <div className="flex flex-wrap gap-1">
                         {loadedSegments.map((idx) => (
                           <Badge 
                             key={idx} 
                             variant={idx === currentSegmentIndex ? "default" : "outline"}
-                            className="text-xs cursor-pointer"
+                            className="text-xs cursor-pointer font-mono"
                             onClick={() => {
                               setCurrentSegmentIndex(idx);
                               setIsLoadingTemplate(true);
@@ -458,7 +460,7 @@ export default function FaultAnalysisPage() {
                               }, 500);
                             }}
                           >
-                            {flightSegments[idx].phase}
+                            {flightSegments[idx].filename}
                           </Badge>
                         ))}
                       </div>
