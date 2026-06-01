@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,15 +16,16 @@ import {
   Search,
   Plus,
   RefreshCw,
-  CheckCircle,
-  XCircle,
-  Clock,
   MoreHorizontal,
   Upload,
   Download,
   Trash2,
   Edit,
   Eye,
+  Sliders,
+  Save,
+  Check,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -35,13 +36,33 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
-const tabs = [
+// 第一行标签页 - 基本不需要更改的数据
+const primaryTabs = [
   { id: "api", name: "API 管理", icon: Settings },
   { id: "wqar", name: "WQAR数据管理", icon: Database },
-  { id: "template", name: "模板配置", icon: FileText },
   { id: "storage", name: "存储管理", icon: HardDrive },
-  { id: "metadata", name: "元数据管理", icon: Tags },
+];
+
+// 第二行标签页 - 需要个性化配置的
+const secondaryTabs = [
+  { id: "parameter", name: "参数配置", icon: Sliders },
+  { id: "template", name: "模板配置", icon: FileText },
+  { id: "metadata", name: "元数据配置", icon: Tags },
 ];
 
 // API 数据
@@ -90,9 +111,96 @@ const metadataData = [
   { id: 6, category: "维修动作", items: 520, description: "标准维修动作代码", lastSync: "2024-01-11 08:00:00" },
 ];
 
+// 参数版本数据
+interface ParameterVersion {
+  id: string;
+  code: string;
+  airline: string;
+  airlineName: string;
+  isBase: boolean;
+}
+
+const parameterVersions: ParameterVersion[] = [
+  { id: "base", code: "311A-ARJ-B01-01", airline: "ARJ", airlineName: "基本版本", isBase: true },
+  { id: "cuh", code: "311E-CUH-B01-01", airline: "CUH", airlineName: "幸福航空", isBase: false },
+  { id: "ces", code: "3115-CES-B01-01", airline: "CES", airlineName: "中国东方航空", isBase: false },
+  { id: "csc", code: "311F-CSC-B01-01", airline: "CSC", airlineName: "中国南方航空", isBase: false },
+  { id: "cca", code: "311G-CCA-B01-01", airline: "CCA", airlineName: "中国国际航空", isBase: false },
+  { id: "ckk", code: "311H-CKK-B01-01", airline: "CKK", airlineName: "中国货运航空", isBase: false },
+];
+
+// 参数配置数据类型
+interface ParameterConfig {
+  id: number;
+  parameterAssignment: string;
+  mnemonic: string;
+  portName: string;
+  signalType: string;
+  unit: string;
+  // 用户自定义配置
+  customName: string;
+  customDescription: string;
+  ataChapter: string;
+}
+
+// 基本参数配置数据 - 所有航司共享的基础数据
+const baseParameterData: ParameterConfig[] = [
+  { id: 1, parameterAssignment: "001", mnemonic: "N1_1", portName: "ENG1_N1", signalType: "ANALOG", unit: "%", customName: "", customDescription: "", ataChapter: "" },
+  { id: 2, parameterAssignment: "002", mnemonic: "N2_1", portName: "ENG1_N2", signalType: "ANALOG", unit: "%", customName: "", customDescription: "", ataChapter: "" },
+  { id: 3, parameterAssignment: "003", mnemonic: "EGT_1", portName: "ENG1_EGT", signalType: "ANALOG", unit: "°C", customName: "", customDescription: "", ataChapter: "" },
+  { id: 4, parameterAssignment: "004", mnemonic: "FF_1", portName: "ENG1_FF", signalType: "ANALOG", unit: "kg/h", customName: "", customDescription: "", ataChapter: "" },
+  { id: 5, parameterAssignment: "005", mnemonic: "OIP_1", portName: "ENG1_OIL_PRESS", signalType: "ANALOG", unit: "PSI", customName: "", customDescription: "", ataChapter: "" },
+  { id: 6, parameterAssignment: "006", mnemonic: "OIT_1", portName: "ENG1_OIL_TEMP", signalType: "ANALOG", unit: "°C", customName: "", customDescription: "", ataChapter: "" },
+  { id: 7, parameterAssignment: "007", mnemonic: "VIB_N1_1", portName: "ENG1_VIB_N1", signalType: "ANALOG", unit: "mil", customName: "", customDescription: "", ataChapter: "" },
+  { id: 8, parameterAssignment: "008", mnemonic: "VIB_N2_1", portName: "ENG1_VIB_N2", signalType: "ANALOG", unit: "mil", customName: "", customDescription: "", ataChapter: "" },
+  { id: 9, parameterAssignment: "009", mnemonic: "N1_2", portName: "ENG2_N1", signalType: "ANALOG", unit: "%", customName: "", customDescription: "", ataChapter: "" },
+  { id: 10, parameterAssignment: "010", mnemonic: "N2_2", portName: "ENG2_N2", signalType: "ANALOG", unit: "%", customName: "", customDescription: "", ataChapter: "" },
+  { id: 11, parameterAssignment: "011", mnemonic: "EGT_2", portName: "ENG2_EGT", signalType: "ANALOG", unit: "°C", customName: "", customDescription: "", ataChapter: "" },
+  { id: 12, parameterAssignment: "012", mnemonic: "FF_2", portName: "ENG2_FF", signalType: "ANALOG", unit: "kg/h", customName: "", customDescription: "", ataChapter: "" },
+  { id: 13, parameterAssignment: "013", mnemonic: "ALT", portName: "ALTITUDE", signalType: "DIGITAL", unit: "ft", customName: "", customDescription: "", ataChapter: "" },
+  { id: 14, parameterAssignment: "014", mnemonic: "IAS", portName: "IND_AIRSPEED", signalType: "DIGITAL", unit: "kts", customName: "", customDescription: "", ataChapter: "" },
+  { id: 15, parameterAssignment: "015", mnemonic: "MACH", portName: "MACH_NUMBER", signalType: "DIGITAL", unit: "", customName: "", customDescription: "", ataChapter: "" },
+];
+
+// 各航司的自定义配置数据
+type AirlineParameterConfigs = {
+  [key: string]: ParameterConfig[];
+};
+
+const initialAirlineConfigs: AirlineParameterConfigs = {
+  base: baseParameterData.map(p => ({ ...p })),
+  cuh: baseParameterData.map(p => ({ 
+    ...p, 
+    customName: p.mnemonic === "N1_1" ? "发动机1低压转子转速" : "",
+    customDescription: p.mnemonic === "N1_1" ? "1号发动机低压转子转速百分比" : "",
+    ataChapter: p.mnemonic === "N1_1" ? "72-00" : ""
+  })),
+  ces: baseParameterData.map(p => ({ 
+    ...p,
+    customName: p.mnemonic === "N1_1" ? "发动机1低压转子转速" : (p.mnemonic === "EGT_1" ? "发动机1排气温度" : ""),
+    customDescription: p.mnemonic === "N1_1" ? "1号发动机低压转子转速百分比" : (p.mnemonic === "EGT_1" ? "1号发动机排气温度监测" : ""),
+    ataChapter: p.mnemonic === "N1_1" ? "72-00" : (p.mnemonic === "EGT_1" ? "72-50" : "")
+  })),
+  csc: baseParameterData.map(p => ({ ...p })),
+  cca: baseParameterData.map(p => ({ ...p })),
+  ckk: baseParameterData.map(p => ({ ...p })),
+};
+
 export default function DataManagementPage() {
   const [activeTab, setActiveTab] = useState("api");
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedVersion, setSelectedVersion] = useState("base");
+  const [airlineConfigs, setAirlineConfigs] = useState<AirlineParameterConfigs>(initialAirlineConfigs);
+  const [editingRow, setEditingRow] = useState<number | null>(null);
+  const [editValues, setEditValues] = useState<{customName: string; customDescription: string; ataChapter: string}>({
+    customName: "",
+    customDescription: "",
+    ataChapter: ""
+  });
+  const [syncDialogOpen, setSyncDialogOpen] = useState(false);
+  const [syncInfo, setSyncInfo] = useState<{parameterId: number; mnemonic: string; affectedAirlines: string[]}>({ parameterId: 0, mnemonic: "", affectedAirlines: [] });
+
+  const isPrimaryTab = primaryTabs.some(t => t.id === activeTab);
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -110,6 +218,95 @@ export default function DataManagementPage() {
         return <Badge variant="outline">{status}</Badge>;
     }
   };
+
+  const currentVersionInfo = parameterVersions.find(v => v.id === selectedVersion);
+  const currentParameters = airlineConfigs[selectedVersion] || [];
+
+  // 开始编辑行
+  const startEditing = (param: ParameterConfig) => {
+    setEditingRow(param.id);
+    setEditValues({
+      customName: param.customName,
+      customDescription: param.customDescription,
+      ataChapter: param.ataChapter
+    });
+  };
+
+  // 取消编辑
+  const cancelEditing = () => {
+    setEditingRow(null);
+    setEditValues({ customName: "", customDescription: "", ataChapter: "" });
+  };
+
+  // 保存编辑 - 检查是否需要同步到其他航司
+  const saveEditing = (param: ParameterConfig) => {
+    // 找出其他航司中有相同MNEMONIC的配置
+    const affectedAirlines: string[] = [];
+    
+    Object.keys(airlineConfigs).forEach(airlineId => {
+      if (airlineId !== selectedVersion) {
+        const hasMatchingParam = airlineConfigs[airlineId].some(
+          p => p.mnemonic === param.mnemonic
+        );
+        if (hasMatchingParam) {
+          const airlineInfo = parameterVersions.find(v => v.id === airlineId);
+          if (airlineInfo) {
+            affectedAirlines.push(airlineInfo.airlineName);
+          }
+        }
+      }
+    });
+
+    if (affectedAirlines.length > 0 && (editValues.customName || editValues.customDescription || editValues.ataChapter)) {
+      // 弹出同步确认对话框
+      setSyncInfo({
+        parameterId: param.id,
+        mnemonic: param.mnemonic,
+        affectedAirlines
+      });
+      setSyncDialogOpen(true);
+    } else {
+      // 直接保存，不需要同步
+      doSave(param.id, param.mnemonic, false);
+    }
+  };
+
+  // 执行保存
+  const doSave = (parameterId: number, mnemonic: string, syncToOthers: boolean) => {
+    const newConfigs = { ...airlineConfigs };
+    
+    // 更新当前航司的配置
+    newConfigs[selectedVersion] = newConfigs[selectedVersion].map(p => 
+      p.id === parameterId 
+        ? { ...p, ...editValues }
+        : p
+    );
+
+    // 如果需要同步到其他航司
+    if (syncToOthers) {
+      Object.keys(newConfigs).forEach(airlineId => {
+        if (airlineId !== selectedVersion) {
+          newConfigs[airlineId] = newConfigs[airlineId].map(p => 
+            p.mnemonic === mnemonic
+              ? { ...p, ...editValues }
+              : p
+          );
+        }
+      });
+    }
+
+    setAirlineConfigs(newConfigs);
+    setEditingRow(null);
+    setEditValues({ customName: "", customDescription: "", ataChapter: "" });
+    setSyncDialogOpen(false);
+  };
+
+  // 过滤参数数据
+  const filteredParameters = currentParameters.filter(param =>
+    param.mnemonic.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    param.portName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    param.customName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -144,23 +341,48 @@ export default function DataManagementPage() {
           <span className="text-foreground">数据管理</span>
         </div>
 
-        {/* 标签页切换 */}
-        <div className="flex gap-2 mb-4 border-b border-border pb-3">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            return (
-              <Button
-                key={tab.id}
-                variant={activeTab === tab.id ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setActiveTab(tab.id)}
-                className="gap-2"
-              >
-                <Icon className="h-4 w-4" />
-                {tab.name}
-              </Button>
-            );
-          })}
+        {/* 第一行标签页 - 基本不需要更改的数据 */}
+        <div className="mb-2">
+          <div className="text-xs text-muted-foreground mb-1.5">基础数据管理</div>
+          <div className="flex gap-2 border-b border-border pb-3">
+            {primaryTabs.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <Button
+                  key={tab.id}
+                  variant={activeTab === tab.id ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setActiveTab(tab.id)}
+                  className="gap-2"
+                >
+                  <Icon className="h-4 w-4" />
+                  {tab.name}
+                </Button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 第二行标签页 - 需要个性化配置的 */}
+        <div className="mb-4">
+          <div className="text-xs text-muted-foreground mb-1.5">个性化配置</div>
+          <div className="flex gap-2 border-b border-border pb-3">
+            {secondaryTabs.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <Button
+                  key={tab.id}
+                  variant={activeTab === tab.id ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setActiveTab(tab.id)}
+                  className="gap-2"
+                >
+                  <Icon className="h-4 w-4" />
+                  {tab.name}
+                </Button>
+              );
+            })}
+          </div>
         </div>
 
         {/* API 管理 */}
@@ -308,6 +530,251 @@ export default function DataManagementPage() {
           </Card>
         )}
 
+        {/* 存储管理 */}
+        {activeTab === "storage" && (
+          <Card className="border border-border">
+            <CardHeader className="border-b border-border py-3 px-4">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <HardDrive className="h-4 w-4 text-primary" />
+                  存储管理
+                </CardTitle>
+                <div className="flex items-center gap-2">
+                  <Button size="sm" variant="outline" className="gap-1">
+                    <RefreshCw className="h-4 w-4" />
+                    刷新统计
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-4">
+              {/* 存储概览 */}
+              <div className="grid grid-cols-4 gap-4 mb-4">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <div className="text-2xl font-semibold text-blue-700">12.5 TB</div>
+                  <div className="text-sm text-blue-600">总存储量</div>
+                </div>
+                <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+                  <div className="text-2xl font-semibold text-emerald-700">85,940</div>
+                  <div className="text-sm text-emerald-600">文件总数</div>
+                </div>
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                  <div className="text-2xl font-semibold text-amber-700">78%</div>
+                  <div className="text-sm text-amber-600">存储使用率</div>
+                </div>
+                <div className="bg-sky-50 border border-sky-200 rounded-lg p-3">
+                  <div className="text-2xl font-semibold text-sky-700">5</div>
+                  <div className="text-sm text-sky-600">存储分区</div>
+                </div>
+              </div>
+
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[160px]">存储名称</TableHead>
+                    <TableHead>路径</TableHead>
+                    <TableHead className="w-[100px]">大小</TableHead>
+                    <TableHead className="w-[100px]">文件数</TableHead>
+                    <TableHead className="w-[100px]">类型</TableHead>
+                    <TableHead className="w-[100px]">保留期限</TableHead>
+                    <TableHead className="w-[80px]">操作</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {storageData.map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell className="font-medium">{item.name}</TableCell>
+                      <TableCell className="font-mono text-xs text-muted-foreground">{item.path}</TableCell>
+                      <TableCell>{item.size}</TableCell>
+                      <TableCell>{item.files.toLocaleString()}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{item.type}</Badge>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">{item.retention}</TableCell>
+                      <TableCell>
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                          <MoreHorizontal className="h-3.5 w-3.5" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* 参数配置 */}
+        {activeTab === "parameter" && (
+          <Card className="border border-border">
+            <CardHeader className="border-b border-border py-3 px-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Sliders className="h-4 w-4 text-primary" />
+                    参数配置
+                  </CardTitle>
+                  {/* 版本选择器 */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">参数版本:</span>
+                    <Select value={selectedVersion} onValueChange={setSelectedVersion}>
+                      <SelectTrigger className="w-[280px] h-8">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {parameterVersions.map((version) => (
+                          <SelectItem key={version.id} value={version.id}>
+                            <div className="flex items-center gap-2">
+                              <span className="font-mono text-xs">{version.code}</span>
+                              <span className="text-muted-foreground">-</span>
+                              <span>{version.airlineName}</span>
+                              {version.isBase && (
+                                <Badge variant="outline" className="ml-1 text-xs bg-blue-50 text-blue-600">基准</Badge>
+                              )}
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="relative">
+                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="搜索参数..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-8 h-8 w-[200px]"
+                    />
+                  </div>
+                  <Button size="sm" variant="outline" className="gap-1">
+                    <Download className="h-4 w-4" />
+                    导出
+                  </Button>
+                  <Button size="sm" variant="outline" className="gap-1">
+                    <Upload className="h-4 w-4" />
+                    导入
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              {/* 当前版本信息 */}
+              {currentVersionInfo && (
+                <div className="px-4 py-2 bg-muted/30 border-b border-border">
+                  <div className="flex items-center gap-4 text-sm">
+                    <span className="text-muted-foreground">当前版本:</span>
+                    <span className="font-mono font-medium">{currentVersionInfo.code}</span>
+                    <span className="text-muted-foreground">|</span>
+                    <span className="text-muted-foreground">航司:</span>
+                    <span className="font-medium">{currentVersionInfo.airlineName}</span>
+                    <span className="text-muted-foreground">|</span>
+                    <span className="text-muted-foreground">参数总数:</span>
+                    <Badge variant="outline">{currentParameters.length}</Badge>
+                  </div>
+                </div>
+              )}
+              
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[80px] text-xs">PARAMETER ASSIGNMENT</TableHead>
+                      <TableHead className="w-[100px] text-xs">MNEMONIC</TableHead>
+                      <TableHead className="w-[140px] text-xs">PORT NAME</TableHead>
+                      <TableHead className="w-[100px] text-xs">SIGNAL TYPE</TableHead>
+                      <TableHead className="w-[80px] text-xs">UNIT</TableHead>
+                      <TableHead className="w-[1px] bg-primary/20"></TableHead>
+                      <TableHead className="w-[140px] text-xs bg-blue-50/50">参数名 (自定义)</TableHead>
+                      <TableHead className="w-[200px] text-xs bg-blue-50/50">参数释义 (自定义)</TableHead>
+                      <TableHead className="w-[100px] text-xs bg-blue-50/50">ATA章节 (自定义)</TableHead>
+                      <TableHead className="w-[80px] text-xs">操作</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredParameters.map((param) => (
+                      <TableRow key={param.id} className={editingRow === param.id ? "bg-blue-50/30" : ""}>
+                        <TableCell className="font-mono text-xs">{param.parameterAssignment}</TableCell>
+                        <TableCell className="font-mono text-xs font-medium">{param.mnemonic}</TableCell>
+                        <TableCell className="font-mono text-xs text-muted-foreground">{param.portName}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className={param.signalType === "ANALOG" ? "bg-amber-50 text-amber-600" : "bg-sky-50 text-sky-600"}>
+                            {param.signalType}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-xs">{param.unit || "-"}</TableCell>
+                        <TableCell className="w-[1px] bg-primary/10 p-0"></TableCell>
+                        {editingRow === param.id ? (
+                          <>
+                            <TableCell className="bg-blue-50/30">
+                              <Input
+                                value={editValues.customName}
+                                onChange={(e) => setEditValues(prev => ({ ...prev, customName: e.target.value }))}
+                                className="h-7 text-xs"
+                                placeholder="输入参数名"
+                              />
+                            </TableCell>
+                            <TableCell className="bg-blue-50/30">
+                              <Input
+                                value={editValues.customDescription}
+                                onChange={(e) => setEditValues(prev => ({ ...prev, customDescription: e.target.value }))}
+                                className="h-7 text-xs"
+                                placeholder="输入参数释义"
+                              />
+                            </TableCell>
+                            <TableCell className="bg-blue-50/30">
+                              <Input
+                                value={editValues.ataChapter}
+                                onChange={(e) => setEditValues(prev => ({ ...prev, ataChapter: e.target.value }))}
+                                className="h-7 text-xs"
+                                placeholder="如: 72-00"
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-1">
+                                <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-emerald-600 hover:text-emerald-700" onClick={() => saveEditing(param)}>
+                                  <Check className="h-3.5 w-3.5" />
+                                </Button>
+                                <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-red-500 hover:text-red-600" onClick={cancelEditing}>
+                                  <X className="h-3.5 w-3.5" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </>
+                        ) : (
+                          <>
+                            <TableCell className="text-xs bg-blue-50/30">
+                              {param.customName || <span className="text-muted-foreground">-</span>}
+                            </TableCell>
+                            <TableCell className="text-xs bg-blue-50/30">
+                              {param.customDescription || <span className="text-muted-foreground">-</span>}
+                            </TableCell>
+                            <TableCell className="text-xs bg-blue-50/30">
+                              {param.ataChapter ? (
+                                <Badge variant="outline" className="bg-blue-50 text-blue-600">
+                                  ATA {param.ataChapter}
+                                </Badge>
+                              ) : (
+                                <span className="text-muted-foreground">-</span>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => startEditing(param)}>
+                                <Edit className="h-3.5 w-3.5" />
+                              </Button>
+                            </TableCell>
+                          </>
+                        )}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* 模板配置 */}
         {activeTab === "template" && (
           <Card className="border border-border">
@@ -378,88 +845,14 @@ export default function DataManagementPage() {
           </Card>
         )}
 
-        {/* 存储管理 */}
-        {activeTab === "storage" && (
-          <Card className="border border-border">
-            <CardHeader className="border-b border-border py-3 px-4">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-base flex items-center gap-2">
-                  <HardDrive className="h-4 w-4 text-primary" />
-                  存储管理
-                </CardTitle>
-                <div className="flex items-center gap-2">
-                  <Button size="sm" variant="outline" className="gap-1">
-                    <RefreshCw className="h-4 w-4" />
-                    刷新统计
-                  </Button>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="p-4">
-              {/* 存储概览 */}
-              <div className="grid grid-cols-4 gap-4 mb-4">
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                  <div className="text-2xl font-semibold text-blue-700">12.5 TB</div>
-                  <div className="text-sm text-blue-600">总存储量</div>
-                </div>
-                <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
-                  <div className="text-2xl font-semibold text-emerald-700">85,940</div>
-                  <div className="text-sm text-emerald-600">文件总数</div>
-                </div>
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                  <div className="text-2xl font-semibold text-amber-700">78%</div>
-                  <div className="text-sm text-amber-600">存储使用率</div>
-                </div>
-                <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
-                  <div className="text-2xl font-semibold text-purple-700">5</div>
-                  <div className="text-sm text-purple-600">存储分区</div>
-                </div>
-              </div>
-
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[160px]">存储名称</TableHead>
-                    <TableHead>路径</TableHead>
-                    <TableHead className="w-[100px]">大小</TableHead>
-                    <TableHead className="w-[100px]">文件数</TableHead>
-                    <TableHead className="w-[100px]">类型</TableHead>
-                    <TableHead className="w-[100px]">保留期限</TableHead>
-                    <TableHead className="w-[80px]">操作</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {storageData.map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell className="font-medium">{item.name}</TableCell>
-                      <TableCell className="font-mono text-xs text-muted-foreground">{item.path}</TableCell>
-                      <TableCell>{item.size}</TableCell>
-                      <TableCell>{item.files.toLocaleString()}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{item.type}</Badge>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">{item.retention}</TableCell>
-                      <TableCell>
-                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
-                          <MoreHorizontal className="h-3.5 w-3.5" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* 元数据管理 */}
+        {/* 元数据配置 */}
         {activeTab === "metadata" && (
           <Card className="border border-border">
             <CardHeader className="border-b border-border py-3 px-4">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base flex items-center gap-2">
                   <Tags className="h-4 w-4 text-primary" />
-                  元数据管理
+                  元数据配置
                 </CardTitle>
                 <div className="flex items-center gap-2">
                   <Button size="sm" variant="outline" className="gap-1">
@@ -516,6 +909,35 @@ export default function DataManagementPage() {
           </Card>
         )}
       </main>
+
+      {/* 同步确认对话框 */}
+      <Dialog open={syncDialogOpen} onOpenChange={setSyncDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>同步配置到其他航司</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-sm text-muted-foreground mb-4">
+              检测到参数 <span className="font-mono font-medium text-foreground">{syncInfo.mnemonic}</span> 在以下航司的参数表中也存在，是否将您的配置同步到这些航司？
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {syncInfo.affectedAirlines.map((airline, idx) => (
+                <Badge key={idx} variant="outline" className="bg-blue-50 text-blue-600">
+                  {airline}
+                </Badge>
+              ))}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => doSave(syncInfo.parameterId, syncInfo.mnemonic, false)}>
+              仅保存当前航司
+            </Button>
+            <Button onClick={() => doSave(syncInfo.parameterId, syncInfo.mnemonic, true)}>
+              同步到所有航司
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
