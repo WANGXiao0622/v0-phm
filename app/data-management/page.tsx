@@ -31,6 +31,7 @@ import {
   FolderDown,
   AlertTriangle,
   ExternalLink,
+  ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -56,6 +57,11 @@ import {
   DialogFooter,
   DialogDescription,
 } from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -1396,10 +1402,26 @@ export default function DataManagementPage() {
             <Card className="border border-border">
               <CardHeader className="border-b border-border py-3 px-4">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <AlertTriangle className="h-4 w-4 text-primary" />
-                    故障统计
-                  </CardTitle>
+                  <div className="flex items-center gap-4">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <AlertTriangle className="h-4 w-4 text-primary" />
+                      故障统计
+                    </CardTitle>
+                    <span className="text-sm text-muted-foreground">
+                      共 {filteredFaultData.length} 条记录
+                    </span>
+                    {(faultFilters.startDate || faultFilters.endDate || faultFilters.airline || faultFilters.registration || faultFilters.cmsMessage || faultFilters.status) && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 text-xs"
+                        onClick={() => setFaultFilters({ startDate: "", endDate: "", airline: "", registration: "", cmsMessage: "", status: "" })}
+                      >
+                        <X className="h-3 w-3 mr-1" />
+                        清除筛选
+                      </Button>
+                    )}
+                  </div>
                   <div className="flex items-center gap-2">
                     <Button size="sm" variant="outline" className="gap-1">
                       <Download className="h-4 w-4" />
@@ -1411,109 +1433,158 @@ export default function DataManagementPage() {
                     </Button>
                   </div>
                 </div>
-
-                {/* 筛选区域 */}
-                <div className="flex flex-wrap items-center gap-3 mt-3 pt-3 border-t border-border">
-                  <div className="flex items-center gap-2">
-                    <Filter className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">筛选:</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Label className="text-sm text-muted-foreground">开始日期:</Label>
-                    <Input
-                      type="date"
-                      value={faultFilters.startDate}
-                      onChange={(e) => setFaultFilters(prev => ({ ...prev, startDate: e.target.value }))}
-                      className="w-[140px] h-8"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Label className="text-sm text-muted-foreground">结束日期:</Label>
-                    <Input
-                      type="date"
-                      value={faultFilters.endDate}
-                      onChange={(e) => setFaultFilters(prev => ({ ...prev, endDate: e.target.value }))}
-                      className="w-[140px] h-8"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Label className="text-sm text-muted-foreground">航司:</Label>
-                    <Select value={faultFilters.airline} onValueChange={(v) => setFaultFilters(prev => ({ ...prev, airline: v === " " ? "" : v }))}>
-                      <SelectTrigger className="w-[120px] h-8">
-                        <SelectValue placeholder="全部" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value=" ">全部</SelectItem>
-                        {airlineList.map(a => (
-                          <SelectItem key={a.code} value={a.code}>{a.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Label className="text-sm text-muted-foreground">注册号:</Label>
-                    <Select value={faultFilters.registration} onValueChange={(v) => setFaultFilters(prev => ({ ...prev, registration: v === " " ? "" : v }))}>
-                      <SelectTrigger className="w-[100px] h-8">
-                        <SelectValue placeholder="全部" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value=" ">全部</SelectItem>
-                        {faultRegistrationList.map(reg => (
-                          <SelectItem key={reg} value={reg}>{reg}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Label className="text-sm text-muted-foreground">CMS:</Label>
-                    <Input
-                      placeholder="搜索CMS信息..."
-                      value={faultFilters.cmsMessage}
-                      onChange={(e) => setFaultFilters(prev => ({ ...prev, cmsMessage: e.target.value }))}
-                      className="w-[150px] h-8"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Label className="text-sm text-muted-foreground">状态:</Label>
-                    <Select value={faultFilters.status} onValueChange={(v) => setFaultFilters(prev => ({ ...prev, status: v === " " ? "" : v }))}>
-                      <SelectTrigger className="w-[100px] h-8">
-                        <SelectValue placeholder="全部" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value=" ">全部</SelectItem>
-                        <SelectItem value="analyzed">已分析</SelectItem>
-                        <SelectItem value="pending">待分析</SelectItem>
-                        <SelectItem value="ignored">已忽略</SelectItem>
-                        <SelectItem value="no_qar">暂无QAR</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8"
-                    onClick={() => setFaultFilters({ startDate: "", endDate: "", airline: "", registration: "", cmsMessage: "", status: "" })}
-                  >
-                    <X className="h-4 w-4 mr-1" />
-                    清除筛选
-                  </Button>
-                  <div className="ml-auto text-sm text-muted-foreground">
-                    共 {filteredFaultData.length} 条记录
-                  </div>
-                </div>
               </CardHeader>
               <CardContent className="p-0">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-[160px]">CMS信息</TableHead>
-                      <TableHead className="w-[80px]">注册号</TableHead>
-                      <TableHead className="w-[140px]">航司</TableHead>
+                      {/* CMS信息 - 文本搜索筛选 */}
+                      <TableHead className="w-[160px]">
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button variant="ghost" className="h-auto p-0 font-medium hover:bg-transparent flex items-center gap-1">
+                              CMS信息
+                              <ChevronDown className={`h-3 w-3 ${faultFilters.cmsMessage ? "text-primary" : "text-muted-foreground"}`} />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-[200px] p-3" align="start">
+                            <div className="space-y-2">
+                              <Label className="text-xs text-muted-foreground">搜索CMS信息</Label>
+                              <Input
+                                placeholder="输入关键词..."
+                                value={faultFilters.cmsMessage}
+                                onChange={(e) => setFaultFilters(prev => ({ ...prev, cmsMessage: e.target.value }))}
+                                className="h-8"
+                              />
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      </TableHead>
+                      
+                      {/* 注册号 - 下拉选择筛选 */}
+                      <TableHead className="w-[80px]">
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button variant="ghost" className="h-auto p-0 font-medium hover:bg-transparent flex items-center gap-1">
+                              注册号
+                              <ChevronDown className={`h-3 w-3 ${faultFilters.registration ? "text-primary" : "text-muted-foreground"}`} />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-[150px] p-3" align="start">
+                            <div className="space-y-2">
+                              <Label className="text-xs text-muted-foreground">选择注册号</Label>
+                              <Select value={faultFilters.registration || " "} onValueChange={(v) => setFaultFilters(prev => ({ ...prev, registration: v === " " ? "" : v }))}>
+                                <SelectTrigger className="h-8">
+                                  <SelectValue placeholder="全部" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value=" ">全部</SelectItem>
+                                  {faultRegistrationList.map(reg => (
+                                    <SelectItem key={reg} value={reg}>{reg}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      </TableHead>
+                      
+                      {/* 航司 - 下拉选择筛选 */}
+                      <TableHead className="w-[140px]">
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button variant="ghost" className="h-auto p-0 font-medium hover:bg-transparent flex items-center gap-1">
+                              航司
+                              <ChevronDown className={`h-3 w-3 ${faultFilters.airline ? "text-primary" : "text-muted-foreground"}`} />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-[150px] p-3" align="start">
+                            <div className="space-y-2">
+                              <Label className="text-xs text-muted-foreground">选择航司</Label>
+                              <Select value={faultFilters.airline || " "} onValueChange={(v) => setFaultFilters(prev => ({ ...prev, airline: v === " " ? "" : v }))}>
+                                <SelectTrigger className="h-8">
+                                  <SelectValue placeholder="全部" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value=" ">全部</SelectItem>
+                                  {airlineList.map(a => (
+                                    <SelectItem key={a.code} value={a.code}>{a.name}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      </TableHead>
+                      
                       <TableHead className="w-[80px]">ATA</TableHead>
-                      <TableHead className="w-[150px]">故障时间</TableHead>
+                      
+                      {/* 故障时间 - 日期范围筛选 */}
+                      <TableHead className="w-[150px]">
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button variant="ghost" className="h-auto p-0 font-medium hover:bg-transparent flex items-center gap-1">
+                              故障时间
+                              <ChevronDown className={`h-3 w-3 ${faultFilters.startDate || faultFilters.endDate ? "text-primary" : "text-muted-foreground"}`} />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-[220px] p-3" align="start">
+                            <div className="space-y-3">
+                              <div className="space-y-2">
+                                <Label className="text-xs text-muted-foreground">开始日期</Label>
+                                <Input
+                                  type="date"
+                                  value={faultFilters.startDate}
+                                  onChange={(e) => setFaultFilters(prev => ({ ...prev, startDate: e.target.value }))}
+                                  className="h-8"
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label className="text-xs text-muted-foreground">结束日期</Label>
+                                <Input
+                                  type="date"
+                                  value={faultFilters.endDate}
+                                  onChange={(e) => setFaultFilters(prev => ({ ...prev, endDate: e.target.value }))}
+                                  className="h-8"
+                                />
+                              </div>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      </TableHead>
+                      
                       <TableHead className="w-[100px]">航班号</TableHead>
                       <TableHead className="w-[100px]">航线</TableHead>
-                      <TableHead className="w-[90px]">状态</TableHead>
+                      
+                      {/* 状态 - 下拉选择筛选 */}
+                      <TableHead className="w-[90px]">
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button variant="ghost" className="h-auto p-0 font-medium hover:bg-transparent flex items-center gap-1">
+                              状态
+                              <ChevronDown className={`h-3 w-3 ${faultFilters.status ? "text-primary" : "text-muted-foreground"}`} />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-[140px] p-3" align="start">
+                            <div className="space-y-2">
+                              <Label className="text-xs text-muted-foreground">选择状态</Label>
+                              <Select value={faultFilters.status || " "} onValueChange={(v) => setFaultFilters(prev => ({ ...prev, status: v === " " ? "" : v }))}>
+                                <SelectTrigger className="h-8">
+                                  <SelectValue placeholder="全部" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value=" ">全部</SelectItem>
+                                  <SelectItem value="analyzed">已分析</SelectItem>
+                                  <SelectItem value="pending">待分析</SelectItem>
+                                  <SelectItem value="ignored">已忽略</SelectItem>
+                                  <SelectItem value="no_qar">暂无QAR</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      </TableHead>
+                      
                       <TableHead className="w-[80px]">操作</TableHead>
                     </TableRow>
                   </TableHeader>
