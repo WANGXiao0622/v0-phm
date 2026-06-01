@@ -19,6 +19,10 @@ import {
   CalendarDays,
   ExternalLink,
   ListTodo,
+  Plane,
+  ClipboardList,
+  Users,
+  Database,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -30,14 +34,152 @@ const monthlyStats = {
   noQarData: 26,
 };
 
-// 待办事项数据
-const todoItems = [
-  { id: 1, title: "分析 B-6789 发动机振动异常", priority: "high", dueDate: "2024-01-15", status: "pending", aircraft: "B-6789", faultType: "发动机振动" },
-  { id: 2, title: "处理 B-2345 液压系统告警", priority: "medium", dueDate: "2024-01-16", status: "pending", aircraft: "B-2345", faultType: "液压系统" },
-  { id: 3, title: "审核 B-5678 APU性能报告", priority: "low", dueDate: "2024-01-17", status: "pending", aircraft: "B-5678", faultType: "APU" },
-  { id: 4, title: "跟进 B-1234 刹车温度监控", priority: "medium", dueDate: "2024-01-18", status: "pending", aircraft: "B-1234", faultType: "刹车系统" },
-  { id: 5, title: "完成 B-9012 燃油系统分析", priority: "high", dueDate: "2024-01-15", status: "pending", aircraft: "B-9012", faultType: "燃油系统" },
+// 故障分析任务数据（与任务管理页面保持一致）
+const faultTasks = [
+  {
+    id: "F2024001",
+    type: "fault" as const,
+    title: "发动机N1转速异常波动",
+    time: "2024-01-15 14:32",
+    ata: "72-31",
+    registration: "B-1234",
+    location: "北京首都机场",
+    status: "completed",
+    hasWQAR: true,
+  },
+  {
+    id: "F2024002",
+    type: "fault" as const,
+    title: "液压系统压力偏低",
+    time: "2024-01-14 09:15",
+    ata: "29-11",
+    registration: "B-5678",
+    location: "上海浦东机场",
+    status: "processing",
+    hasWQAR: true,
+  },
+  {
+    id: "F2024003",
+    type: "fault" as const,
+    title: "电气系统电压不稳定",
+    time: "2024-01-13 16:45",
+    ata: "24-22",
+    registration: "B-9012",
+    location: "广州白云机场",
+    status: "pending",
+    hasWQAR: false,
+  },
+  {
+    id: "F2024004",
+    type: "fault" as const,
+    title: "燃油流量传感器异常",
+    time: "2024-01-12 11:20",
+    ata: "73-21",
+    registration: "B-3456",
+    location: "深圳宝安机场",
+    status: "transferred",
+    hasWQAR: true,
+  },
+  {
+    id: "F2024005",
+    type: "fault" as const,
+    title: "发动机振动值超标",
+    time: "2024-01-11 08:55",
+    ata: "72-50",
+    registration: "B-7890",
+    location: "成都双流机场",
+    status: "processing",
+    hasWQAR: false,
+  },
 ];
+
+// 型号任务数据（与任务管理页面保持一致）
+const modelTasks = [
+  {
+    id: "M2024001",
+    type: "model" as const,
+    title: "发动机性能基线建立",
+    source: "C919",
+    deadline: "2024-02-15",
+    status: "processing",
+  },
+  {
+    id: "M2024002",
+    type: "model" as const,
+    title: "APU启动特性分析",
+    source: "C909",
+    deadline: "2024-02-20",
+    status: "pending",
+  },
+  {
+    id: "M2024003",
+    type: "model" as const,
+    title: "航线数据质量评估",
+    source: "运行支持",
+    deadline: "2024-01-30",
+    status: "completed",
+  },
+  {
+    id: "M2024004",
+    type: "model" as const,
+    title: "预测性维护算法验证",
+    source: "创新平台",
+    deadline: "2024-03-01",
+    status: "processing",
+  },
+  {
+    id: "M2024005",
+    type: "model" as const,
+    title: "测试数据格式转换工具",
+    source: "其它",
+    deadline: "2024-02-10",
+    status: "pending",
+  },
+];
+
+// 其它任务数据（与任务管理页面保持一致）
+const otherTasks = [
+  {
+    id: "O2024001",
+    type: "other" as const,
+    title: "整理2023年度故障分析报告汇总",
+    time: "2024-01-16",
+    delivery: "PPT报告",
+    status: "processing",
+  },
+  {
+    id: "O2024002",
+    type: "other" as const,
+    title: "参加部门技术交流会议",
+    time: "2024-01-18",
+    delivery: "会议纪要",
+    status: "pending",
+  },
+  {
+    id: "O2024003",
+    type: "other" as const,
+    title: "新员工培训材料准备",
+    time: "2024-01-10",
+    delivery: "培训文档",
+    status: "completed",
+  },
+  {
+    id: "O2024004",
+    type: "other" as const,
+    title: "系统使用手册更新",
+    time: "2024-01-20",
+    delivery: "Word文档",
+    status: "pending",
+  },
+];
+
+// 合并所有待办任务
+type TodoItem = 
+  | (typeof faultTasks[number])
+  | (typeof modelTasks[number])
+  | (typeof otherTasks[number]);
+
+const allTodoItems: TodoItem[] = [...faultTasks, ...modelTasks, ...otherTasks];
 
 // 我的模板数据
 const myTemplates = [
@@ -54,26 +196,136 @@ const myParameterConfigs = [
 ];
 
 export default function WorkspacePage() {
-  const [todos, setTodos] = useState(todoItems);
+  const [completedIds, setCompletedIds] = useState<string[]>([]);
 
-  const toggleTodo = (id: number) => {
-    setTodos(prev => prev.map(todo => 
-      todo.id === id ? { ...todo, status: todo.status === "pending" ? "completed" : "pending" } : todo
-    ));
+  const toggleTodo = (id: string) => {
+    setCompletedIds(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
   };
 
-  const getPriorityBadge = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return <Badge variant="destructive" className="text-xs">紧急</Badge>;
-      case "medium":
-        return <Badge variant="outline" className="bg-amber-50 text-amber-600 border-amber-200 text-xs">中等</Badge>;
-      case "low":
-        return <Badge variant="outline" className="bg-slate-50 text-slate-600 border-slate-200 text-xs">普通</Badge>;
+  // 获取任务来源标签
+  const getSourceBadge = (item: TodoItem) => {
+    if (item.type === "fault") {
+      return (
+        <Badge className="bg-red-100 text-red-700 border-red-200 text-xs">
+          <AlertTriangle className="h-3 w-3 mr-1" />
+          故障分析
+        </Badge>
+      );
+    }
+    if (item.type === "model") {
+      return (
+        <Badge className="bg-blue-100 text-blue-700 border-blue-200 text-xs">
+          <Plane className="h-3 w-3 mr-1" />
+          型号任务
+        </Badge>
+      );
+    }
+    return (
+      <Badge className="bg-purple-100 text-purple-700 border-purple-200 text-xs">
+        <ClipboardList className="h-3 w-3 mr-1" />
+        其它任务
+      </Badge>
+    );
+  };
+
+  // 获取状态标签
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "pending":
+        return (
+          <Badge variant="outline" className="text-muted-foreground border-muted-foreground/30 text-xs">
+            <Clock className="h-3 w-3 mr-1" />
+            待处理
+          </Badge>
+        );
+      case "processing":
+        return (
+          <Badge variant="outline" className="text-blue-600 border-blue-300 text-xs">
+            <Activity className="h-3 w-3 mr-1" />
+            处理中
+          </Badge>
+        );
+      case "completed":
+        return (
+          <Badge variant="outline" className="text-emerald-600 border-emerald-300 text-xs">
+            <CheckCircle2 className="h-3 w-3 mr-1" />
+            已完成
+          </Badge>
+        );
+      case "transferred":
+        return (
+          <Badge variant="outline" className="text-purple-600 border-purple-300 text-xs">
+            <Users className="h-3 w-3 mr-1" />
+            已转派
+          </Badge>
+        );
       default:
         return null;
     }
   };
+
+  // 获取任务详情信息
+  const getTaskDetails = (item: TodoItem) => {
+    if (item.type === "fault") {
+      const faultItem = item as typeof faultTasks[number];
+      return (
+        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+          <span className="flex items-center gap-1">
+            <Clock className="h-3 w-3" />
+            {faultItem.time}
+          </span>
+          <Badge variant="outline" className="text-xs h-5">ATA {faultItem.ata}</Badge>
+          <Badge variant="outline" className="text-xs h-5">{faultItem.registration}</Badge>
+          {faultItem.hasWQAR ? (
+            <Badge className="bg-emerald-50 text-emerald-600 border-emerald-200 text-xs h-5">
+              <Database className="h-3 w-3 mr-1" />
+              有QAR
+            </Badge>
+          ) : (
+            <Badge className="bg-gray-50 text-gray-500 border-gray-200 text-xs h-5">
+              <Database className="h-3 w-3 mr-1" />
+              无QAR
+            </Badge>
+          )}
+        </div>
+      );
+    }
+    if (item.type === "model") {
+      const modelItem = item as typeof modelTasks[number];
+      return (
+        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+          <span className="flex items-center gap-1">
+            <Clock className="h-3 w-3" />
+            截止: {modelItem.deadline}
+          </span>
+          <Badge variant="outline" className="text-xs h-5">{modelItem.source}</Badge>
+        </div>
+      );
+    }
+    const otherItem = item as typeof otherTasks[number];
+    return (
+      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+        <span className="flex items-center gap-1">
+          <Clock className="h-3 w-3" />
+          {otherItem.time}
+        </span>
+        <Badge variant="outline" className="text-xs h-5">{otherItem.delivery}</Badge>
+      </div>
+    );
+  };
+
+  // 获取任务链接
+  const getTaskLink = (item: TodoItem) => {
+    if (item.type === "fault") {
+      return `/task-management/fault-analysis/${item.id}`;
+    }
+    return "/task-management";
+  };
+
+  // 计算待处理任务数量
+  const pendingCount = allTodoItems.filter(t => t.status !== "completed" && !completedIds.includes(t.id)).length;
 
   const completionRate = Math.round((monthlyStats.completedAnalysis / monthlyStats.totalFaults) * 100);
 
@@ -189,7 +441,7 @@ export default function WorkspacePage() {
                 <CardTitle className="text-base flex items-center gap-2">
                   <ListTodo className="h-4 w-4 text-primary" />
                   待办事项
-                  <Badge variant="outline" className="ml-2">{todos.filter(t => t.status === "pending").length} 项待处理</Badge>
+                  <Badge variant="outline" className="ml-2">{pendingCount} 项待处理</Badge>
                 </CardTitle>
                 <Link href="/task-management">
                   <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground">
@@ -200,41 +452,56 @@ export default function WorkspacePage() {
               </div>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="divide-y divide-border">
-                {todos.map((todo) => (
-                  <div 
-                    key={todo.id} 
-                    className={`flex items-center gap-4 px-4 py-3 hover:bg-muted/50 transition-colors ${
-                      todo.status === "completed" ? "opacity-50" : ""
-                    }`}
-                  >
-                    <Checkbox 
-                      checked={todo.status === "completed"}
-                      onCheckedChange={() => toggleTodo(todo.id)}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className={`text-sm font-medium ${todo.status === "completed" ? "line-through text-muted-foreground" : "text-foreground"}`}>
-                          {todo.title}
-                        </span>
-                        {getPriorityBadge(todo.priority)}
+              {/* 表头 */}
+              <div className="grid grid-cols-12 gap-2 px-4 py-2 bg-secondary/50 text-xs text-muted-foreground border-b border-border">
+                <div className="col-span-1"></div>
+                <div className="col-span-3">任务描述</div>
+                <div className="col-span-2">任务来源</div>
+                <div className="col-span-3">详情信息</div>
+                <div className="col-span-2">状态</div>
+                <div className="col-span-1">操作</div>
+              </div>
+              {/* 任务列表 */}
+              <div className="divide-y divide-border max-h-[400px] overflow-y-auto">
+                {allTodoItems.map((item) => {
+                  const isCompleted = completedIds.includes(item.id) || item.status === "completed";
+                  return (
+                    <div 
+                      key={item.id} 
+                      className={`grid grid-cols-12 gap-2 px-4 py-3 hover:bg-muted/50 transition-colors items-center ${
+                        isCompleted ? "opacity-50 bg-muted/20" : ""
+                      }`}
+                    >
+                      <div className="col-span-1">
+                        <Checkbox 
+                          checked={isCompleted}
+                          onCheckedChange={() => toggleTodo(item.id)}
+                        />
                       </div>
-                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          {todo.dueDate}
+                      <div className="col-span-3">
+                        <span className={`text-sm font-medium ${isCompleted ? "line-through text-muted-foreground" : "text-foreground"}`}>
+                          {item.title}
                         </span>
-                        <Badge variant="outline" className="text-xs h-5">{todo.aircraft}</Badge>
-                        <span>{todo.faultType}</span>
+                      </div>
+                      <div className="col-span-2">
+                        {getSourceBadge(item)}
+                      </div>
+                      <div className="col-span-3">
+                        {getTaskDetails(item)}
+                      </div>
+                      <div className="col-span-2">
+                        {getStatusBadge(item.status)}
+                      </div>
+                      <div className="col-span-1">
+                        <Link href={getTaskLink(item)}>
+                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                            <ExternalLink className="h-3.5 w-3.5" />
+                          </Button>
+                        </Link>
                       </div>
                     </div>
-                    <Link href="/task-management">
-                      <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
-                        <ExternalLink className="h-3.5 w-3.5" />
-                      </Button>
-                    </Link>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </CardContent>
           </Card>
