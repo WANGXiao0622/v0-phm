@@ -142,14 +142,14 @@ const generateAnomalyData = () => {
 // 当前故障的ATA章节（模拟数据）
 const currentATA = "72";
 
-// 模拟故障关联列表数据
+// 模拟故障关联列表数据（参考故障统计列表结构）
 const relatedFaults = [
-  { id: "F2024008", registration: "B-104X", cms: "CMS-APU-001", date: "2024-01-12", description: "APU EGT超温警告", status: "completed" },
-  { id: "F2024006", registration: "B-104X", cms: "CMS-APU-001", date: "2024-01-10", description: "APU启动异常", status: "completed" },
-  { id: "F2024003", registration: "B-104X", cms: "CMS-APU-002", date: "2024-01-05", description: "APU引气压力低", status: "processing" },
-  { id: "F2023098", registration: "B-104X", cms: "CMS-APU-001", date: "2023-12-28", description: "APU EGT趋势异常", status: "completed" },
-  { id: "F2023092", registration: "B-104X", cms: "CMS-APU-003", date: "2023-12-20", description: "APU油耗偏高", status: "completed" },
-  { id: "F2023085", registration: "B-104X", cms: "CMS-APU-001", date: "2023-12-15", description: "APU振动值偏大", status: "completed" },
+  { id: "FA-2024-0156", faultCode: "4900-03", cmsMessage: "APU BLEED SERVO VALVE", registration: "B-104X", airline: "成都航空", ataChapter: "49", faultDate: "2024-01-12 14:30:00", flightNo: "UEA5123", route: "PVG-PEK", severity: "high" as const, status: "analyzed" as const },
+  { id: "FA-2024-0148", faultCode: "4900-05", cmsMessage: "APU BLEED SERVO VALVE", registration: "B-104X", airline: "成都航空", ataChapter: "49", faultDate: "2024-01-10 09:15:00", flightNo: "UEA2234", route: "PEK-SHA", severity: "medium" as const, status: "analyzed" as const },
+  { id: "FA-2024-0142", faultCode: "4900-08", cmsMessage: "APU BLEED LO PR", registration: "B-104X", airline: "成都航空", ataChapter: "49", faultDate: "2024-01-05 16:45:00", flightNo: "UEA4456", route: "SHA-CAN", severity: "medium" as const, status: "pending" as const },
+  { id: "FA-2023-0098", faultCode: "4900-03", cmsMessage: "APU BLEED SERVO VALVE", registration: "B-104X", airline: "成都航空", ataChapter: "49", faultDate: "2023-12-28 11:20:00", flightNo: "UEA6789", route: "CAN-PEK", severity: "high" as const, status: "analyzed" as const },
+  { id: "FA-2023-0092", faultCode: "4900-12", cmsMessage: "APU OIL QTY LO", registration: "B-104X", airline: "成都航空", ataChapter: "49", faultDate: "2023-12-20 08:30:00", flightNo: "UEA7890", route: "PEK-CAN", severity: "low" as const, status: "analyzed" as const },
+  { id: "FA-2023-0085", faultCode: "4900-03", cmsMessage: "APU BLEED SERVO VALVE", registration: "B-104X", airline: "成都航空", ataChapter: "49", faultDate: "2023-12-15 15:10:00", flightNo: "UEA8901", route: "SHA-CTU", severity: "medium" as const, status: "analyzed" as const },
 ];
 
 export default function FaultAnalysisPage() {
@@ -296,9 +296,6 @@ export default function FaultAnalysisPage() {
             <CardTitle className="flex items-center gap-2 text-foreground text-base">
               <AlertCircle className="h-4 w-4 text-primary" />
               故障基本信息
-              <Badge className="ml-2 bg-orange-100 text-orange-700 border-orange-200 text-xs">
-                更新于 2024-01-15 16:30
-              </Badge>
             </CardTitle>
           </CardHeader>
           <CardContent className="p-3">
@@ -307,7 +304,7 @@ export default function FaultAnalysisPage() {
               <div>
                 <Label className="text-muted-foreground text-xs">ATA章节</Label>
                 <Input
-                  value="72-31"
+                  value="49"
                   disabled
                   className="h-8 bg-input border-border text-foreground mt-1"
                 />
@@ -347,7 +344,7 @@ export default function FaultAnalysisPage() {
               <div>
                 <Label className="text-muted-foreground text-xs">件号</Label>
                 <Input
-                  value="PN-3800-01"
+                  value="11CB67"
                   disabled
                   className="h-8 bg-input border-border text-foreground mt-1"
                 />
@@ -359,23 +356,18 @@ export default function FaultAnalysisPage() {
               <div>
                 <Label className="text-muted-foreground text-xs">CMS信息</Label>
                 <Input
-                  value="CMS-APU-001"
+                  value="APU BLEED SERVO VALVE"
                   disabled
                   className="h-8 bg-input border-border text-foreground mt-1"
                 />
               </div>
               <div>
                 <Label className="text-muted-foreground text-xs">EICAS信息</Label>
-                <div className="flex items-center gap-2 mt-1">
-                  <Input
-                    value="APU EGT OVER LIMIT"
-                    disabled
-                    className="h-8 bg-input border-border text-foreground flex-1"
-                  />
-                  <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs rounded border border-orange-200 whitespace-nowrap">
-                    新增
-                  </span>
-                </div>
+                <Input
+                  value="暂无"
+                  disabled
+                  className="h-8 bg-input border-border text-foreground mt-1"
+                />
               </div>
             </div>
 
@@ -397,17 +389,12 @@ export default function FaultAnalysisPage() {
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Clock className="h-3 w-3" />
                     <span>报送时间: 2024-01-15 14:32:00</span>
-                    <span className="px-1.5 py-0.5 bg-orange-100 text-orange-700 rounded text-xs">更新于 16:30</span>
                   </div>
                   <Textarea
-                    value="监控发现APU EGT温度高，航后检查发现APU排气温度持续超过正常范围。详细记录：起飞前APU启动正常，滑行期间EGT读数升高至680°C（正常范围≤650°C），触发CMS告警。"
+                    value="航后检查发现有历史CMS信息：APU BLEED SERVO VALVE。新增信息：拆下件号4952545，序号：9BV19（原装机件）。"
                     disabled
                     className="bg-input border-border text-foreground text-sm min-h-[60px]"
                   />
-                  <div className="p-2 bg-orange-50 border border-orange-200 rounded text-sm">
-                    <span className="text-orange-700 font-medium">新增信息：</span>
-                    <span className="text-orange-600">经地面测试确认，APU EGT传感器工作正常，初步判断为APU燃烧室积碳导致燃烧效率下降。</span>
-                  </div>
                 </div>
               )}
             </div>
@@ -421,7 +408,7 @@ export default function FaultAnalysisPage() {
               <Link2 className="h-4 w-4 text-primary" />
               故障关联列表
               <Badge variant="outline" className="ml-2 text-xs">
-                基于 CMS-APU-001 & B-104X 匹配
+                基于 APU BLEED SERVO VALVE & B-104X 匹配
               </Badge>
               <Badge className="ml-1 bg-blue-100 text-blue-700 border-blue-200 text-xs">
                 {relatedFaults.length} 条相关记录
@@ -438,16 +425,28 @@ export default function FaultAnalysisPage() {
                 >
                   <div className="flex items-center gap-3">
                     <Badge variant="outline" className="font-mono text-xs">{fault.id}</Badge>
-                    <span className="text-sm">{fault.description}</span>
+                    <Badge variant="outline" className="text-xs bg-slate-50">{fault.faultCode}</Badge>
+                    <span className="text-sm">{fault.cmsMessage}</span>
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                    <span>{fault.date}</span>
-                    <Badge variant="outline" className="text-xs">{fault.cms}</Badge>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span>{fault.faultDate.split(" ")[0]}</span>
+                    <Badge variant="outline" className="text-xs">{fault.flightNo}</Badge>
+                    <Badge variant="outline" className="text-xs">{fault.route}</Badge>
                     <Badge 
                       variant="outline" 
-                      className={fault.status === "completed" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}
+                      className={
+                        fault.severity === "high" ? "bg-red-50 text-red-600" : 
+                        fault.severity === "medium" ? "bg-amber-50 text-amber-600" : 
+                        "bg-slate-50 text-slate-600"
+                      }
                     >
-                      {fault.status === "completed" ? "已完成" : "处理中"}
+                      {fault.severity === "high" ? "高" : fault.severity === "medium" ? "中" : "低"}
+                    </Badge>
+                    <Badge 
+                      variant="outline" 
+                      className={fault.status === "analyzed" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}
+                    >
+                      {fault.status === "analyzed" ? "已分析" : "待分析"}
                     </Badge>
                   </div>
                 </div>
@@ -465,16 +464,28 @@ export default function FaultAnalysisPage() {
                         >
                           <div className="flex items-center gap-3">
                             <Badge variant="outline" className="font-mono text-xs">{fault.id}</Badge>
-                            <span className="text-sm">{fault.description}</span>
+                            <Badge variant="outline" className="text-xs bg-slate-50">{fault.faultCode}</Badge>
+                            <span className="text-sm">{fault.cmsMessage}</span>
                           </div>
-                          <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                            <span>{fault.date}</span>
-                            <Badge variant="outline" className="text-xs">{fault.cms}</Badge>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span>{fault.faultDate.split(" ")[0]}</span>
+                            <Badge variant="outline" className="text-xs">{fault.flightNo}</Badge>
+                            <Badge variant="outline" className="text-xs">{fault.route}</Badge>
                             <Badge 
                               variant="outline" 
-                              className={fault.status === "completed" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}
+                              className={
+                                fault.severity === "high" ? "bg-red-50 text-red-600" : 
+                                fault.severity === "medium" ? "bg-amber-50 text-amber-600" : 
+                                "bg-slate-50 text-slate-600"
+                              }
                             >
-                              {fault.status === "completed" ? "已完成" : "处理中"}
+                              {fault.severity === "high" ? "高" : fault.severity === "medium" ? "中" : "低"}
+                            </Badge>
+                            <Badge 
+                              variant="outline" 
+                              className={fault.status === "analyzed" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}
+                            >
+                              {fault.status === "analyzed" ? "已分析" : "待分析"}
                             </Badge>
                           </div>
                         </div>
