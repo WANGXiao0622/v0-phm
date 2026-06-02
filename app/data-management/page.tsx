@@ -36,6 +36,11 @@ import {
   Copy,
   Globe,
   Key,
+  LayoutGrid,
+  Move,
+  Maximize2,
+  Minimize2,
+  GripVertical,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -293,11 +298,24 @@ export default function DataManagementPage() {
     ataChapter: "",
     description: "",
     lru: "",
-    selectedParameters: [] as string[]
+    selectedParameters: [] as string[],
+    dashboards: [] as {
+      id: string;
+      name: string;
+      parameters: string[];
+      width: number; // 1-4 表示占几列
+      height: number; // 1-2 表示占几行
+      x: number;
+      y: number;
+    }[]
   });
   const [parameterSearchTerm, setParameterSearchTerm] = useState("");
   const [parameterFilterType, setParameterFilterType] = useState<"all" | "mnemonic" | "customName" | "customDescription" | "ataChapter">("all");
   const [ataChapterFilter, setAtaChapterFilter] = useState("");
+  
+  // Dashboard 编辑状态
+  const [activeDashboardId, setActiveDashboardId] = useState<string | null>(null);
+  const [dashboardEditMode, setDashboardEditMode] = useState<"select" | "preview">("select");
 
   // WQAR下载对话框状态
   const [downloadDialogOpen, setDownloadDialogOpen] = useState(false);
@@ -536,23 +554,41 @@ export default function DataManagementPage() {
       ataChapter: "",
       description: "",
       lru: "",
-      selectedParameters: []
+      selectedParameters: [],
+      dashboards: []
     });
     setParameterSearchTerm("");
+    setActiveDashboardId(null);
+    setDashboardEditMode("select");
     setTemplateDialogOpen(true);
   };
 
   // 打开编辑模板对话框
   const openEditTemplateDialog = (template: TemplateConfig) => {
     setEditingTemplate(template);
+    // 模拟从模板加载dashboards配置（实际应用中应从数据库获取）
+    const mockDashboards = template.selectedParameters.length > 0 ? [
+      {
+        id: "db-1",
+        name: "Dashboard 1",
+        parameters: template.selectedParameters.slice(0, Math.min(3, template.selectedParameters.length)),
+        width: 2,
+        height: 1,
+        x: 0,
+        y: 0
+      }
+    ] : [];
     setTemplateForm({
       name: template.name,
       ataChapter: template.ataChapter,
       description: template.description,
       lru: template.lru,
-      selectedParameters: [...template.selectedParameters]
+      selectedParameters: [...template.selectedParameters],
+      dashboards: mockDashboards
     });
     setParameterSearchTerm("");
+    setActiveDashboardId(null);
+    setDashboardEditMode("select");
     setTemplateDialogOpen(true);
   };
 
@@ -601,6 +637,94 @@ export default function DataManagementPage() {
         ? prev.selectedParameters.filter(p => p !== mnemonic)
         : [...prev.selectedParameters, mnemonic]
     }));
+  };
+
+  // Dashboard 操作函数
+  const addDashboard = () => {
+    const newId = `db-${Date.now()}`;
+    const newDashboard = {
+      id: newId,
+      name: `Dashboard ${templateForm.dashboards.length + 1}`,
+      parameters: [] as string[],
+      width: 2,
+      height: 1,
+      x: 0,
+      y: templateForm.dashboards.length
+    };
+    setTemplateForm(prev => ({
+      ...prev,
+      dashboards: [...prev.dashboards, newDashboard]
+    }));
+    setActiveDashboardId(newId);
+  };
+
+  const removeDashboard = (id: string) => {
+    setTemplateForm(prev => ({
+      ...prev,
+      dashboards: prev.dashboards.filter(d => d.id !== id)
+    }));
+    if (activeDashboardId === id) {
+      setActiveDashboardId(null);
+    }
+  };
+
+  const updateDashboard = (id: string, updates: Partial<typeof templateForm.dashboards[number]>) => {
+    setTemplateForm(prev => ({
+      ...prev,
+      dashboards: prev.dashboards.map(d => 
+        d.id === id ? { ...d, ...updates } : d
+      )
+    }));
+  };
+
+  const addParameterToDashboard = (dashboardId: string, mnemonic: string) => {
+    setTemplateForm(prev => ({
+      ...prev,
+      dashboards: prev.dashboards.map(d => 
+        d.id === dashboardId && !d.parameters.includes(mnemonic)
+          ? { ...d, parameters: [...d.parameters, mnemonic] }
+          : d
+      )
+    }));
+  };
+
+  const removeParameterFromDashboard = (dashboardId: string, mnemonic: string) => {
+    setTemplateForm(prev => ({
+      ...prev,
+      dashboards: prev.dashboards.map(d => 
+        d.id === dashboardId
+          ? { ...d, parameters: d.parameters.filter(p => p !== mnemonic) }
+          : d
+      )
+    }));
+  };
+
+  const resizeDashboard = (id: string, direction: 'width' | 'height', delta: number) => {
+    setTemplateForm(prev => ({
+      ...prev,
+      dashboards: prev.dashboards.map(d => {
+        if (d.id !== id) return d;
+        if (direction === 'width') {
+          const newWidth = Math.max(1, Math.min(4, d.width + delta));
+          return { ...d, width: newWidth };
+        } else {
+          const newHeight = Math.max(1, Math.min(2, d.height + delta));
+          return { ...d, height: newHeight };
+        }
+      })
+    }));
+  };
+
+  // 生成简单的示意曲线数据
+  const generateMockChartData = (paramName: string) => {
+    const points = [];
+    for (let i = 0; i < 20; i++) {
+      points.push({
+        x: i,
+        y: 50 + Math.sin(i * 0.5 + paramName.charCodeAt(0)) * 30 + Math.random() * 10
+      });
+    }
+    return points;
   };
 
   // 过滤参数列表用于模板选择 - 支持多种筛选方式
@@ -2379,6 +2503,242 @@ export default function DataManagementPage() {
               <div className="text-xs text-muted-foreground">
                 共 {filteredParametersForTemplate.length} 条参数 {parameterSearchTerm || ataChapterFilter ? `（已筛选，总共 ${baseParameterData.length} 条）` : ""}
               </div>
+            </div>
+
+            {/* Dashboard 配置区域 */}
+            <div className="space-y-3 border-t pt-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <LayoutGrid className="h-5 w-5 text-primary" />
+                  <Label className="text-base font-medium">Dashboard 布局配置</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant={dashboardEditMode === "select" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setDashboardEditMode("select")}
+                  >
+                    配置参数
+                  </Button>
+                  <Button
+                    variant={dashboardEditMode === "preview" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setDashboardEditMode("preview")}
+                  >
+                    预览布局
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={addDashboard} className="gap-1">
+                    <Plus className="h-4 w-4" />
+                    添加 Dashboard
+                  </Button>
+                </div>
+              </div>
+
+              {templateForm.dashboards.length === 0 ? (
+                <div className="border-2 border-dashed rounded-lg p-8 text-center text-muted-foreground">
+                  <LayoutGrid className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                  <p>暂无 Dashboard 配置</p>
+                  <p className="text-sm mt-1">点击上方按钮添加 Dashboard，配置参数曲线展示</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {dashboardEditMode === "select" ? (
+                    // 参数配置模式
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      {templateForm.dashboards.map((dashboard, index) => (
+                        <div 
+                          key={dashboard.id}
+                          className={`border rounded-lg p-4 transition-all ${
+                            activeDashboardId === dashboard.id 
+                              ? "border-primary bg-primary/5" 
+                              : "border-border hover:border-primary/50"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                              <GripVertical className="h-4 w-4 text-muted-foreground cursor-move" />
+                              <Input
+                                value={dashboard.name}
+                                onChange={(e) => updateDashboard(dashboard.id, { name: e.target.value })}
+                                className="h-8 w-40 font-medium"
+                              />
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                <span>尺寸:</span>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm" 
+                                  className="h-6 w-6 p-0"
+                                  onClick={() => resizeDashboard(dashboard.id, 'width', -1)}
+                                  disabled={dashboard.width <= 1}
+                                >
+                                  <Minimize2 className="h-3 w-3" />
+                                </Button>
+                                <span className="w-8 text-center">{dashboard.width}x{dashboard.height}</span>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm" 
+                                  className="h-6 w-6 p-0"
+                                  onClick={() => resizeDashboard(dashboard.id, 'width', 1)}
+                                  disabled={dashboard.width >= 4}
+                                >
+                                  <Maximize2 className="h-3 w-3" />
+                                </Button>
+                              </div>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-7 w-7 p-0 text-destructive hover:text-destructive"
+                                onClick={() => removeDashboard(dashboard.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+
+                          {/* 已添加的参数 */}
+                          <div className="mb-3">
+                            <Label className="text-xs text-muted-foreground mb-2 block">
+                              已添加参数 ({dashboard.parameters.length})
+                            </Label>
+                            <div className="flex flex-wrap gap-1 min-h-[32px] p-2 bg-muted/30 rounded border">
+                              {dashboard.parameters.length === 0 ? (
+                                <span className="text-xs text-muted-foreground">点击下方参数添加到此Dashboard</span>
+                              ) : (
+                                dashboard.parameters.map(param => (
+                                  <Badge 
+                                    key={param}
+                                    variant="secondary"
+                                    className="gap-1 cursor-pointer hover:bg-destructive/10"
+                                    onClick={() => removeParameterFromDashboard(dashboard.id, param)}
+                                  >
+                                    {param}
+                                    <X className="h-3 w-3" />
+                                  </Badge>
+                                ))
+                              )}
+                            </div>
+                          </div>
+
+                          {/* 可添加的参数 */}
+                          <div>
+                            <Label className="text-xs text-muted-foreground mb-2 block">
+                              点击添加参数（已选核心参数）
+                            </Label>
+                            <div className="flex flex-wrap gap-1 max-h-[80px] overflow-y-auto p-2 bg-secondary/30 rounded border">
+                              {templateForm.selectedParameters.filter(p => !dashboard.parameters.includes(p)).map(param => (
+                                <Badge 
+                                  key={param}
+                                  variant="outline"
+                                  className="cursor-pointer hover:bg-primary/10 transition-colors"
+                                  onClick={() => addParameterToDashboard(dashboard.id, param)}
+                                >
+                                  <Plus className="h-3 w-3 mr-1" />
+                                  {param}
+                                </Badge>
+                              ))}
+                              {templateForm.selectedParameters.filter(p => !dashboard.parameters.includes(p)).length === 0 && (
+                                <span className="text-xs text-muted-foreground">所有参数已添加</span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    // 预览布局模式
+                    <div className="border rounded-lg p-4 bg-muted/20 min-h-[400px]">
+                      <div className="grid grid-cols-4 gap-3 auto-rows-[180px]">
+                        {templateForm.dashboards.map((dashboard) => (
+                          <div
+                            key={dashboard.id}
+                            className="bg-card border rounded-lg shadow-sm overflow-hidden flex flex-col"
+                            style={{
+                              gridColumn: `span ${dashboard.width}`,
+                              gridRow: `span ${dashboard.height}`
+                            }}
+                          >
+                            <div className="flex items-center justify-between px-3 py-2 border-b bg-muted/30">
+                              <span className="font-medium text-sm">{dashboard.name}</span>
+                              <Badge variant="outline" className="text-xs">
+                                {dashboard.parameters.length} 参数
+                              </Badge>
+                            </div>
+                            <div className="flex-1 p-3 relative">
+                              {dashboard.parameters.length === 0 ? (
+                                <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm">
+                                  暂无参数曲线
+                                </div>
+                              ) : (
+                                <svg 
+                                  viewBox="0 0 200 100" 
+                                  className="w-full h-full"
+                                  preserveAspectRatio="none"
+                                >
+                                  {/* 网格线 */}
+                                  <defs>
+                                    <pattern id={`grid-${dashboard.id}`} width="20" height="20" patternUnits="userSpaceOnUse">
+                                      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-muted-foreground/20" />
+                                    </pattern>
+                                  </defs>
+                                  <rect width="200" height="100" fill={`url(#grid-${dashboard.id})`} />
+                                  
+                                  {/* 示意曲线 */}
+                                  {dashboard.parameters.map((param, idx) => {
+                                    const data = generateMockChartData(param);
+                                    const colors = ['#3b82f6', '#ef4444', '#22c55e', '#f59e0b', '#8b5cf6'];
+                                    const color = colors[idx % colors.length];
+                                    const pathD = data.map((p, i) => 
+                                      `${i === 0 ? 'M' : 'L'} ${p.x * 10} ${100 - p.y}`
+                                    ).join(' ');
+                                    return (
+                                      <path
+                                        key={param}
+                                        d={pathD}
+                                        fill="none"
+                                        stroke={color}
+                                        strokeWidth="2"
+                                        className="opacity-80"
+                                      />
+                                    );
+                                  })}
+                                </svg>
+                              )}
+                              {/* 参数图例 */}
+                              {dashboard.parameters.length > 0 && (
+                                <div className="absolute bottom-1 left-1 flex flex-wrap gap-1">
+                                  {dashboard.parameters.slice(0, 4).map((param, idx) => {
+                                    const colors = ['bg-blue-500', 'bg-red-500', 'bg-green-500', 'bg-amber-500', 'bg-purple-500'];
+                                    return (
+                                      <div key={param} className="flex items-center gap-1 text-[10px] bg-background/80 px-1 rounded">
+                                        <div className={`w-2 h-2 rounded-full ${colors[idx % colors.length]}`} />
+                                        <span>{param}</span>
+                                      </div>
+                                    );
+                                  })}
+                                  {dashboard.parameters.length > 4 && (
+                                    <span className="text-[10px] text-muted-foreground">+{dashboard.parameters.length - 4}</span>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      {templateForm.dashboards.length === 0 && (
+                        <div className="h-full flex items-center justify-center text-muted-foreground">
+                          添加 Dashboard 后在此预览布局效果
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="text-xs text-muted-foreground">
+                    提示：在配置模式下编辑各 Dashboard 的参数，在预览模式下查看布局效果。Dashboard 宽度范围 1-4 列，可通过调整尺寸按钮改变。
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
