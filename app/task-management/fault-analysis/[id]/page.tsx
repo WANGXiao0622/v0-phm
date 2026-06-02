@@ -8,6 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
   AlertCircle,
   FileText,
   BarChart3,
@@ -24,6 +32,9 @@ import {
   ChevronLeft,
   Plane,
   Plus,
+  Link2,
+  Clock,
+  Eye,
 } from "lucide-react";
 import {
   LineChart,
@@ -140,6 +151,144 @@ const generateAnomalyData = () => {
 // 当前故障的ATA章节（模拟数据）
 const currentATA = "72";
 
+// 模拟故障关联列表数据（参考故障统计列表结构）
+const relatedFaults = [
+  { 
+    id: "FA-2024-0156", 
+    cmsMessage: "APU BLEED SERVO VALVE", 
+    registration: "B-104X", 
+    ataChapter: "49", 
+    faultDate: "2024-01-12 14:30:00", 
+    route: "PVG-PEK", 
+    status: "analyzed" as const,
+    // 故障基本信息
+    basicInfo: {
+      partNumber: "11CB67",
+      component: "APU",
+      eicas: "暂无",
+      description: "航后检查发现CMS信息：APU BLEED SERVO VALVE。",
+      newInfo: "更换引气伺服阀后，测试正常。"
+    },
+    // 分析结果
+    analysisResult: {
+      conclusion: "引气伺服阀内部密封圈老化，导致阀门响应迟缓。",
+      rootCause: "部件使用时间超过建议更换周期，密封材料性能下降。",
+      recommendation: "建议按照维护手册要求，定期更换密封圈，周期为3000飞行小时。",
+      analyst: "张工",
+      analyzeDate: "2024-01-13 16:20:00"
+    }
+  },
+  { 
+    id: "FA-2024-0148", 
+    cmsMessage: "APU BLEED SERVO VALVE", 
+    registration: "B-104X", 
+    ataChapter: "49", 
+    faultDate: "2024-01-10 09:15:00", 
+    route: "PEK-SHA", 
+    status: "analyzed" as const,
+    basicInfo: {
+      partNumber: "11CB67",
+      component: "APU",
+      eicas: "暂无",
+      description: "起飞前检查发现APU引气异常。",
+      newInfo: "复位后恢复正常，持续监控。"
+    },
+    analysisResult: {
+      conclusion: "瞬态信号干扰导致误报警。",
+      rootCause: "电磁环境干扰。",
+      recommendation: "持续监控，如再次发生则需检查线路屏蔽。",
+      analyst: "李工",
+      analyzeDate: "2024-01-11 10:30:00"
+    }
+  },
+  { 
+    id: "FA-2024-0142", 
+    cmsMessage: "APU BLEED SERVO VALVE", 
+    registration: "B-104X", 
+    ataChapter: "49", 
+    faultDate: "2024-01-05 16:45:00", 
+    route: "SHA-CAN", 
+    status: "pending" as const,
+    basicInfo: {
+      partNumber: "11CB67",
+      component: "APU",
+      eicas: "暂无",
+      description: "落地后发现CMS记录。",
+      newInfo: ""
+    },
+    analysisResult: null
+  },
+  { 
+    id: "FA-2023-0098", 
+    cmsMessage: "APU BLEED SERVO VALVE", 
+    registration: "B-104X", 
+    ataChapter: "49", 
+    faultDate: "2023-12-28 11:20:00", 
+    route: "CAN-PEK", 
+    status: "analyzed" as const,
+    basicInfo: {
+      partNumber: "11CB65",
+      component: "APU",
+      eicas: "APU FAULT",
+      description: "航中出现APU故障告警。",
+      newInfo: "落地后检查发现引气阀卡滞。"
+    },
+    analysisResult: {
+      conclusion: "引气伺服阀机械卡滞。",
+      rootCause: "阀芯表面有异物附着。",
+      recommendation: "清洁阀芯并进行功能测试。",
+      analyst: "王工",
+      analyzeDate: "2023-12-29 14:00:00"
+    }
+  },
+  { 
+    id: "FA-2023-0092", 
+    cmsMessage: "APU BLEED SERVO VALVE", 
+    registration: "B-104X", 
+    ataChapter: "49", 
+    faultDate: "2023-12-20 08:30:00", 
+    route: "PEK-CAN", 
+    status: "analyzed" as const,
+    basicInfo: {
+      partNumber: "11CB65",
+      component: "APU",
+      eicas: "暂无",
+      description: "例行检查发现历史CMS记录。",
+      newInfo: "检查确认阀门工作正常。"
+    },
+    analysisResult: {
+      conclusion: "间歇性信号问题，阀门本身无故障。",
+      rootCause: "连接器接触不良。",
+      recommendation: "清洁并紧固连接器。",
+      analyst: "赵工",
+      analyzeDate: "2023-12-21 11:00:00"
+    }
+  },
+  { 
+    id: "FA-2023-0085", 
+    cmsMessage: "APU BLEED SERVO VALVE", 
+    registration: "B-104X", 
+    ataChapter: "49", 
+    faultDate: "2023-12-15 15:10:00", 
+    route: "SHA-CTU", 
+    status: "analyzed" as const,
+    basicInfo: {
+      partNumber: "11CB65",
+      component: "APU",
+      eicas: "暂无",
+      description: "滑行期间出现CMS信息。",
+      newInfo: "地面测试未能复现。"
+    },
+    analysisResult: {
+      conclusion: "低温环境下阀门响应延迟。",
+      rootCause: "润滑脂在低温下粘度增加。",
+      recommendation: "更换低温润滑脂。",
+      analyst: "张工",
+      analyzeDate: "2023-12-16 09:30:00"
+    }
+  },
+];
+
 export default function FaultAnalysisPage() {
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
@@ -158,6 +307,13 @@ export default function FaultAnalysisPage() {
   const [showSegmentFilter, setShowSegmentFilter] = useState(false);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState(2); // 当前航段索引（故障发生航段）
   const [loadedSegments, setLoadedSegments] = useState<number[]>([]); // 已加载的航段索引列表
+  
+  // 关联故障展开状态
+  const [isRelatedFaultsExpanded, setIsRelatedFaultsExpanded] = useState(false);
+  
+  // 关联故障详情弹窗状态
+  const [selectedRelatedFault, setSelectedRelatedFault] = useState<typeof relatedFaults[number] | null>(null);
+  const [relatedFaultDialogOpen, setRelatedFaultDialogOpen] = useState(false);
 
   // 获取推荐的模板ID
   const recommendedTemplateId = ataTemplateMapping[currentATA] || null;
@@ -284,11 +440,12 @@ export default function FaultAnalysisPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-3">
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 text-sm">
+            {/* 第一排：ATA章节、注册号、日期、起降机场、部件、件号 */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-sm">
               <div>
                 <Label className="text-muted-foreground text-xs">ATA章节</Label>
                 <Input
-                  value="72-xxx"
+                  value="49"
                   disabled
                   className="h-8 bg-input border-border text-foreground mt-1"
                 />
@@ -296,7 +453,7 @@ export default function FaultAnalysisPage() {
               <div>
                 <Label className="text-muted-foreground text-xs">注册号</Label>
                 <Input
-                  value="B-xxxx"
+                  value="B-104X"
                   disabled
                   className="h-8 bg-input border-border text-foreground mt-1"
                 />
@@ -304,23 +461,43 @@ export default function FaultAnalysisPage() {
               <div>
                 <Label className="text-muted-foreground text-xs">日期</Label>
                 <Input
-                  value="2024-xx-xx"
+                  value="2024-01-15"
                   disabled
                   className="h-8 bg-input border-border text-foreground mt-1"
                 />
               </div>
               <div>
-                <Label className="text-muted-foreground text-xs">地点</Label>
+                <Label className="text-muted-foreground text-xs">起降机场</Label>
                 <Input
-                  value="xxx机场"
+                  value="PEK - SHA"
                   disabled
                   className="h-8 bg-input border-border text-foreground mt-1"
                 />
               </div>
+              <div>
+                <Label className="text-muted-foreground text-xs">部件</Label>
+                <Input
+                  value="APU"
+                  disabled
+                  className="h-8 bg-input border-border text-foreground mt-1"
+                />
+              </div>
+              <div>
+                <Label className="text-muted-foreground text-xs">件号</Label>
+                <Input
+                  value="11CB67"
+                  disabled
+                  className="h-8 bg-input border-border text-foreground mt-1"
+                />
+              </div>
+            </div>
+
+            {/* 第二排：CMS信息、EICAS信息 */}
+            <div className="grid grid-cols-2 gap-3 text-sm mt-3">
               <div>
                 <Label className="text-muted-foreground text-xs">CMS信息</Label>
                 <Input
-                  value="CMS-xxx-xxx"
+                  value="APU BLEED SERVO VALVE"
                   disabled
                   className="h-8 bg-input border-border text-foreground mt-1"
                 />
@@ -328,7 +505,7 @@ export default function FaultAnalysisPage() {
               <div>
                 <Label className="text-muted-foreground text-xs">EICAS信息</Label>
                 <Input
-                  value="EICAS-xxx"
+                  value="暂无"
                   disabled
                   className="h-8 bg-input border-border text-foreground mt-1"
                 />
@@ -349,11 +526,126 @@ export default function FaultAnalysisPage() {
                 )}
               </button>
               {isDescriptionExpanded && (
-                <Textarea
-                  value="xxx故障描述内容xxx，详细记录故障现象、发生时间、环境条件等相关信息..."
-                  disabled
-                  className="bg-input border-border text-foreground mt-2 text-sm min-h-[60px]"
-                />
+                <div className="mt-2 space-y-2">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Clock className="h-3 w-3" />
+                    <span>报送时间: 2024-01-15 14:32:00</span>
+                  </div>
+                  <Textarea
+                    value="航后检查发现有历史CMS信息：APU BLEED SERVO VALVE。"
+                    disabled
+                    className="bg-input border-border text-foreground text-sm min-h-[50px]"
+                  />
+                  <div className="p-2 bg-orange-50 border border-orange-200 rounded text-sm">
+                    <span className="text-orange-700 font-medium">新增信息：</span>
+                    <span className="text-orange-600">拆下件号4952545，序号：9BV19（原装机件）。</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 故障关联列表 */}
+        <Card className="bg-card border-border shadow-sm">
+          <CardHeader className="border-b border-border py-2 px-4">
+            <CardTitle className="flex items-center gap-2 text-foreground text-base">
+              <Link2 className="h-4 w-4 text-primary" />
+              故障关联列表
+              <Badge variant="outline" className="ml-2 text-xs">
+                基于 APU BLEED SERVO VALVE & B-104X 匹配
+              </Badge>
+              <Badge className="ml-1 bg-blue-100 text-blue-700 border-blue-200 text-xs">
+                {relatedFaults.length} 条相关记录
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-3">
+            <div className="space-y-2">
+              {/* 默认显示前3条 */}
+              {relatedFaults.slice(0, 3).map((fault) => (
+                <div 
+                  key={fault.id} 
+                  className={`flex items-center justify-between p-2 bg-secondary/30 rounded-lg border border-border hover:bg-secondary/50 transition-colors ${fault.status === "analyzed" ? "cursor-pointer" : ""}`}
+                  onClick={() => {
+                    if (fault.status === "analyzed") {
+                      setSelectedRelatedFault(fault);
+                      setRelatedFaultDialogOpen(true);
+                    }
+                  }}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm">{fault.cmsMessage}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span>{fault.faultDate.split(" ")[0]}</span>
+                    <Badge variant="outline" className="text-xs">{fault.route}</Badge>
+                    <Badge 
+                      variant="outline" 
+                      className={fault.status === "analyzed" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}
+                    >
+                      {fault.status === "analyzed" ? "已分析" : "待分析"}
+                    </Badge>
+                    {fault.status === "analyzed" && (
+                      <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+                    )}
+                  </div>
+                </div>
+              ))}
+              
+              {/* 可展开的更多记录 */}
+              {relatedFaults.length > 3 && (
+                <>
+                  {isRelatedFaultsExpanded && (
+                    <div className="space-y-2">
+                      {relatedFaults.slice(3).map((fault) => (
+                        <div 
+                          key={fault.id} 
+                          className={`flex items-center justify-between p-2 bg-secondary/30 rounded-lg border border-border hover:bg-secondary/50 transition-colors ${fault.status === "analyzed" ? "cursor-pointer" : ""}`}
+                          onClick={() => {
+                            if (fault.status === "analyzed") {
+                              setSelectedRelatedFault(fault);
+                              setRelatedFaultDialogOpen(true);
+                            }
+                          }}
+                        >
+                          <div className="flex items-center gap-3">
+                            <span className="text-sm">{fault.cmsMessage}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span>{fault.faultDate.split(" ")[0]}</span>
+                            <Badge variant="outline" className="text-xs">{fault.route}</Badge>
+                            <Badge 
+                              variant="outline" 
+                              className={fault.status === "analyzed" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}
+                            >
+                              {fault.status === "analyzed" ? "已分析" : "待分析"}
+                            </Badge>
+                            {fault.status === "analyzed" && (
+                              <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <button
+                    onClick={() => setIsRelatedFaultsExpanded(!isRelatedFaultsExpanded)}
+                    className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 transition-colors w-full justify-center py-2"
+                  >
+                    {isRelatedFaultsExpanded ? (
+                      <>
+                        <ChevronUp className="h-4 w-4" />
+                        收起更多记录
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="h-4 w-4" />
+                        展开更多 {relatedFaults.length - 3} 条记录
+                      </>
+                    )}
+                  </button>
+                </>
               )}
             </div>
           </CardContent>
@@ -812,6 +1104,115 @@ export default function FaultAnalysisPage() {
         </Card>
         </div>
       </main>
+
+      {/* 关联故障详情弹窗 */}
+      <Dialog open={relatedFaultDialogOpen} onOpenChange={setRelatedFaultDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+          <DialogHeader className="border-b pb-3">
+            <DialogTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-primary" />
+              故障分析详情 - {selectedRelatedFault?.id}
+            </DialogTitle>
+            <DialogDescription>
+              {selectedRelatedFault?.cmsMessage} | {selectedRelatedFault?.faultDate}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <ScrollArea className="flex-1 px-1">
+            {selectedRelatedFault && (
+              <div className="space-y-4 py-4">
+                {/* 故障基本信息 */}
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium flex items-center gap-2">
+                    <FileText className="h-4 w-4 text-muted-foreground" />
+                    故障基本信息
+                  </h4>
+                  <div className="grid grid-cols-3 gap-3 text-sm">
+                    <div>
+                      <Label className="text-muted-foreground text-xs">ATA章节</Label>
+                      <div className="mt-1 px-3 py-1.5 bg-secondary/50 rounded border text-sm">{selectedRelatedFault.ataChapter}</div>
+                    </div>
+                    <div>
+                      <Label className="text-muted-foreground text-xs">注册号</Label>
+                      <div className="mt-1 px-3 py-1.5 bg-secondary/50 rounded border text-sm">{selectedRelatedFault.registration}</div>
+                    </div>
+                    <div>
+                      <Label className="text-muted-foreground text-xs">日期</Label>
+                      <div className="mt-1 px-3 py-1.5 bg-secondary/50 rounded border text-sm">{selectedRelatedFault.faultDate.split(" ")[0]}</div>
+                    </div>
+                    <div>
+                      <Label className="text-muted-foreground text-xs">起降机场</Label>
+                      <div className="mt-1 px-3 py-1.5 bg-secondary/50 rounded border text-sm">{selectedRelatedFault.route}</div>
+                    </div>
+                    <div>
+                      <Label className="text-muted-foreground text-xs">部件</Label>
+                      <div className="mt-1 px-3 py-1.5 bg-secondary/50 rounded border text-sm">{selectedRelatedFault.basicInfo.component}</div>
+                    </div>
+                    <div>
+                      <Label className="text-muted-foreground text-xs">件号</Label>
+                      <div className="mt-1 px-3 py-1.5 bg-secondary/50 rounded border text-sm">{selectedRelatedFault.basicInfo.partNumber}</div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <Label className="text-muted-foreground text-xs">CMS信息</Label>
+                      <div className="mt-1 px-3 py-1.5 bg-secondary/50 rounded border text-sm">{selectedRelatedFault.cmsMessage}</div>
+                    </div>
+                    <div>
+                      <Label className="text-muted-foreground text-xs">EICAS信息</Label>
+                      <div className="mt-1 px-3 py-1.5 bg-secondary/50 rounded border text-sm">{selectedRelatedFault.basicInfo.eicas}</div>
+                    </div>
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground text-xs">故障描述</Label>
+                    <div className="mt-1 px-3 py-2 bg-secondary/50 rounded border text-sm">{selectedRelatedFault.basicInfo.description}</div>
+                  </div>
+                  {selectedRelatedFault.basicInfo.newInfo && (
+                    <div className="p-2 bg-orange-50 border border-orange-200 rounded text-sm">
+                      <span className="text-orange-700 font-medium">新增信息：</span>
+                      <span className="text-orange-600">{selectedRelatedFault.basicInfo.newInfo}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* 分析结果 */}
+                {selectedRelatedFault.analysisResult && (
+                  <div className="space-y-3 pt-2 border-t">
+                    <h4 className="text-sm font-medium flex items-center gap-2">
+                      <BarChart3 className="h-4 w-4 text-muted-foreground" />
+                      分析结果
+                    </h4>
+                    <div className="space-y-2 text-sm">
+                      <div>
+                        <Label className="text-muted-foreground text-xs">故障诊断结论</Label>
+                        <div className="mt-1 px-3 py-2 bg-secondary/50 rounded border">{selectedRelatedFault.analysisResult.conclusion}</div>
+                      </div>
+                      <div>
+                        <Label className="text-muted-foreground text-xs">根本原因</Label>
+                        <div className="mt-1 px-3 py-2 bg-secondary/50 rounded border">{selectedRelatedFault.analysisResult.rootCause}</div>
+                      </div>
+                      <div>
+                        <Label className="text-muted-foreground text-xs">维修建议</Label>
+                        <div className="mt-1 px-3 py-2 bg-secondary/50 rounded border">{selectedRelatedFault.analysisResult.recommendation}</div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <Label className="text-muted-foreground text-xs">分析人员</Label>
+                          <div className="mt-1 px-3 py-1.5 bg-secondary/50 rounded border">{selectedRelatedFault.analysisResult.analyst}</div>
+                        </div>
+                        <div>
+                          <Label className="text-muted-foreground text-xs">分析时间</Label>
+                          <div className="mt-1 px-3 py-1.5 bg-secondary/50 rounded border">{selectedRelatedFault.analysisResult.analyzeDate}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
