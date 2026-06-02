@@ -656,7 +656,7 @@ export default function FaultAnalysisPage() {
           <CardHeader className="border-b border-border py-2 px-4">
             <CardTitle className="flex items-center gap-2 text-foreground text-base">
               <FileText className="h-4 w-4 text-primary" />
-              模板参���分析
+              模板参数分析
               {recommendedTemplateId && (
                 <Badge variant="outline" className="ml-2 bg-emerald-50 text-emerald-700 border-emerald-200 text-xs">
                   根据ATA章节推荐

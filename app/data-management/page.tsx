@@ -542,7 +542,7 @@ export default function DataManagementPage() {
     setTemplateDialogOpen(true);
   };
 
-  // 打开编辑模��对话框
+  // 打开编辑模板对话框
   const openEditTemplateDialog = (template: TemplateConfig) => {
     setEditingTemplate(template);
     setTemplateForm({
@@ -1048,7 +1048,7 @@ export default function DataManagementPage() {
               </div>
             </CardHeader>
             <CardContent className="p-4">
-              {/* 存储��览 */}
+              {/* 存储总览 */}
               <div className="grid grid-cols-4 gap-4 mb-4">
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                   <div className="text-2xl font-semibold text-blue-700">12.5 TB</div>
@@ -1395,8 +1395,8 @@ export default function DataManagementPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[180px]">����</TableHead>
-                    <TableHead className="w-[160px]">��示名称</TableHead>
+                    <TableHead className="w-[180px]">表名</TableHead>
+                    <TableHead className="w-[160px]">显示名称</TableHead>
                     <TableHead>描述</TableHead>
                     <TableHead className="w-[100px]">记录数</TableHead>
                     <TableHead className="w-[80px]">字段数</TableHead>
@@ -1464,7 +1464,7 @@ export default function DataManagementPage() {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">已完成���析</p>
+                      <p className="text-sm text-muted-foreground">已完成分析</p>
                       <p className="text-2xl font-bold mt-1 text-emerald-600">{faultStats.analyzed}</p>
                     </div>
                     <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center">
@@ -2238,7 +2238,7 @@ export default function DataManagementPage() {
             {/* 核心参数选择 */}
             <div className="space-y-3 flex-1">
               <div className="flex items-center justify-between">
-                <Label className="text-base font-medium">核心参���配置</Label>
+                <Label className="text-base font-medium">核心参数配置</Label>
                 <Badge variant="outline" className="bg-emerald-50 text-emerald-600">
                   已选择 {templateForm.selectedParameters.length} 个参数
                 </Badge>
@@ -2247,7 +2247,7 @@ export default function DataManagementPage() {
               {/* 筛选区域 */}
               <div className="flex flex-wrap gap-3 p-4 bg-muted/30 rounded-lg border">
                 <div className="flex items-center gap-2">
-                  <Label className="text-sm text-muted-foreground whitespace-nowrap">筛选���式:</Label>
+                    <Label className="text-sm text-muted-foreground whitespace-nowrap">筛选方式:</Label>
                   <Select value={parameterFilterType} onValueChange={(v: typeof parameterFilterType) => setParameterFilterType(v)}>
                     <SelectTrigger className="w-[140px] h-8">
                       <SelectValue />
