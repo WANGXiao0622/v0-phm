@@ -24,6 +24,8 @@ import {
   ChevronLeft,
   Plane,
   Plus,
+  Link2,
+  Clock,
 } from "lucide-react";
 import {
   LineChart,
@@ -140,6 +142,16 @@ const generateAnomalyData = () => {
 // 当前故障的ATA章节（模拟数据）
 const currentATA = "72";
 
+// 模拟故障关联列表数据
+const relatedFaults = [
+  { id: "F2024008", registration: "B-104X", cms: "CMS-APU-001", date: "2024-01-12", description: "APU EGT超温警告", status: "completed" },
+  { id: "F2024006", registration: "B-104X", cms: "CMS-APU-001", date: "2024-01-10", description: "APU启动异常", status: "completed" },
+  { id: "F2024003", registration: "B-104X", cms: "CMS-APU-002", date: "2024-01-05", description: "APU引气压力低", status: "processing" },
+  { id: "F2023098", registration: "B-104X", cms: "CMS-APU-001", date: "2023-12-28", description: "APU EGT趋势异常", status: "completed" },
+  { id: "F2023092", registration: "B-104X", cms: "CMS-APU-003", date: "2023-12-20", description: "APU油耗偏高", status: "completed" },
+  { id: "F2023085", registration: "B-104X", cms: "CMS-APU-001", date: "2023-12-15", description: "APU振动值偏大", status: "completed" },
+];
+
 export default function FaultAnalysisPage() {
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
@@ -158,6 +170,9 @@ export default function FaultAnalysisPage() {
   const [showSegmentFilter, setShowSegmentFilter] = useState(false);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState(2); // 当前航段索引（故障发生航段）
   const [loadedSegments, setLoadedSegments] = useState<number[]>([]); // 已加载的航段索引列表
+  
+  // 关联故障展开状态
+  const [isRelatedFaultsExpanded, setIsRelatedFaultsExpanded] = useState(false);
 
   // 获取推荐的模板ID
   const recommendedTemplateId = ataTemplateMapping[currentATA] || null;
@@ -281,14 +296,18 @@ export default function FaultAnalysisPage() {
             <CardTitle className="flex items-center gap-2 text-foreground text-base">
               <AlertCircle className="h-4 w-4 text-primary" />
               故障基本信息
+              <Badge className="ml-2 bg-orange-100 text-orange-700 border-orange-200 text-xs">
+                更新于 2024-01-15 16:30
+              </Badge>
             </CardTitle>
           </CardHeader>
           <CardContent className="p-3">
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 text-sm">
+            {/* 第一排：ATA章节、注册号、日期、起降机场、部件、件号 */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-sm">
               <div>
                 <Label className="text-muted-foreground text-xs">ATA章节</Label>
                 <Input
-                  value="72-xxx"
+                  value="72-31"
                   disabled
                   className="h-8 bg-input border-border text-foreground mt-1"
                 />
@@ -296,7 +315,7 @@ export default function FaultAnalysisPage() {
               <div>
                 <Label className="text-muted-foreground text-xs">注册号</Label>
                 <Input
-                  value="B-xxxx"
+                  value="B-104X"
                   disabled
                   className="h-8 bg-input border-border text-foreground mt-1"
                 />
@@ -304,34 +323,59 @@ export default function FaultAnalysisPage() {
               <div>
                 <Label className="text-muted-foreground text-xs">日期</Label>
                 <Input
-                  value="2024-xx-xx"
+                  value="2024-01-15"
                   disabled
                   className="h-8 bg-input border-border text-foreground mt-1"
                 />
               </div>
               <div>
-                <Label className="text-muted-foreground text-xs">地点</Label>
+                <Label className="text-muted-foreground text-xs">起降机场</Label>
                 <Input
-                  value="xxx机场"
+                  value="PEK - SHA"
                   disabled
                   className="h-8 bg-input border-border text-foreground mt-1"
                 />
               </div>
+              <div>
+                <Label className="text-muted-foreground text-xs">部件</Label>
+                <Input
+                  value="APU"
+                  disabled
+                  className="h-8 bg-input border-border text-foreground mt-1"
+                />
+              </div>
+              <div>
+                <Label className="text-muted-foreground text-xs">件号</Label>
+                <Input
+                  value="PN-3800-01"
+                  disabled
+                  className="h-8 bg-input border-border text-foreground mt-1"
+                />
+              </div>
+            </div>
+
+            {/* 第二排：CMS信息、EICAS信息 */}
+            <div className="grid grid-cols-2 gap-3 text-sm mt-3">
               <div>
                 <Label className="text-muted-foreground text-xs">CMS信息</Label>
                 <Input
-                  value="CMS-xxx-xxx"
+                  value="CMS-APU-001"
                   disabled
                   className="h-8 bg-input border-border text-foreground mt-1"
                 />
               </div>
               <div>
                 <Label className="text-muted-foreground text-xs">EICAS信息</Label>
-                <Input
-                  value="EICAS-xxx"
-                  disabled
-                  className="h-8 bg-input border-border text-foreground mt-1"
-                />
+                <div className="flex items-center gap-2 mt-1">
+                  <Input
+                    value="APU EGT OVER LIMIT"
+                    disabled
+                    className="h-8 bg-input border-border text-foreground flex-1"
+                  />
+                  <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs rounded border border-orange-200 whitespace-nowrap">
+                    新增
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -349,11 +393,111 @@ export default function FaultAnalysisPage() {
                 )}
               </button>
               {isDescriptionExpanded && (
-                <Textarea
-                  value="xxx故障描述内容xxx，详细记录故障现象、发生时间、环境条件等相关信息..."
-                  disabled
-                  className="bg-input border-border text-foreground mt-2 text-sm min-h-[60px]"
-                />
+                <div className="mt-2 space-y-2">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Clock className="h-3 w-3" />
+                    <span>报送时间: 2024-01-15 14:32:00</span>
+                    <span className="px-1.5 py-0.5 bg-orange-100 text-orange-700 rounded text-xs">更新于 16:30</span>
+                  </div>
+                  <Textarea
+                    value="监控发现APU EGT温度高，航后检查发现APU排气温度持续超过正常范围。详细记录：起飞前APU启动正常，滑行期间EGT读数升高至680°C（正常范围≤650°C），触发CMS告警。"
+                    disabled
+                    className="bg-input border-border text-foreground text-sm min-h-[60px]"
+                  />
+                  <div className="p-2 bg-orange-50 border border-orange-200 rounded text-sm">
+                    <span className="text-orange-700 font-medium">新增信息：</span>
+                    <span className="text-orange-600">经地面测试确认，APU EGT传感器工作正常，初步判断为APU燃烧室积碳导致燃烧效率下降。</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 故障关联列表 */}
+        <Card className="bg-card border-border shadow-sm">
+          <CardHeader className="border-b border-border py-2 px-4">
+            <CardTitle className="flex items-center gap-2 text-foreground text-base">
+              <Link2 className="h-4 w-4 text-primary" />
+              故障关联列表
+              <Badge variant="outline" className="ml-2 text-xs">
+                基于 CMS-APU-001 & B-104X 匹配
+              </Badge>
+              <Badge className="ml-1 bg-blue-100 text-blue-700 border-blue-200 text-xs">
+                {relatedFaults.length} 条相关记录
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-3">
+            <div className="space-y-2">
+              {/* 默认显示前3条 */}
+              {relatedFaults.slice(0, 3).map((fault) => (
+                <div 
+                  key={fault.id} 
+                  className="flex items-center justify-between p-2 bg-secondary/30 rounded-lg border border-border hover:bg-secondary/50 transition-colors cursor-pointer"
+                >
+                  <div className="flex items-center gap-3">
+                    <Badge variant="outline" className="font-mono text-xs">{fault.id}</Badge>
+                    <span className="text-sm">{fault.description}</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <span>{fault.date}</span>
+                    <Badge variant="outline" className="text-xs">{fault.cms}</Badge>
+                    <Badge 
+                      variant="outline" 
+                      className={fault.status === "completed" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}
+                    >
+                      {fault.status === "completed" ? "已完成" : "处理中"}
+                    </Badge>
+                  </div>
+                </div>
+              ))}
+              
+              {/* 可展开的更多记录 */}
+              {relatedFaults.length > 3 && (
+                <>
+                  {isRelatedFaultsExpanded && (
+                    <div className="space-y-2">
+                      {relatedFaults.slice(3).map((fault) => (
+                        <div 
+                          key={fault.id} 
+                          className="flex items-center justify-between p-2 bg-secondary/30 rounded-lg border border-border hover:bg-secondary/50 transition-colors cursor-pointer"
+                        >
+                          <div className="flex items-center gap-3">
+                            <Badge variant="outline" className="font-mono text-xs">{fault.id}</Badge>
+                            <span className="text-sm">{fault.description}</span>
+                          </div>
+                          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                            <span>{fault.date}</span>
+                            <Badge variant="outline" className="text-xs">{fault.cms}</Badge>
+                            <Badge 
+                              variant="outline" 
+                              className={fault.status === "completed" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}
+                            >
+                              {fault.status === "completed" ? "已完成" : "处理中"}
+                            </Badge>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <button
+                    onClick={() => setIsRelatedFaultsExpanded(!isRelatedFaultsExpanded)}
+                    className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 transition-colors w-full justify-center py-2"
+                  >
+                    {isRelatedFaultsExpanded ? (
+                      <>
+                        <ChevronUp className="h-4 w-4" />
+                        收起更多记录
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="h-4 w-4" />
+                        展开更多 {relatedFaults.length - 3} 条记录
+                      </>
+                    )}
+                  </button>
+                </>
               )}
             </div>
           </CardContent>
