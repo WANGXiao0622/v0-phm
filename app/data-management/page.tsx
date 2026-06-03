@@ -1,10 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import GridLayout from "react-grid-layout";
+import "react-grid-layout/css/styles.css";
+import "react-resizable/css/styles.css";
 import {
   Activity,
   ChevronRight,
@@ -159,7 +162,7 @@ const storageData = [
   { id: 5, name: "日志归档", path: "/data/logs/archive", size: "89GB", files: 15600, type: "日志", retention: "180天" },
 ];
 
-// 元数据 - 业务元数据表
+// 元数据 - 业务元数��表
 const metadataData = [
   { id: 1, tableName: "fleet_meta", displayName: "机队元数据表", description: "存储机队基本信息，包括机型、注册号、机龄等", records: 156, fields: 28, lastSync: "2024-01-15 08:00:00" },
   { id: 2, tableName: "flight_info", displayName: "航班信息表", description: "存储航班基本信息，包括航班号、航线、起降时间等", records: 125840, fields: 42, lastSync: "2024-01-15 14:30:00" },
@@ -2317,7 +2320,7 @@ export default function DataManagementPage() {
           </DialogHeader>
           
           <div className="flex-1 overflow-y-auto py-4 space-y-6">
-            {/* 基本信息 */}
+            {/* 基本信�� */}
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="template-name">模板名称</Label>
@@ -2647,25 +2650,66 @@ export default function DataManagementPage() {
                       ))}
                     </div>
                   ) : (
-                    // 预览布局模式
-                    <div className="border rounded-lg p-4 bg-muted/20 min-h-[400px]">
-                      <div className="grid grid-cols-4 gap-3 auto-rows-[180px]">
+                    // 预览布局模式 - 使用 react-grid-layout 实现自由拖拽
+                    <div className="border rounded-lg p-4 bg-muted/20 min-h-[500px]">
+                      <GridLayout
+                        className="layout"
+                        layout={templateForm.dashboards.map(d => ({
+                          i: d.id,
+                          x: d.x,
+                          y: d.y,
+                          w: d.width,
+                          h: d.height,
+                          minW: 1,
+                          maxW: 4,
+                          minH: 1,
+                          maxH: 3
+                        }))}
+                        cols={4}
+                        rowHeight={150}
+                        width={1200}
+                        onLayoutChange={(layout) => {
+                          setTemplateForm(prev => ({
+                            ...prev,
+                            dashboards: prev.dashboards.map(d => {
+                              const layoutItem = layout.find(l => l.i === d.id);
+                              if (layoutItem) {
+                                return {
+                                  ...d,
+                                  x: layoutItem.x,
+                                  y: layoutItem.y,
+                                  width: layoutItem.w,
+                                  height: layoutItem.h
+                                };
+                              }
+                              return d;
+                            })
+                          }));
+                        }}
+                        draggableHandle=".drag-handle"
+                        isResizable={true}
+                        isDraggable={true}
+                      >
                         {templateForm.dashboards.map((dashboard) => (
                           <div
                             key={dashboard.id}
                             className="bg-card border rounded-lg shadow-sm overflow-hidden flex flex-col"
-                            style={{
-                              gridColumn: `span ${dashboard.width}`,
-                              gridRow: `span ${dashboard.height}`
-                            }}
                           >
-                            <div className="flex items-center justify-between px-3 py-2 border-b bg-muted/30">
-                              <span className="font-medium text-sm">{dashboard.name}</span>
-                              <Badge variant="outline" className="text-xs">
-                                {dashboard.parameters.length} 参数
-                              </Badge>
+                            <div className="drag-handle flex items-center justify-between px-3 py-2 border-b bg-muted/30 cursor-move">
+                              <div className="flex items-center gap-2">
+                                <GripVertical className="h-4 w-4 text-muted-foreground" />
+                                <span className="font-medium text-sm">{dashboard.name}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Badge variant="outline" className="text-xs">
+                                  {dashboard.parameters.length} 参数
+                                </Badge>
+                                <Badge variant="secondary" className="text-xs">
+                                  {dashboard.width}x{dashboard.height}
+                                </Badge>
+                              </div>
                             </div>
-                            <div className="flex-1 p-3 relative">
+                            <div className="flex-1 p-3 relative overflow-hidden">
                               {dashboard.parameters.length === 0 ? (
                                 <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm">
                                   暂无参数曲线
@@ -2725,7 +2769,7 @@ export default function DataManagementPage() {
                             </div>
                           </div>
                         ))}
-                      </div>
+                      </GridLayout>
                       {templateForm.dashboards.length === 0 && (
                         <div className="h-full flex items-center justify-center text-muted-foreground">
                           添加 Dashboard 后在此预览布局效果
@@ -2735,7 +2779,7 @@ export default function DataManagementPage() {
                   )}
 
                   <div className="text-xs text-muted-foreground">
-                    提示：在配置模式下编辑各 Dashboard 的参数，在预览模式下查看布局效果。Dashboard 宽度范围 1-4 列，可通过调整尺寸按钮改变。
+                    提示：在配置模式下编辑各 Dashboard 的参数。在预览模式下，可以自由拖动 Dashboard 标题栏改变位置，拖动边框调整大小。
                   </div>
                 </div>
               )}
