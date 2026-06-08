@@ -44,6 +44,7 @@ import {
   Maximize2,
   Minimize2,
   GripVertical,
+  Cpu,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -83,7 +84,30 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 const primaryTabs = [
   { id: "api", name: "API 管理", icon: Settings },
   { id: "wqar", name: "WQAR数据管理", icon: Database },
+  { id: "lru", name: "LRU管理", icon: Cpu },
   { id: "storage", name: "存储管理", icon: HardDrive },
+];
+
+// LRU 数据类型
+interface LruItem {
+  id: number;
+  aircraftType: string;
+  lru: string;
+  ataChapter: string;
+  partNumber: string;
+  relatedModel: string;
+}
+
+// LRU 模拟数据
+const lruData: LruItem[] = [
+  { id: 1, aircraftType: "ARJ21-700", lru: "APU 引气伺服阀", ataChapter: "49", partNumber: "11CB67", relatedModel: "APU性能衰退模型" },
+  { id: 2, aircraftType: "ARJ21-700", lru: "发动机燃油泵", ataChapter: "73", partNumber: "8062-12A", relatedModel: "燃油系统异常模型" },
+  { id: 3, aircraftType: "ARJ21-700", lru: "液压泵组件", ataChapter: "29", partNumber: "HP-2031", relatedModel: "液压压力监控模型" },
+  { id: 4, aircraftType: "C919", lru: "环控系统组件", ataChapter: "21", partNumber: "ACM-5520", relatedModel: "环控温度预测模型" },
+  { id: 5, aircraftType: "C919", lru: "起落架作动筒", ataChapter: "32", partNumber: "LG-7788", relatedModel: "起落架收放模型" },
+  { id: 6, aircraftType: "C919", lru: "大气数据计算机", ataChapter: "34", partNumber: "ADC-9012", relatedModel: "大气数据异常模型" },
+  { id: 7, aircraftType: "ARJ21-700", lru: "防冰活门", ataChapter: "30", partNumber: "AI-3045", relatedModel: "防冰系统监控模型" },
+  { id: 8, aircraftType: "C919", lru: "刹车控制单元", ataChapter: "32", partNumber: "BCU-6621", relatedModel: "刹车性能模型" },
 ];
 
 // 第二行标签页 - 需要个性化配置的
