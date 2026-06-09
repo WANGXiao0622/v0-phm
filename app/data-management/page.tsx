@@ -100,14 +100,10 @@ interface LruItem {
 
 // LRU 模拟数据
 const lruData: LruItem[] = [
-  { id: 1, aircraftType: "ARJ21-700", lru: "APU 引气伺服阀", ataChapter: "49", partNumber: "11CB67", relatedModel: "APU性能衰退模型" },
-  { id: 2, aircraftType: "ARJ21-700", lru: "发动机燃油泵", ataChapter: "73", partNumber: "8062-12A", relatedModel: "燃油系统异常模型" },
-  { id: 3, aircraftType: "ARJ21-700", lru: "液压泵组件", ataChapter: "29", partNumber: "HP-2031", relatedModel: "液压压力监控模型" },
-  { id: 4, aircraftType: "C919", lru: "环控系统组件", ataChapter: "21", partNumber: "ACM-5520", relatedModel: "环控温度预测模型" },
-  { id: 5, aircraftType: "C919", lru: "起落架作动筒", ataChapter: "32", partNumber: "LG-7788", relatedModel: "起落架收放模型" },
-  { id: 6, aircraftType: "C919", lru: "大气数据计算机", ataChapter: "34", partNumber: "ADC-9012", relatedModel: "大气数据异常模型" },
-  { id: 7, aircraftType: "ARJ21-700", lru: "防冰活门", ataChapter: "30", partNumber: "AI-3045", relatedModel: "防冰系统监控模型" },
-  { id: 8, aircraftType: "C919", lru: "刹车控制单元", ataChapter: "32", partNumber: "BCU-6621", relatedModel: "刹车性能模型" },
+  { id: 1, aircraftType: "C909", lru: "APU引气阀", ataChapter: "49", partNumber: "11CB67", relatedModel: "APU引气阀性能监控模型" },
+  { id: 2, aircraftType: "C919", lru: "刹车控制阀", ataChapter: "32", partNumber: "39-967", relatedModel: "刹车控制阀故障预测与性能评估模型" },
+  { id: 3, aircraftType: "C919", lru: "刹车切断阀", ataChapter: "32", partNumber: "138-025-01", relatedModel: "SOV故障预测与性能监控模型" },
+  { id: 4, aircraftType: "C909", lru: "前起落架收放作动筒", ataChapter: "32", partNumber: "6243A0000-02", relatedModel: "" },
 ];
 
 // 第二行标签页 - 需要个性化配置的
@@ -2281,7 +2277,7 @@ export default function DataManagementPage() {
 
           <DialogFooter className="border-t pt-4">
             <Button variant="outline" onClick={() => setApiDialogOpen(false)}>
-              {apiDialogMode === "view" ? "关闭" : "取消"}
+              {apiDialogMode === "view" ? "关闭" : "取��"}
             </Button>
             {apiDialogMode === "view" ? (
               <Button onClick={() => setApiDialogMode("edit")} className="gap-1">
