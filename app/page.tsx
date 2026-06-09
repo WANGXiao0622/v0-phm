@@ -15,7 +15,7 @@ const modules = [
   {
     id: "data-management",
     name: "数据管理",
-    description: "管理飞机运行数据、传感器数据和历史记录",
+    description: "管理飞行数据、分析模板与元数据配置",
     icon: Database,
     href: "/data-management",
     color: "bg-blue-50 text-blue-600 border-blue-200",
@@ -24,7 +24,7 @@ const modules = [
   {
     id: "task-management",
     name: "任务管理",
-    description: "故障任务分配、处理进度跟踪和工单管理",
+    description: "故障分析任务处理、任务进展进度跟踪",
     icon: ClipboardList,
     href: "/task-management",
     color: "bg-emerald-50 text-emerald-600 border-emerald-200",
@@ -33,7 +33,7 @@ const modules = [
   {
     id: "model-management",
     name: "模型管理",
-    description: "AI分析模型配置、训练和版本管理",
+    description: "模型信息、版本管理与开发思路",
     icon: Cpu,
     href: "/model-management",
     color: "bg-purple-50 text-purple-600 border-purple-200",
@@ -42,7 +42,7 @@ const modules = [
   {
     id: "workspace",
     name: "个人工作台",
-    description: "个人待办事项、消息通知和工作统计",
+    description: "个人待办事项与统计分析",
     icon: User,
     href: "/workspace",
     color: "bg-amber-50 text-amber-600 border-amber-200",
