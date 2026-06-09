@@ -305,6 +305,7 @@ const initialAirlineConfigs: AirlineParameterConfigs = {
 export default function DataManagementPage() {
   const [activeTab, setActiveTab] = useState("api");
   const [searchTerm, setSearchTerm] = useState("");
+  const [lruSearchTerm, setLruSearchTerm] = useState("");
   const [selectedVersion, setSelectedVersion] = useState("base");
   const [airlineConfigs, setAirlineConfigs] = useState<AirlineParameterConfigs>(initialAirlineConfigs);
   const [editingRow, setEditingRow] = useState<number | null>(null);
@@ -1177,6 +1178,101 @@ export default function DataManagementPage() {
                   ))}
                 </TableBody>
               </Table>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* LRU管理 */}
+        {activeTab === "lru" && (
+          <Card className="border border-border">
+            <CardHeader className="border-b border-border py-3 px-4">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Cpu className="h-4 w-4 text-primary" />
+                  LRU管理
+                </CardTitle>
+                <div className="flex items-center gap-2">
+                  <div className="relative">
+                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="搜索机型、LRU、件号..."
+                      value={lruSearchTerm}
+                      onChange={(e) => setLruSearchTerm(e.target.value)}
+                      className="pl-8 h-9 w-64"
+                    />
+                  </div>
+                  <Button size="sm" variant="outline" className="gap-1">
+                    <Plus className="h-4 w-4" />
+                    新增 LRU
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-4">
+              <div className="rounded-lg border border-border overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-muted/50">
+                      <TableHead className="w-[140px]">机型</TableHead>
+                      <TableHead className="w-[200px]">LRU</TableHead>
+                      <TableHead className="w-[120px]">ATA章节</TableHead>
+                      <TableHead className="w-[140px]">件号</TableHead>
+                      <TableHead>关联模型</TableHead>
+                      <TableHead className="w-[100px] text-right">操作</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {lruData
+                      .filter((item) => {
+                        if (!lruSearchTerm) return true;
+                        const term = lruSearchTerm.toLowerCase();
+                        return (
+                          item.aircraftType.toLowerCase().includes(term) ||
+                          item.lru.toLowerCase().includes(term) ||
+                          item.partNumber.toLowerCase().includes(term) ||
+                          item.ataChapter.toLowerCase().includes(term) ||
+                          item.relatedModel.toLowerCase().includes(term)
+                        );
+                      })
+                      .map((item) => (
+                        <TableRow key={item.id} className="hover:bg-muted/30">
+                          <TableCell className="font-medium">{item.aircraftType}</TableCell>
+                          <TableCell>{item.lru}</TableCell>
+                          <TableCell>
+                            <Badge variant="outline">ATA {item.ataChapter}</Badge>
+                          </TableCell>
+                          <TableCell className="font-mono text-sm">{item.partNumber}</TableCell>
+                          <TableCell>
+                            <span className="text-primary">{item.relatedModel}</span>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex items-center justify-end gap-1">
+                              <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-destructive hover:text-destructive">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </div>
+              <div className="text-xs text-muted-foreground mt-3">
+                共 {lruData.filter((item) => {
+                  if (!lruSearchTerm) return true;
+                  const term = lruSearchTerm.toLowerCase();
+                  return (
+                    item.aircraftType.toLowerCase().includes(term) ||
+                    item.lru.toLowerCase().includes(term) ||
+                    item.partNumber.toLowerCase().includes(term) ||
+                    item.ataChapter.toLowerCase().includes(term) ||
+                    item.relatedModel.toLowerCase().includes(term)
+                  );
+                }).length} 条 LRU 记录
+              </div>
             </CardContent>
           </Card>
         )}
