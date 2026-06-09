@@ -315,6 +315,16 @@ export default function FaultAnalysisPage() {
   const [selectedRelatedFault, setSelectedRelatedFault] = useState<typeof relatedFaults[number] | null>(null);
   const [relatedFaultDialogOpen, setRelatedFaultDialogOpen] = useState(false);
 
+  // 分析结果各小标题内容（可手动输入并暂存）
+  const [analysisResultForm, setAnalysisResultForm] = useState({
+    faultSegmentDescription: "",
+    dataAnalysis: "",
+    previousSegmentAnomaly: "",
+    modelAnalysis: "",
+    lruReplacement: "",
+    conclusion: "",
+  });
+
   // 获取推荐的模板ID
   const recommendedTemplateId = ataTemplateMapping[currentATA] || null;
 
@@ -1050,40 +1060,33 @@ export default function FaultAnalysisPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-3 space-y-3">
-            <div className="bg-secondary/30 rounded-lg p-3 space-y-3 text-sm">
-              <div className="space-y-1">
-                <h3 className="text-foreground font-medium flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-red-500"></span>
-                  故障诊断结论
-                </h3>
-                <p className="text-muted-foreground leading-relaxed pl-4 text-xs">
-                  根据参数分析和模型预测，发动机 N1 转速在 T12-T15 时间段出现异常波动，
-                  振动参数 VIB 超过正常阈值。结合 CMS 报告和 EICAS 信息，初步判断为
-                  发动机压气机叶片磨损导致的性能衰退。建议进行孔探检查确认故障原因。
-                </p>
-              </div>
-
-              <div className="space-y-1">
-                <h3 className="text-foreground font-medium flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-amber-500"></span>
-                  维修建议
-                </h3>
-                <ul className="text-muted-foreground space-y-0.5 pl-4 text-xs">
-                  <li>1. 执行发动机孔探检查，检查压气机叶片状态</li>
-                  <li>2. 监控 N1、N2 转速差值变化趋势</li>
-                  <li>3. 必要时更换受损叶片或进行发动机翻修</li>
-                </ul>
-              </div>
-
-              <div className="space-y-1">
-                <h3 className="text-foreground font-medium flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-blue-500"></span>
-                  参考文档
-                </h3>
-                <p className="text-muted-foreground pl-4 text-xs">
-                  AMM 72-00-00, TSM 72-21-00, SB 72-0123
-                </p>
-              </div>
+            <div className="space-y-3">
+              {[
+                { key: "faultSegmentDescription", label: "故障航段描述", color: "bg-red-500", placeholder: "请输入故障航段描述..." },
+                { key: "dataAnalysis", label: "数据分析", color: "bg-amber-500", placeholder: "请输入数据分析内容..." },
+                { key: "previousSegmentAnomaly", label: "前序航段异常", color: "bg-orange-500", placeholder: "请输入前序航段异常情况..." },
+                { key: "modelAnalysis", label: "模型分析", color: "bg-blue-500", placeholder: "请输入模型分析内容..." },
+                { key: "lruReplacement", label: "LRU拆换信息", color: "bg-emerald-500", placeholder: "请输入LRU拆换信息..." },
+                { key: "conclusion", label: "结论", color: "bg-primary", placeholder: "请输入结论..." },
+              ].map((section) => (
+                <div key={section.key} className="space-y-1.5">
+                  <h3 className="text-foreground font-medium flex items-center gap-2 text-sm">
+                    <span className={`h-2 w-2 rounded-full ${section.color}`}></span>
+                    {section.label}
+                  </h3>
+                  <Textarea
+                    value={analysisResultForm[section.key as keyof typeof analysisResultForm]}
+                    onChange={(e) =>
+                      setAnalysisResultForm((prev) => ({
+                        ...prev,
+                        [section.key]: e.target.value,
+                      }))
+                    }
+                    placeholder={section.placeholder}
+                    className="bg-input border-border text-foreground text-sm min-h-[70px] resize-y"
+                  />
+                </div>
+              ))}
             </div>
 
             <div className="flex justify-end gap-3 pt-1">

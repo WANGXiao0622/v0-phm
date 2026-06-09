@@ -1,10 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import GridLayout from "react-grid-layout";
+import "react-grid-layout/css/styles.css";
+import "react-resizable/css/styles.css";
 import {
   Activity,
   ChevronRight,
@@ -41,6 +44,7 @@ import {
   Maximize2,
   Minimize2,
   GripVertical,
+  Cpu,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -80,7 +84,26 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 const primaryTabs = [
   { id: "api", name: "API 管理", icon: Settings },
   { id: "wqar", name: "WQAR数据管理", icon: Database },
+  { id: "lru", name: "LRU管理", icon: Cpu },
   { id: "storage", name: "存储管理", icon: HardDrive },
+];
+
+// LRU 数据类型
+interface LruItem {
+  id: number;
+  aircraftType: string;
+  lru: string;
+  ataChapter: string;
+  partNumber: string;
+  relatedModel: string;
+}
+
+// LRU 模拟数据
+const lruData: LruItem[] = [
+  { id: 1, aircraftType: "C909", lru: "APU引气阀", ataChapter: "49", partNumber: "11CB67", relatedModel: "APU引气阀性能监控模型" },
+  { id: 2, aircraftType: "C919", lru: "刹车控制阀", ataChapter: "32", partNumber: "39-967", relatedModel: "刹车控制阀故障预测与性能评估模型" },
+  { id: 3, aircraftType: "C919", lru: "刹车切断阀", ataChapter: "32", partNumber: "138-025-01", relatedModel: "SOV故障预测与性能监控模型" },
+  { id: 4, aircraftType: "C909", lru: "前起落架收放作动筒", ataChapter: "32", partNumber: "6243A0000-02", relatedModel: "" },
 ];
 
 // 第二行标签页 - 需要个性化配置的
@@ -159,7 +182,7 @@ const storageData = [
   { id: 5, name: "日志归档", path: "/data/logs/archive", size: "89GB", files: 15600, type: "日志", retention: "180天" },
 ];
 
-// 元数据 - 业务元数据表
+// 元数据 - 业务元数��表
 const metadataData = [
   { id: 1, tableName: "fleet_meta", displayName: "机队元数据表", description: "存储机队基本信息，包括机型、注册号、机龄等", records: 156, fields: 28, lastSync: "2024-01-15 08:00:00" },
   { id: 2, tableName: "flight_info", displayName: "航班信息表", description: "存储航班基本信息，包括航班号、航线、起降时间等", records: 125840, fields: 42, lastSync: "2024-01-15 14:30:00" },
@@ -278,6 +301,7 @@ const initialAirlineConfigs: AirlineParameterConfigs = {
 export default function DataManagementPage() {
   const [activeTab, setActiveTab] = useState("api");
   const [searchTerm, setSearchTerm] = useState("");
+  const [lruSearchTerm, setLruSearchTerm] = useState("");
   const [selectedVersion, setSelectedVersion] = useState("base");
   const [airlineConfigs, setAirlineConfigs] = useState<AirlineParameterConfigs>(initialAirlineConfigs);
   const [editingRow, setEditingRow] = useState<number | null>(null);
@@ -1150,6 +1174,101 @@ export default function DataManagementPage() {
                   ))}
                 </TableBody>
               </Table>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* LRU管理 */}
+        {activeTab === "lru" && (
+          <Card className="border border-border">
+            <CardHeader className="border-b border-border py-3 px-4">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Cpu className="h-4 w-4 text-primary" />
+                  LRU管理
+                </CardTitle>
+                <div className="flex items-center gap-2">
+                  <div className="relative">
+                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="搜索机型、LRU、件号..."
+                      value={lruSearchTerm}
+                      onChange={(e) => setLruSearchTerm(e.target.value)}
+                      className="pl-8 h-9 w-64"
+                    />
+                  </div>
+                  <Button size="sm" variant="outline" className="gap-1">
+                    <Plus className="h-4 w-4" />
+                    新增 LRU
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-4">
+              <div className="rounded-lg border border-border overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-muted/50">
+                      <TableHead className="w-[140px]">机型</TableHead>
+                      <TableHead className="w-[200px]">LRU</TableHead>
+                      <TableHead className="w-[120px]">ATA章节</TableHead>
+                      <TableHead className="w-[140px]">件号</TableHead>
+                      <TableHead>关联模型</TableHead>
+                      <TableHead className="w-[100px] text-right">操作</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {lruData
+                      .filter((item) => {
+                        if (!lruSearchTerm) return true;
+                        const term = lruSearchTerm.toLowerCase();
+                        return (
+                          item.aircraftType.toLowerCase().includes(term) ||
+                          item.lru.toLowerCase().includes(term) ||
+                          item.partNumber.toLowerCase().includes(term) ||
+                          item.ataChapter.toLowerCase().includes(term) ||
+                          item.relatedModel.toLowerCase().includes(term)
+                        );
+                      })
+                      .map((item) => (
+                        <TableRow key={item.id} className="hover:bg-muted/30">
+                          <TableCell className="font-medium">{item.aircraftType}</TableCell>
+                          <TableCell>{item.lru}</TableCell>
+                          <TableCell>
+                            <Badge variant="outline">ATA {item.ataChapter}</Badge>
+                          </TableCell>
+                          <TableCell className="font-mono text-sm">{item.partNumber}</TableCell>
+                          <TableCell>
+                            <span className="text-primary">{item.relatedModel}</span>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex items-center justify-end gap-1">
+                              <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-destructive hover:text-destructive">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </div>
+              <div className="text-xs text-muted-foreground mt-3">
+                共 {lruData.filter((item) => {
+                  if (!lruSearchTerm) return true;
+                  const term = lruSearchTerm.toLowerCase();
+                  return (
+                    item.aircraftType.toLowerCase().includes(term) ||
+                    item.lru.toLowerCase().includes(term) ||
+                    item.partNumber.toLowerCase().includes(term) ||
+                    item.ataChapter.toLowerCase().includes(term) ||
+                    item.relatedModel.toLowerCase().includes(term)
+                  );
+                }).length} 条 LRU 记录
+              </div>
             </CardContent>
           </Card>
         )}
@@ -2158,7 +2277,7 @@ export default function DataManagementPage() {
 
           <DialogFooter className="border-t pt-4">
             <Button variant="outline" onClick={() => setApiDialogOpen(false)}>
-              {apiDialogMode === "view" ? "关闭" : "取消"}
+              {apiDialogMode === "view" ? "关闭" : "取��"}
             </Button>
             {apiDialogMode === "view" ? (
               <Button onClick={() => setApiDialogMode("edit")} className="gap-1">
@@ -2317,7 +2436,7 @@ export default function DataManagementPage() {
           </DialogHeader>
           
           <div className="flex-1 overflow-y-auto py-4 space-y-6">
-            {/* 基本信息 */}
+            {/* 基本信�� */}
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="template-name">模板名称</Label>
@@ -2647,25 +2766,66 @@ export default function DataManagementPage() {
                       ))}
                     </div>
                   ) : (
-                    // 预览布局模式
-                    <div className="border rounded-lg p-4 bg-muted/20 min-h-[400px]">
-                      <div className="grid grid-cols-4 gap-3 auto-rows-[180px]">
+                    // 预览布局模式 - 使用 react-grid-layout 实现自由拖拽
+                    <div className="border rounded-lg p-4 bg-muted/20 min-h-[500px]">
+                      <GridLayout
+                        className="layout"
+                        layout={templateForm.dashboards.map(d => ({
+                          i: d.id,
+                          x: d.x,
+                          y: d.y,
+                          w: d.width,
+                          h: d.height,
+                          minW: 1,
+                          maxW: 4,
+                          minH: 1,
+                          maxH: 3
+                        }))}
+                        cols={4}
+                        rowHeight={150}
+                        width={1200}
+                        onLayoutChange={(layout) => {
+                          setTemplateForm(prev => ({
+                            ...prev,
+                            dashboards: prev.dashboards.map(d => {
+                              const layoutItem = layout.find(l => l.i === d.id);
+                              if (layoutItem) {
+                                return {
+                                  ...d,
+                                  x: layoutItem.x,
+                                  y: layoutItem.y,
+                                  width: layoutItem.w,
+                                  height: layoutItem.h
+                                };
+                              }
+                              return d;
+                            })
+                          }));
+                        }}
+                        draggableHandle=".drag-handle"
+                        isResizable={true}
+                        isDraggable={true}
+                      >
                         {templateForm.dashboards.map((dashboard) => (
                           <div
                             key={dashboard.id}
                             className="bg-card border rounded-lg shadow-sm overflow-hidden flex flex-col"
-                            style={{
-                              gridColumn: `span ${dashboard.width}`,
-                              gridRow: `span ${dashboard.height}`
-                            }}
                           >
-                            <div className="flex items-center justify-between px-3 py-2 border-b bg-muted/30">
-                              <span className="font-medium text-sm">{dashboard.name}</span>
-                              <Badge variant="outline" className="text-xs">
-                                {dashboard.parameters.length} 参数
-                              </Badge>
+                            <div className="drag-handle flex items-center justify-between px-3 py-2 border-b bg-muted/30 cursor-move">
+                              <div className="flex items-center gap-2">
+                                <GripVertical className="h-4 w-4 text-muted-foreground" />
+                                <span className="font-medium text-sm">{dashboard.name}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Badge variant="outline" className="text-xs">
+                                  {dashboard.parameters.length} 参数
+                                </Badge>
+                                <Badge variant="secondary" className="text-xs">
+                                  {dashboard.width}x{dashboard.height}
+                                </Badge>
+                              </div>
                             </div>
-                            <div className="flex-1 p-3 relative">
+                            <div className="flex-1 p-3 relative overflow-hidden">
                               {dashboard.parameters.length === 0 ? (
                                 <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm">
                                   暂无参数曲线
@@ -2725,7 +2885,7 @@ export default function DataManagementPage() {
                             </div>
                           </div>
                         ))}
-                      </div>
+                      </GridLayout>
                       {templateForm.dashboards.length === 0 && (
                         <div className="h-full flex items-center justify-center text-muted-foreground">
                           添加 Dashboard 后在此预览布局效果
@@ -2735,7 +2895,7 @@ export default function DataManagementPage() {
                   )}
 
                   <div className="text-xs text-muted-foreground">
-                    提示：在配置模式下编辑各 Dashboard 的参数，在预览模式下查看布局效果。Dashboard 宽度范围 1-4 列，可通过调整尺寸按钮改变。
+                    提示：在配置模式下编辑各 Dashboard 的参数。在预览模式下，可以自由拖动 Dashboard 标题栏改变位置，拖动边框调整大小。
                   </div>
                 </div>
               )}
