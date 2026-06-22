@@ -43,9 +43,10 @@ import Link from "next/link";
 const faultList = [
   {
     id: "F2024001",
-    time: "2024-01-15 14:32",
-    ata: "72-31",
-    registration: "B-1234",
+    model: "C909",
+    time: "2026-06-15 14:32",
+    ata: "72",
+    registration: "B-653G",
     location: "ZUCK-ZHHH",
     description: "监控发现APU EGT温度高",
     status: "completed",
@@ -53,9 +54,10 @@ const faultList = [
   },
   {
     id: "F2024002",
-    time: "2024-01-14 09:15",
-    ata: "29-11",
-    registration: "B-5678",
+    model: "C909",
+    time: "2026-06-15 09:15",
+    ata: "29",
+    registration: "B-653H",
     location: "ZLLL-ZUCK",
     description: "航后检查有APU引气阀故障",
     status: "processing",
@@ -63,9 +65,10 @@ const faultList = [
   },
   {
     id: "F2024003",
-    time: "2024-01-13 16:45",
-    ata: "24-22",
-    registration: "B-9012",
+    model: "C909",
+    time: "2024-06-16 16:45",
+    ata: "24",
+    registration: "B-603M",
     location: "ZWBL-ZWSH",
     description: "短停落地后有刹车降级信息",
     status: "pending",
@@ -73,9 +76,10 @@ const faultList = [
   },
   {
     id: "F2024004",
-    time: "2024-01-12 11:20",
-    ata: "73-21",
-    registration: "B-3456",
+    model: "C919",
+    time: "2026-06-16 11:20",
+    ata: "73",
+    registration: "B-919H",
     location: "ZSSS-ZLXY",
     description: "落地滑跑阶段出现刹车不派遣",
     status: "transferred",
@@ -83,9 +87,10 @@ const faultList = [
   },
   {
     id: "F2024005",
-    time: "2024-01-11 08:55",
-    ata: "72-50",
-    registration: "B-7890",
+    model: "C909",
+    time: "2026-06-17 08:55",
+    ata: "72",
+    registration: "B-655T",
     location: "ZSYW-ZGGG",
     description: "双发启动后出现发动机引气故障",
     status: "processing",
@@ -503,12 +508,13 @@ export default function TaskManagementPage() {
               <>
                 <div className="grid grid-cols-12 gap-2 px-4 py-2 bg-secondary/50 text-xs text-muted-foreground border-b border-border">
                   <div className="col-span-2">故障时间</div>
+                  <div className="col-span-1">机型</div>
                   <div className="col-span-1">ATA章节</div>
                   <div className="col-span-1">注册号</div>
                   <div className="col-span-2">起降机场</div>
                   <div className="col-span-2">故障描述</div>
                   <div className="col-span-1">状态</div>
-                  <div className="col-span-2">WQAR数据</div>
+                  <div className="col-span-1">WQAR数据</div>
                   <div className="col-span-1">操作</div>
                 </div>
                 {filteredFaults.map((fault) => (
@@ -517,12 +523,13 @@ export default function TaskManagementPage() {
                     className="grid grid-cols-12 gap-2 px-4 py-3 text-sm border-b border-border hover:bg-secondary/30 transition-colors items-center"
                   >
                     <div className="col-span-2 text-muted-foreground">{fault.time}</div>
+                    <div className="col-span-1 font-medium text-foreground">{fault.model}</div>
                     <div className="col-span-1 font-medium text-foreground">{fault.ata}</div>
                     <div className="col-span-1 text-muted-foreground">{fault.registration}</div>
                     <div className="col-span-2 text-muted-foreground truncate">{fault.location}</div>
                     <div className="col-span-2 text-muted-foreground truncate">{fault.description}</div>
                     <div className="col-span-1">{getStatusBadge(fault.status)}</div>
-                    <div className="col-span-2">
+                    <div className="col-span-1">
                       {fault.hasWQAR ? (
                         <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200">
                           <Database className="h-3 w-3 mr-1" />
@@ -595,7 +602,7 @@ export default function TaskManagementPage() {
               <>
                 <div className="grid grid-cols-12 gap-2 px-4 py-2 bg-secondary/50 text-xs text-muted-foreground border-b border-border">
                   <div className="col-span-2">时间</div>
-                  <div className="col-span-5">任务描述</div>
+                  <div className="col-span-5">任���描述</div>
                   <div className="col-span-2">交付方式</div>
                   <div className="col-span-2">状态</div>
                   <div className="col-span-1">操作</div>
