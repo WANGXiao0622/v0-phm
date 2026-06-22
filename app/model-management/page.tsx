@@ -92,24 +92,24 @@ interface ModelData {
 const modelData: ModelData[] = [
   {
     id: 1,
-    name: "APU EGT超温预警模型",
-    aircraftType: "C919",
+    name: "APU SCV故障预测模型",
+    aircraftType: "C909",
     ataChapter: "49",
     ataName: "APU",
-    lru: "APU, EGT传感器",
-    description: "基于EGT温度趋势分析，预测APU性能衰退和超温风险",
+    lru: "SCV",
+    description: "基于APU EGT与SCV位置信息分析，预测SCV控制故障",
     applicability: "ALL",
     status: "active",
     version: "v2.3.1",
     updatedAt: "2024-01-10",
     developmentApproach: "采用时序分析方法，基于历史EGT数据建立基线模型，通过滑动窗口检测温度异常趋势。模型结合了统计过程控制(SPC)和机器学习方法，能够识别渐进性衰退和突发性异常。",
     parameters: [
-      { name: "egt_threshold", type: "float", description: "EGT温度阈值(℃)", required: true },
-      { name: "trend_window", type: "int", description: "趋势分析窗口大小(航段数)", required: true },
-      { name: "warning_level", type: "float", description: "预警等级阈值", required: false },
+      { name: "APU_EGT", type: "float", description: "EGT(℃)", required: true },
+      { name: "SCV_Position", type: "int", description: "SCV 位置", required: true },
+      { name: "APU_Bleed_On", type: "float", description: "BAV开关", required: false },
     ],
     applicabilityDetail: [
-      { airline: "幸福航空", airlineCode: "UEA", enabled: true },
+      { airline: "成都航空", airlineCode: "UEA", enabled: true },
       { airline: "东方航空", airlineCode: "CES", enabled: true },
       { airline: "南方航空", airlineCode: "CSN", enabled: false },
     ],
@@ -121,8 +121,8 @@ const modelData: ModelData[] = [
   },
   {
     id: 2,
-    name: "HPV开关响应诊断模型",
-    aircraftType: "C919",
+    name: "HPV开关响应故障预测模型",
+    aircraftType: "C909",
     ataChapter: "36",
     ataName: "引气",
     lru: "HPV, PRSOV",
@@ -131,13 +131,13 @@ const modelData: ModelData[] = [
     status: "active",
     version: "v1.8.0",
     updatedAt: "2024-01-08",
-    developmentApproach: "基于物理机理建模，结合活门开关指令与实际位置反馈的时间差分析。采用阈值检测和趋势分析相结合的方法，识别响应延迟和卡滞故障的早期征兆。",
+    developmentApproach: "基于数据分析，结合活门开关指令与实际位置反馈的时间差分析。采用阈值检测和趋势分析相结合的方法，识别响应延迟和卡滞故障的早期征兆。",
     parameters: [
       { name: "response_threshold", type: "float", description: "响应时间阈值(ms)", required: true },
       { name: "stuck_threshold", type: "float", description: "卡滞判定阈值", required: true },
     ],
     applicabilityDetail: [
-      { airline: "幸福航空", airlineCode: "UEA", enabled: true },
+      { airline: "成都航空", airlineCode: "UEA", enabled: true },
       { airline: "东方航空", airlineCode: "CES", enabled: true },
     ],
     parameterMapping: [
@@ -147,7 +147,7 @@ const modelData: ModelData[] = [
   },
   {
     id: 3,
-    name: "PRSOV开关响应诊断模型",
+    name: "PRSOV开关响应故障预测模型",
     aircraftType: "C919",
     ataChapter: "36",
     ataName: "引气",
@@ -163,7 +163,7 @@ const modelData: ModelData[] = [
       { name: "anomaly_threshold", type: "float", description: "异常检测阈值", required: true },
     ],
     applicabilityDetail: [
-      { airline: "幸福航空", airlineCode: "UEA", enabled: true },
+      { airline: "成都航空", airlineCode: "UEA", enabled: true },
     ],
     parameterMapping: [
       { modelParam: "PRSOV_STATE", wqarParam: "PRSOV_STATUS", transformation: "状态编码" },
@@ -188,7 +188,7 @@ const modelData: ModelData[] = [
       { name: "trend_sensitivity", type: "float", description: "趋势敏感度", required: false },
     ],
     applicabilityDetail: [
-      { airline: "幸福航空", airlineCode: "UEA", enabled: true },
+      { airline: "成都航空", airlineCode: "UEA", enabled: true },
       { airline: "东方航空", airlineCode: "CES", enabled: true },
       { airline: "南方航空", airlineCode: "CSN", enabled: true },
     ],
@@ -199,7 +199,7 @@ const modelData: ModelData[] = [
   },
   {
     id: 5,
-    name: "发动机振动异常检测模型",
+    name: "发动机振动故障预测模型",
     aircraftType: "C919",
     ataChapter: "72",
     ataName: "发动机",
@@ -215,7 +215,7 @@ const modelData: ModelData[] = [
       { name: "freq_bands", type: "array", description: "监控频段范围", required: true },
     ],
     applicabilityDetail: [
-      { airline: "幸福航空", airlineCode: "UEA", enabled: true },
+      { airline: "成都航空", airlineCode: "UEA", enabled: true },
       { airline: "东方航空", airlineCode: "CES", enabled: true },
     ],
     parameterMapping: [
@@ -225,11 +225,11 @@ const modelData: ModelData[] = [
   },
   {
     id: 6,
-    name: "液压系统泄漏检测模型",
+    name: "液压系统液压油泄漏监控模型",
     aircraftType: "C919",
     ataChapter: "29",
     ataName: "液压",
-    lru: "液压泵, 蓄压器",
+    lru: "EDP, ACC",
     description: "通过液压油量和压力变化趋势，检测液压系统内部泄漏",
     applicability: "UEA",
     status: "active",
@@ -241,7 +241,7 @@ const modelData: ModelData[] = [
       { name: "pressure_drop_threshold", type: "float", description: "压降阈值(psi)", required: true },
     ],
     applicabilityDetail: [
-      { airline: "幸福航空", airlineCode: "UEA", enabled: true },
+      { airline: "成都航空", airlineCode: "UEA", enabled: true },
     ],
     parameterMapping: [
       { modelParam: "HYD_QTY", wqarParam: "HYD_FLUID_QTY", transformation: "直接映射" },
@@ -266,7 +266,7 @@ const modelData: ModelData[] = [
       { name: "degradation_rate", type: "float", description: "衰退率阈值", required: false },
     ],
     applicabilityDetail: [
-      { airline: "幸福航空", airlineCode: "UEA", enabled: true },
+      { airline: "成都航空", airlineCode: "UEA", enabled: true },
       { airline: "东方航空", airlineCode: "CES", enabled: true },
       { airline: "南方航空", airlineCode: "CSN", enabled: true },
     ],
@@ -277,7 +277,7 @@ const modelData: ModelData[] = [
   },
   {
     id: 8,
-    name: "空调温度控制异常模型",
+    name: "空调温度控制故障预测模型",
     aircraftType: "C909",
     ataChapter: "21",
     ataName: "空调",
@@ -298,7 +298,7 @@ const modelData: ModelData[] = [
   },
   {
     id: 9,
-    name: "飞控作动器健康监控模型",
+    name: "襟翼作动器故障预测模型",
     aircraftType: "C919",
     ataChapter: "27",
     ataName: "飞控",
@@ -314,7 +314,7 @@ const modelData: ModelData[] = [
       { name: "position_error", type: "float", description: "位置误差阈值(deg)", required: true },
     ],
     applicabilityDetail: [
-      { airline: "幸福航空", airlineCode: "UEA", enabled: true },
+      { airline: "成都航空", airlineCode: "UEA", enabled: true },
       { airline: "东方航空", airlineCode: "CES", enabled: true },
     ],
     parameterMapping: [
@@ -361,38 +361,13 @@ const modelData: ModelData[] = [
       { name: "extend_time_limit", type: "int", description: "放下时间限制(s)", required: true },
     ],
     applicabilityDetail: [
-      { airline: "幸福航空", airlineCode: "UEA", enabled: true },
+      { airline: "成都航空", airlineCode: "UEA", enabled: true },
       { airline: "东方航空", airlineCode: "CES", enabled: true },
       { airline: "南方航空", airlineCode: "CSN", enabled: true },
     ],
     parameterMapping: [
       { modelParam: "GEAR_CMD", wqarParam: "LDG_GEAR_CMD", transformation: "布尔转换" },
       { modelParam: "GEAR_POS", wqarParam: "LDG_GEAR_POS", transformation: "状态编码" },
-    ],
-  },
-  {
-    id: 12,
-    name: "电源系统负载异常模型",
-    aircraftType: "C919",
-    ataChapter: "24",
-    ataName: "电源",
-    lru: "发电机, EPCU",
-    description: "监控电源系统负载分配和异常功耗",
-    applicability: "UEA",
-    status: "testing",
-    version: "v1.1.0-beta",
-    updatedAt: "2024-01-04",
-    developmentApproach: "基于功率平衡原理建立电源负载模型，通过对比预期负载与实际负载识别异常功耗设备。",
-    parameters: [
-      { name: "load_imbalance", type: "float", description: "负载不平衡阈值(%)", required: true },
-      { name: "overload_threshold", type: "float", description: "过载阈值(kW)", required: true },
-    ],
-    applicabilityDetail: [
-      { airline: "幸福航空", airlineCode: "UEA", enabled: true },
-    ],
-    parameterMapping: [
-      { modelParam: "GEN_LOAD", wqarParam: "GEN_POWER_OUT", transformation: "直接映射" },
-      { modelParam: "BUS_VOLT", wqarParam: "DC_BUS_VOLTAGE", transformation: "直接映射" },
     ],
   },
 ];

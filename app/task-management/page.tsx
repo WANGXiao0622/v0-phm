@@ -46,7 +46,7 @@ const faultList = [
     time: "2024-01-15 14:32",
     ata: "72-31",
     registration: "B-1234",
-    location: "北京首都机场",
+    location: "ZUCK-ZHHH",
     description: "监控发现APU EGT温度高",
     status: "completed",
     hasWQAR: true,
@@ -56,7 +56,7 @@ const faultList = [
     time: "2024-01-14 09:15",
     ata: "29-11",
     registration: "B-5678",
-    location: "上海浦东机场",
+    location: "ZLLL-ZUCK",
     description: "航后检查有APU引气阀故障",
     status: "processing",
     hasWQAR: true,
@@ -66,7 +66,7 @@ const faultList = [
     time: "2024-01-13 16:45",
     ata: "24-22",
     registration: "B-9012",
-    location: "广州白云机场",
+    location: "ZWBL-ZWSH",
     description: "短停落地后有刹车降级信息",
     status: "pending",
     hasWQAR: false,
@@ -76,7 +76,7 @@ const faultList = [
     time: "2024-01-12 11:20",
     ata: "73-21",
     registration: "B-3456",
-    location: "深圳宝安机场",
+    location: "ZSSS-ZLXY",
     description: "落地滑跑阶段出现刹车不派遣",
     status: "transferred",
     hasWQAR: true,
@@ -86,7 +86,7 @@ const faultList = [
     time: "2024-01-11 08:55",
     ata: "72-50",
     registration: "B-7890",
-    location: "成都双流机场",
+    location: "ZSYW-ZGGG",
     description: "双发启动后出现发动机引气故障",
     status: "processing",
     hasWQAR: false,
@@ -213,7 +213,7 @@ const getSourceBadge = (source: string) => {
 export default function TaskManagementPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"fault" | "model" | "other">("fault");
-  
+
   // 新增型号任务对话框状态
   const [modelDialogOpen, setModelDialogOpen] = useState(false);
   const [newModelTask, setNewModelTask] = useState({
@@ -505,7 +505,7 @@ export default function TaskManagementPage() {
                   <div className="col-span-2">故障时间</div>
                   <div className="col-span-1">ATA章节</div>
                   <div className="col-span-1">注册号</div>
-                  <div className="col-span-2">地点</div>
+                  <div className="col-span-2">起降机场</div>
                   <div className="col-span-2">故障描述</div>
                   <div className="col-span-1">状态</div>
                   <div className="col-span-2">WQAR数据</div>
