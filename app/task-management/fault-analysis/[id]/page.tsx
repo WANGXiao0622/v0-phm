@@ -35,6 +35,9 @@ import {
   Link2,
   Clock,
   Eye,
+  Pencil,
+  Check,
+  X,
 } from "lucide-react";
 import {
   LineChart,
@@ -315,6 +318,32 @@ export default function FaultAnalysisPage() {
   const [selectedRelatedFault, setSelectedRelatedFault] = useState<typeof relatedFaults[number] | null>(null);
   const [relatedFaultDialogOpen, setRelatedFaultDialogOpen] = useState(false);
 
+  // 故障基本信息编辑状态
+  const [isBasicInfoEditing, setIsBasicInfoEditing] = useState(false);
+  const [basicInfoForm, setBasicInfoForm] = useState({
+    ataChapter: "49",
+    registration: "B-104X",
+    faultDate: "2024-01-15",
+    route: "PEK - SHA",
+    component: "APU",
+    partNumber: "11CB67",
+    cmsMessage: "APU BLEED SERVO VALVE",
+    eicas: "暂无",
+    description: "航后检查发现有历史CMS信息：APU BLEED SERVO VALVE。",
+    newInfo: "拆下件号4952545，序号：9BV19（原装机件）。",
+  });
+  const [savedBasicInfoForm, setSavedBasicInfoForm] = useState({ ...basicInfoForm });
+
+  const handleBasicInfoSave = () => {
+    setSavedBasicInfoForm({ ...basicInfoForm });
+    setIsBasicInfoEditing(false);
+  };
+
+  const handleBasicInfoCancel = () => {
+    setBasicInfoForm({ ...savedBasicInfoForm });
+    setIsBasicInfoEditing(false);
+  };
+
   // 分析结果各小标题内容（可手动输入并暂存）
   const [analysisResultForm, setAnalysisResultForm] = useState({
     faultSegmentDescription: "",
@@ -444,82 +473,105 @@ export default function FaultAnalysisPage() {
         {/* 第一部分：故障基本信息（紧凑版） */}
         <Card className="bg-card border-border shadow-sm">
           <CardHeader className="border-b border-border py-2 px-4">
-            <CardTitle className="flex items-center gap-2 text-foreground text-base">
-              <AlertCircle className="h-4 w-4 text-primary" />
-              故障基本信息
+            <CardTitle className="flex items-center justify-between text-foreground text-base">
+              <span className="flex items-center gap-2">
+                <AlertCircle className="h-4 w-4 text-primary" />
+                故障基本信息
+              </span>
+              {isBasicInfoEditing ? (
+                <div className="flex items-center gap-1.5">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 px-2 text-muted-foreground hover:text-foreground"
+                    onClick={handleBasicInfoCancel}
+                  >
+                    <X className="h-3.5 w-3.5 mr-1" />
+                    取消
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="h-7 px-3 bg-primary text-primary-foreground"
+                    onClick={handleBasicInfoSave}
+                  >
+                    <Check className="h-3.5 w-3.5 mr-1" />
+                    保存
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-7 px-2 text-muted-foreground hover:text-foreground"
+                  onClick={() => setIsBasicInfoEditing(true)}
+                >
+                  <Pencil className="h-3.5 w-3.5 mr-1" />
+                  编辑
+                </Button>
+              )}
             </CardTitle>
           </CardHeader>
           <CardContent className="p-3">
             {/* 第一排：ATA章节、注册号、日期、起降机场、部件、件号 */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-sm">
-              <div>
-                <Label className="text-muted-foreground text-xs">ATA章节</Label>
-                <Input
-                  value="49"
-                  disabled
-                  className="h-8 bg-input border-border text-foreground mt-1"
-                />
-              </div>
-              <div>
-                <Label className="text-muted-foreground text-xs">注册号</Label>
-                <Input
-                  value="B-104X"
-                  disabled
-                  className="h-8 bg-input border-border text-foreground mt-1"
-                />
-              </div>
-              <div>
-                <Label className="text-muted-foreground text-xs">日期</Label>
-                <Input
-                  value="2024-01-15"
-                  disabled
-                  className="h-8 bg-input border-border text-foreground mt-1"
-                />
-              </div>
-              <div>
-                <Label className="text-muted-foreground text-xs">起降机场</Label>
-                <Input
-                  value="PEK - SHA"
-                  disabled
-                  className="h-8 bg-input border-border text-foreground mt-1"
-                />
-              </div>
-              <div>
-                <Label className="text-muted-foreground text-xs">部件</Label>
-                <Input
-                  value="APU"
-                  disabled
-                  className="h-8 bg-input border-border text-foreground mt-1"
-                />
-              </div>
-              <div>
-                <Label className="text-muted-foreground text-xs">件号</Label>
-                <Input
-                  value="11CB67"
-                  disabled
-                  className="h-8 bg-input border-border text-foreground mt-1"
-                />
-              </div>
+              {(
+                [
+                  { key: "ataChapter", label: "ATA章节" },
+                  { key: "registration", label: "注册号" },
+                  { key: "faultDate", label: "日期" },
+                  { key: "route", label: "起降机场" },
+                  { key: "component", label: "部件" },
+                  { key: "partNumber", label: "件号" },
+                ] as { key: keyof typeof basicInfoForm; label: string }[]
+              ).map(({ key, label }) => {
+                const isChanged = basicInfoForm[key] !== savedBasicInfoForm[key];
+                return (
+                  <div key={key}>
+                    <Label className="text-muted-foreground text-xs">{label}</Label>
+                    <Input
+                      value={basicInfoForm[key]}
+                      disabled={!isBasicInfoEditing}
+                      onChange={(e) =>
+                        setBasicInfoForm((prev) => ({ ...prev, [key]: e.target.value }))
+                      }
+                      className={`h-8 mt-1 border-border ${
+                        isBasicInfoEditing
+                          ? "bg-background text-foreground"
+                          : "bg-input text-foreground"
+                      } ${isChanged && !isBasicInfoEditing ? "text-orange-500 font-medium" : ""}`}
+                    />
+                  </div>
+                );
+              })}
             </div>
 
             {/* 第二排：CMS信息、EICAS信息 */}
             <div className="grid grid-cols-2 gap-3 text-sm mt-3">
-              <div>
-                <Label className="text-muted-foreground text-xs">CMS信息</Label>
-                <Input
-                  value="APU BLEED SERVO VALVE"
-                  disabled
-                  className="h-8 bg-input border-border text-foreground mt-1"
-                />
-              </div>
-              <div>
-                <Label className="text-muted-foreground text-xs">EICAS信息</Label>
-                <Input
-                  value="暂无"
-                  disabled
-                  className="h-8 bg-input border-border text-foreground mt-1"
-                />
-              </div>
+              {(
+                [
+                  { key: "cmsMessage", label: "CMS信息" },
+                  { key: "eicas", label: "EICAS信息" },
+                ] as { key: keyof typeof basicInfoForm; label: string }[]
+              ).map(({ key, label }) => {
+                const isChanged = basicInfoForm[key] !== savedBasicInfoForm[key];
+                return (
+                  <div key={key}>
+                    <Label className="text-muted-foreground text-xs">{label}</Label>
+                    <Input
+                      value={basicInfoForm[key]}
+                      disabled={!isBasicInfoEditing}
+                      onChange={(e) =>
+                        setBasicInfoForm((prev) => ({ ...prev, [key]: e.target.value }))
+                      }
+                      className={`h-8 mt-1 border-border ${
+                        isBasicInfoEditing
+                          ? "bg-background text-foreground"
+                          : "bg-input text-foreground"
+                      } ${isChanged && !isBasicInfoEditing ? "text-orange-500 font-medium" : ""}`}
+                    />
+                  </div>
+                );
+              })}
             </div>
 
             {/* 可折叠的故障描述 */}
@@ -542,13 +594,36 @@ export default function FaultAnalysisPage() {
                     <span>报送时间: 2024-01-15 14:32:00</span>
                   </div>
                   <Textarea
-                    value="航后检查发现有历史CMS信息：APU BLEED SERVO VALVE。"
-                    disabled
-                    className="bg-input border-border text-foreground text-sm min-h-[50px]"
+                    value={basicInfoForm.description}
+                    disabled={!isBasicInfoEditing}
+                    onChange={(e) =>
+                      setBasicInfoForm((prev) => ({ ...prev, description: e.target.value }))
+                    }
+                    className={`mt-1 border-border text-sm min-h-[50px] ${
+                      isBasicInfoEditing
+                        ? "bg-background text-foreground"
+                        : `bg-input ${basicInfoForm.description !== savedBasicInfoForm.description ? "text-orange-500" : "text-foreground"}`
+                    }`}
                   />
-                  <div className="p-2 bg-orange-50 border border-orange-200 rounded text-sm">
-                    <span className="text-orange-700 font-medium">新增信息：</span>
-                    <span className="text-orange-600">拆下件号4952545，序号：9BV19（原装机件）。</span>
+                  <div>
+                    <Label className="text-muted-foreground text-xs">新增信息</Label>
+                    {isBasicInfoEditing ? (
+                      <Textarea
+                        value={basicInfoForm.newInfo}
+                        onChange={(e) =>
+                          setBasicInfoForm((prev) => ({ ...prev, newInfo: e.target.value }))
+                        }
+                        placeholder="请输入新增信息..."
+                        className="mt-1 bg-background border-border text-foreground text-sm min-h-[50px]"
+                      />
+                    ) : (
+                      basicInfoForm.newInfo && (
+                        <div className="mt-1 p-2 bg-orange-50 border border-orange-200 rounded text-sm">
+                          <span className="text-orange-700 font-medium">新增信息：</span>
+                          <span className="text-orange-500">{basicInfoForm.newInfo}</span>
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
               )}
