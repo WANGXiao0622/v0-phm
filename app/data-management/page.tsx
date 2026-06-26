@@ -45,6 +45,8 @@ import {
   Minimize2,
   GripVertical,
   Cpu,
+  History,
+  Wrench,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -106,6 +108,68 @@ const lruData: LruItem[] = [
   { id: 3, aircraftType: "C919", lru: "刹车切断阀", ataChapter: "32", partNumber: "138-025-01", relatedModel: "SOV故障预测与性能监控模型" },
   { id: 4, aircraftType: "C909", lru: "前起落架收放作动筒", ataChapter: "32", partNumber: "6243A0000-02", relatedModel: "" },
 ];
+
+// 件履历数据类型
+interface InstallRecord {
+  from: string;
+  to: string;
+  aircraft: string;
+  msn: string;
+}
+interface PartHistory {
+  partNumber: string;
+  lru: string;
+  serialNumbers: string[];
+  removalType: string;
+  installRecords: InstallRecord[];
+}
+
+const partHistoryData: Record<string, PartHistory> = {
+  "11CB67": {
+    partNumber: "11CB67",
+    lru: "APU引气阀",
+    serialNumbers: ["SN-2031045", "SN-2031046"],
+    removalType: "计划性拆换（定期维修）",
+    installRecords: [
+      { from: "2025-01-01", to: "2025-05-20", aircraft: "B-652K", msn: "181" },
+      { from: "2025-05-21", to: "2026-01-20", aircraft: "B-652M", msn: "188" },
+      { from: "2026-01-21", to: "至今", aircraft: "B-605W", msn: "139" },
+    ],
+  },
+  "39-967": {
+    partNumber: "39-967",
+    lru: "刹车控制阀",
+    serialNumbers: ["SN-3192001"],
+    removalType: "非计划性拆换（故障）",
+    installRecords: [
+      { from: "2024-06-10", to: "2024-11-30", aircraft: "B-919A", msn: "201" },
+      { from: "2024-12-01", to: "2025-07-15", aircraft: "B-919B", msn: "205" },
+      { from: "2025-07-16", to: "至今", aircraft: "B-919C", msn: "212" },
+    ],
+  },
+  "138-025-01": {
+    partNumber: "138-025-01",
+    lru: "刹车切断阀",
+    serialNumbers: ["SN-1380251", "SN-1380252", "SN-1380253"],
+    removalType: "计划性拆换（寿命控制）",
+    installRecords: [
+      { from: "2024-03-01", to: "2024-09-10", aircraft: "B-919D", msn: "208" },
+      { from: "2024-09-11", to: "2025-04-22", aircraft: "B-919E", msn: "214" },
+      { from: "2025-04-23", to: "至今", aircraft: "B-652K", msn: "181" },
+    ],
+  },
+  "6243A0000-02": {
+    partNumber: "6243A0000-02",
+    lru: "前起落架收放作动筒",
+    serialNumbers: ["SN-6243001"],
+    removalType: "非计划性拆换（检查发现）",
+    installRecords: [
+      { from: "2023-11-15", to: "2024-08-01", aircraft: "B-652M", msn: "188" },
+      { from: "2024-08-02", to: "2025-03-19", aircraft: "B-605W", msn: "139" },
+      { from: "2025-03-20", to: "至今", aircraft: "B-652K", msn: "181" },
+    ],
+  },
+};
 
 // 第二行标签页 - 需要个性化配置的
 const secondaryTabs = [
@@ -303,6 +367,8 @@ export default function DataManagementPage() {
   const [activeTab, setActiveTab] = useState("api");
   const [searchTerm, setSearchTerm] = useState("");
   const [lruSearchTerm, setLruSearchTerm] = useState("");
+  const [partHistoryOpen, setPartHistoryOpen] = useState(false);
+  const [selectedPartNumber, setSelectedPartNumber] = useState<string | null>(null);
   const [selectedVersion, setSelectedVersion] = useState("base");
   const [airlineConfigs, setAirlineConfigs] = useState<AirlineParameterConfigs>(initialAirlineConfigs);
   const [editingRow, setEditingRow] = useState<number | null>(null);
@@ -1217,7 +1283,17 @@ export default function DataManagementPage() {
                           <TableCell>
                             <Badge variant="outline">ATA {item.ataChapter}</Badge>
                           </TableCell>
-                          <TableCell className="font-mono text-sm">{item.partNumber}</TableCell>
+                          <TableCell className="font-mono text-sm">
+                            <button
+                              className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors cursor-pointer"
+                              onClick={() => {
+                                setSelectedPartNumber(item.partNumber);
+                                setPartHistoryOpen(true);
+                              }}
+                            >
+                              {item.partNumber}
+                            </button>
+                          </TableCell>
                           <TableCell>
                             <span className="text-primary">{item.relatedModel}</span>
                           </TableCell>
@@ -2894,6 +2970,85 @@ export default function DataManagementPage() {
               保存模板
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* 件履历弹窗 */}
+      <Dialog open={partHistoryOpen} onOpenChange={setPartHistoryOpen}>
+        <DialogContent className="max-w-2xl w-[90vw] h-auto max-h-[85vh] flex flex-col p-0 gap-0">
+          {selectedPartNumber && partHistoryData[selectedPartNumber] && (() => {
+            const ph = partHistoryData[selectedPartNumber];
+            return (
+              <>
+                <DialogHeader className="px-6 pt-5 pb-4 border-b border-border flex-shrink-0">
+                  <DialogTitle className="flex items-center gap-2">
+                    <History className="h-4 w-4 text-primary" />
+                    件履历 — <span className="font-mono">{ph.partNumber}</span>
+                  </DialogTitle>
+                  <DialogDescription>{ph.lru}</DialogDescription>
+                </DialogHeader>
+
+                <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+                  {/* 基本信息 */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="rounded-lg border border-border p-4 space-y-1">
+                      <p className="text-xs text-muted-foreground">序列号（SN）</p>
+                      <div className="flex flex-wrap gap-1.5 mt-1">
+                        {ph.serialNumbers.map((sn) => (
+                          <Badge key={sn} variant="secondary" className="font-mono text-xs">{sn}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="rounded-lg border border-border p-4 space-y-1">
+                      <p className="text-xs text-muted-foreground">拆换类型</p>
+                      <div className="flex items-center gap-1.5 mt-1">
+                        <Wrench className="h-3.5 w-3.5 text-muted-foreground" />
+                        <span className="text-sm font-medium">{ph.removalType}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 装机记录 */}
+                  <div>
+                    <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                      <History className="h-4 w-4 text-primary" />
+                      最近装机记录
+                    </h3>
+                    <div className="space-y-2">
+                      {ph.installRecords.map((rec, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center justify-between rounded-lg border border-border px-4 py-3 bg-muted/30"
+                        >
+                          <div className="flex items-center gap-3">
+                            <span className="h-6 w-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center flex-shrink-0">
+                              {ph.installRecords.length - idx}
+                            </span>
+                            <div>
+                              <p className="text-sm font-mono text-foreground">
+                                {rec.from} &nbsp;—&nbsp; {rec.to}
+                              </p>
+                              <p className="text-xs text-muted-foreground mt-0.5">装机时段</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sm font-semibold text-foreground">{rec.aircraft}</p>
+                            <p className="text-xs text-muted-foreground">MSN {rec.msn}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <DialogFooter className="px-6 py-4 border-t border-border flex-shrink-0">
+                  <Button variant="outline" size="sm" onClick={() => setPartHistoryOpen(false)}>
+                    关闭
+                  </Button>
+                </DialogFooter>
+              </>
+            );
+          })()}
         </DialogContent>
       </Dialog>
     </AppShell>

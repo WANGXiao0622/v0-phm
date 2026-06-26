@@ -94,71 +94,54 @@ const availableModels = [
 // ─── 初始数据 ──────────────────────────────────────────────────────────────
 const initialRequirements: Requirement[] = [
   {
-    id: "REQ-2024-001",
-    title: "APU启动失败预测模型需求",
-    submitter: "张工",
-    submittedAt: "2024-01-10",
+    id: "REQ-2026-001",
+    title: "C919 飞机 APU供气不足分析需求",
+    submitter: "王潇",
+    submittedAt: "2026-06-20",
     status: "responded",
     priority: "high",
-    source: "运营维护",
-    description: "当前APU启动失败事件频发，需要通过历史数据建立预测模型，提前识别APU可能存在的启动失败风险。",
-    typicalCase: "2023年12月某航班APU三次启动失败，延误2小时，造成较大经济损失。",
-    solution: "基于WQAR数据中的EGT、N速度、启动时序等参数，建立多元回归或时序分析模型。",
-    dataResource: "需要近3年APU启动数据，包含正常和异常样本各不少于500条。",
-    impactAnalysis: "可减少APU启动失败导致的航班延误约60%，预计年节省成本200万元。",
+    source: "运行支持",
+    description: "2025年12月出现C919飞机APU开启双侧PACK供气后报故，且切断供气，怀疑为APU供气性能低导致异常。该类型故障可能与APU引气阀性能下降相关",
+    typicalCase: "2025年12月2日，C919 飞机B-658V（00034）架机，开启PACK供气后，包故APU BLEED FAULT",
+    solution: "基于GIPC数据中的DP、PT、P2等压力值，开展APU供气流量或者供气压力分析。",
+    dataResource: "近1年APU供气阶段数据，包含APU引气故障信息数据。",
+    impactAnalysis: "提前监控APU引气性能下降趋势，实现故障预警，减少航线因为APU引气而导致的延误问题。",
     approvalComment: "需求合理，数据可获取，优先级高，批准立项。",
-    approvedBy: "李总",
-    approvedAt: "2024-01-12",
+    approvedBy: "吕骘",
+    approvedAt: "2026-06-22",
     linkedModelId: 1,
     linkedModelName: "APU EGT超温预警模型",
-    responseNote: "关联现有APU EGT超温预警模型，扩展启动失败场景。将在v2.4.0版本中新增启动失败预测逻辑。",
-    respondedBy: "研发团队",
-    respondedAt: "2024-01-15",
   },
   {
-    id: "REQ-2024-002",
-    title: "起落架收放异常早期预警需求",
-    submitter: "王工",
-    submittedAt: "2024-01-14",
+    id: "REQ-2026-002",
+    title: "C909飞机液压泄漏模型优化需求",
+    submitter: "郭鑫星",
+    submittedAt: "2026-06-20",
     status: "approved",
     priority: "medium",
-    source: "航线维护",
-    description: "起落架收放时间异常是结构故障的重要前兆，需要建立早期预警机制。",
-    typicalCase: "2024年1月某机型连续3个航班起落架收起时间超标，后发现液压系统渗漏。",
-    solution: "采集收放时间序列，与基线对比，超出动态阈值时触发预警。",
-    dataResource: "需近2年起落架WQAR数据，含收放时序参数。",
-    impactAnalysis: "预计可将起落架相关AOG事件减少40%。",
+    source: "模型优化",
+    description: "现有液压泄漏监控模型算法简单，针对整机的液压油油量进行的简单补偿，但是补偿不精确，并且没有考虑温度影响。",
+    typicalCase: "2026年5月17日，B-655T过站检查，发现机身排液口液压油，2号液压系统油量22%，飞机停场排故。",
+    solution: "优化液压油补偿逻辑，考虑温度效应。",
+    dataResource: "需近2年液压系统相关WQAR数据。",
+    impactAnalysis: "预计可提高模型准确率至90%。",
     approvalComment: "数据充足，方案可行，同意立项。",
-    approvedBy: "李总",
-    approvedAt: "2024-01-16",
+    approvedBy: "吕骘",
+    approvedAt: "2026-06-22",
   },
   {
-    id: "REQ-2024-003",
-    title: "引气系统泄漏检测需求",
-    submitter: "陈工",
-    submittedAt: "2024-01-18",
+    id: "REQ-2026-003",
+    title: "防冰活门失效监控模型开发需求",
+    submitter: "王潇",
+    submittedAt: "2026-06-22",
     status: "pending",
     priority: "high",
-    source: "质量安全",
-    description: "引气系统泄漏难以在飞行中及时发现，需要基于温度压力参数建立实时检测模型。",
-    typicalCase: "2023年11月某航班引气泄漏导致客舱温度异常，备降处置。",
-    solution: "通过温度压差异常检测，结合PRSOV阀位信号进行综合判断。",
-    dataResource: "需要引气系统全参数WQAR数据，含温度、压力、阀位等。",
-    impactAnalysis: "可显著提升引气系统健康监控覆盖率，减少因引气故障导致的备降率。",
-  },
-  {
-    id: "REQ-2024-004",
-    title: "电源系统电压波动分析需求",
-    submitter: "刘工",
-    submittedAt: "2024-01-20",
-    status: "draft",
-    priority: "low",
-    source: "工程技术",
-    description: "电源系统电压频繁波动影响航电设备稳定性，需要建立波动分析与根因定位模型。",
-    typicalCase: "近期多架飞机出现航电设备偶发性失效，初步判断与电压波动相关。",
-    solution: "分析WQAR中的电压参数时序，识别异常波动模式并关联故障信息。",
-    dataResource: "需要电源系统WQAR参数及对应MEL/PIREP记录。",
-    impactAnalysis: "有助于减少航电设备故障率，提升飞行安全裕度。",
+    source: "模型开发",
+    description: "防冰活门PRSOV1 与PRSOV2，经过与原理分析与数据筛查，拥有上下游压力信号与控制信号，具备开发模型的前提。且该故障航线多发，具备模型开发的价值",
+    typicalCase: "2026年6月9日，C919飞机B-658X（00028）过站时发现有CMS信息：NAI PRSOV1 POSITION FAILED OPEN FAULT。该股涨为多发故障",
+    solution: "监控两个PRSOV1/2的上下游压力，同时对比控制信号，判断失效信息。",
+    dataResource: "需要引气系统相关阀门近6个月的压力数据与控制信号。",
+    impactAnalysis: "可轻松判别故障原因，有效减少故障分析时间，提高效率。",
   },
 ];
 
@@ -259,12 +242,12 @@ export default function RequirementManagementPage() {
       prev.map((r) =>
         r.id === selectedReq.id
           ? {
-              ...r,
-              status: approved ? "approved" : "rejected",
-              approvalComment,
-              approvedBy: "审批人",
-              approvedAt: new Date().toISOString().split("T")[0],
-            }
+            ...r,
+            status: approved ? "approved" : "rejected",
+            approvalComment,
+            approvedBy: "审批人",
+            approvedAt: new Date().toISOString().split("T")[0],
+          }
           : r
       )
     );
@@ -279,14 +262,14 @@ export default function RequirementManagementPage() {
       prev.map((r) =>
         r.id === selectedReq.id
           ? {
-              ...r,
-              status: "responded",
-              linkedModelId: Number(linkedModelId),
-              linkedModelName: model?.name ?? "",
-              responseNote,
-              respondedBy: "研发团队",
-              respondedAt: new Date().toISOString().split("T")[0],
-            }
+            ...r,
+            status: "responded",
+            linkedModelId: Number(linkedModelId),
+            linkedModelName: model?.name ?? "",
+            responseNote,
+            respondedBy: "研发团队",
+            respondedAt: new Date().toISOString().split("T")[0],
+          }
           : r
       )
     );
@@ -819,27 +802,26 @@ export default function RequirementManagementPage() {
                     {(selectedReq.status === "approved" ||
                       selectedReq.status === "rejected" ||
                       selectedReq.status === "responded") && (
-                      <div
-                        className={`rounded-md px-3 py-2.5 text-sm space-y-1 border ${
-                          selectedReq.status === "rejected"
+                        <div
+                          className={`rounded-md px-3 py-2.5 text-sm space-y-1 border ${selectedReq.status === "rejected"
                             ? "bg-red-50 border-red-200 text-red-700"
                             : "bg-emerald-50 border-emerald-200 text-emerald-700"
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 font-medium">
-                          {selectedReq.status === "rejected" ? (
-                            <XCircle className="h-4 w-4" />
-                          ) : (
-                            <CheckCircle2 className="h-4 w-4" />
-                          )}
-                          {selectedReq.status === "rejected" ? "已驳回" : "已批准"}
-                          <span className="text-xs font-normal opacity-70 ml-auto">
-                            {selectedReq.approvedBy} · {selectedReq.approvedAt}
-                          </span>
+                            }`}
+                        >
+                          <div className="flex items-center gap-2 font-medium">
+                            {selectedReq.status === "rejected" ? (
+                              <XCircle className="h-4 w-4" />
+                            ) : (
+                              <CheckCircle2 className="h-4 w-4" />
+                            )}
+                            {selectedReq.status === "rejected" ? "已驳回" : "已批准"}
+                            <span className="text-xs font-normal opacity-70 ml-auto">
+                              {selectedReq.approvedBy} · {selectedReq.approvedAt}
+                            </span>
+                          </div>
+                          <p className="text-xs opacity-80">{selectedReq.approvalComment}</p>
                         </div>
-                        <p className="text-xs opacity-80">{selectedReq.approvalComment}</p>
-                      </div>
-                    )}
+                      )}
 
                     {/* 待审批时显示审批操作 */}
                     {selectedReq.status === "pending" && (

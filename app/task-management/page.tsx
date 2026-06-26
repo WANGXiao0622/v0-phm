@@ -44,7 +44,7 @@ import Link from "next/link";
 const faultList = [
   {
     id: "F2024001",
-    time: "2024-01-15 14:32",
+    time: "2026-01-15 14:32",
     ata: "72-31",
     registration: "B-1234",
     location: "北京首都机场",
@@ -54,7 +54,7 @@ const faultList = [
   },
   {
     id: "F2024002",
-    time: "2024-01-14 09:15",
+    time: "2026-01-14 09:15",
     ata: "29-11",
     registration: "B-5678",
     location: "上海浦东机场",
@@ -64,7 +64,7 @@ const faultList = [
   },
   {
     id: "F2024003",
-    time: "2024-01-13 16:45",
+    time: "2026-01-13 16:45",
     ata: "24-22",
     registration: "B-9012",
     location: "广州白云机场",
@@ -74,7 +74,7 @@ const faultList = [
   },
   {
     id: "F2024004",
-    time: "2024-01-12 11:20",
+    time: "2026-01-12 11:20",
     ata: "73-21",
     registration: "B-3456",
     location: "深圳宝安机场",
@@ -84,7 +84,7 @@ const faultList = [
   },
   {
     id: "F2024005",
-    time: "2024-01-11 08:55",
+    time: "2026-01-11 08:55",
     ata: "72-50",
     registration: "B-7890",
     location: "成都双流机场",
@@ -100,35 +100,35 @@ const modelTaskList = [
     id: "M2024001",
     source: "C919",
     taskName: "完成PRSOV故障诊断模型航线故障统计与参数确认",
-    deadline: "2024-02-15",
+    deadline: "2026-02-15",
     status: "processing",
   },
   {
     id: "M2024002",
     source: "C909",
     taskName: "完成HPV故障诊断模型原理与模型可行性分析",
-    deadline: "2024-02-20",
+    deadline: "2026-02-20",
     status: "pending",
   },
   {
     id: "M2024003",
     source: "运行支持",
     taskName: "完成HPV故障诊断模型开发与部署",
-    deadline: "2024-01-30",
+    deadline: "2026-01-30",
     status: "completed",
   },
   {
     id: "M2024004",
     source: "创新平台",
     taskName: "完成C919健康管理模型验证流程梳理",
-    deadline: "2024-03-01",
+    deadline: "2026-03-01",
     status: "processing",
   },
   {
     id: "M2024005",
     source: "其它",
     taskName: "完成C919健康管理模型验证评审要求",
-    deadline: "2024-02-10",
+    deadline: "2026-02-10",
     status: "pending",
   },
 ];
@@ -137,28 +137,28 @@ const modelTaskList = [
 const otherTaskList = [
   {
     id: "O2024001",
-    time: "2024-01-16",
+    time: "2026-01-16",
     description: "完成本月模型开发进展汇报ppt",
     delivery: "PPT报告",
     status: "processing",
   },
   {
     id: "O2024002",
-    time: "2024-01-18",
+    time: "2026-01-18",
     description: "完成健康管理与性能监控平台需求分析报告",
     delivery: "Word文档",
     status: "pending",
   },
   {
     id: "O2024003",
-    time: "2024-01-10",
+    time: "2026-01-10",
     description: "完成健康管理与性能监控平台技术报告",
     delivery: "Word文档",
     status: "completed",
   },
   {
     id: "O2024004",
-    time: "2024-01-20",
+    time: "2026-01-20",
     description: "完成健康管理与性能监控平台原型开发",
     delivery: "系统原型",
     status: "pending",

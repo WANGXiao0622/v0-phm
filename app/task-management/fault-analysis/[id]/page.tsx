@@ -112,11 +112,11 @@ const generateTrendChartData = (segmentIndex: number = 0) => {
 
 // 模拟航段数据
 const flightSegments = [
-  { id: "seg1", registration: "B-104X", startTime: "2026-05-20 07:56:21", departure: "PEK", arrival: "SHA", filename: "B-104X_20260520_075621.csv" },
-  { id: "seg2", registration: "B-104X", startTime: "2026-05-20 10:32:15", departure: "SHA", arrival: "CAN", filename: "B-104X_20260520_103215.csv" },
-  { id: "seg3", registration: "B-104X", startTime: "2026-05-20 14:18:42", departure: "CAN", arrival: "PEK", filename: "B-104X_20260520_141842.csv" },
-  { id: "seg4", registration: "B-104Y", startTime: "2026-05-21 08:05:33", departure: "PEK", arrival: "CTU", filename: "B-104Y_20260521_080533.csv" },
-  { id: "seg5", registration: "B-104Y", startTime: "2026-05-21 12:45:18", departure: "CTU", arrival: "SHA", filename: "B-104Y_20260521_124518.csv" },
+  { id: "seg1", registration: "B-104X", startTime: "2026-05-20 07:56:21", departure: "ZBXH", arrival: "ZBER", filename: "B-104X_20260520_075621.csv" },
+  { id: "seg2", registration: "B-104X", startTime: "2026-05-20 10:32:15", departure: "ZSSS", arrival: "ZGSZ", filename: "B-104X_20260520_103215.csv" },
+  { id: "seg3", registration: "B-104X", startTime: "2026-05-20 14:18:42", departure: "ZBXH", arrival: "ZBER", filename: "B-104X_20260520_141842.csv" },
+  { id: "seg4", registration: "B-104Y", startTime: "2026-05-21 08:05:33", departure: "ZSSS", arrival: "ZGSZ", filename: "B-104Y_20260521_080533.csv" },
+  { id: "seg5", registration: "B-104Y", startTime: "2026-05-21 12:45:18", departure: "ZBXH", arrival: "ZBER", filename: "B-104Y_20260521_124518.csv" },
 ];
 
 // 模拟模型分析图表数据 - 用于多图展示
@@ -158,8 +158,8 @@ const relatedFaults = [
     cmsMessage: "APU BLEED SERVO VALVE", 
     registration: "B-104X", 
     ataChapter: "49", 
-    faultDate: "2024-01-12 14:30:00", 
-    route: "PVG-PEK", 
+    faultDate: "2026-04-12 14:30:00", 
+    route: "ZSSS-ZGSZ", 
     status: "analyzed" as const,
     // 故障基本信息
     basicInfo: {
@@ -174,8 +174,8 @@ const relatedFaults = [
       conclusion: "引气伺服阀内部密封圈老化，导致阀门响应迟缓。",
       rootCause: "部件使用时间超过建议更换周期，密封材料性能下降。",
       recommendation: "建议按照维护手册要求，定期更换密封圈，周期为3000飞行小时。",
-      analyst: "张工",
-      analyzeDate: "2024-01-13 16:20:00"
+      analyst: "王潇",
+      analyzeDate: "2026-04-13 16:20:00"
     }
   },
   { 
@@ -183,8 +183,8 @@ const relatedFaults = [
     cmsMessage: "APU BLEED SERVO VALVE", 
     registration: "B-104X", 
     ataChapter: "49", 
-    faultDate: "2024-01-10 09:15:00", 
-    route: "PEK-SHA", 
+    faultDate: "2026-01-10 09:15:00", 
+    route: "ZSSS-ZGSZ", 
     status: "analyzed" as const,
     basicInfo: {
       partNumber: "11CB67",
@@ -197,8 +197,8 @@ const relatedFaults = [
       conclusion: "瞬态信号干扰导致误报警。",
       rootCause: "电磁环境干扰。",
       recommendation: "持续监控，如再次发生则需检查线路屏蔽。",
-      analyst: "李工",
-      analyzeDate: "2024-01-11 10:30:00"
+      analyst: "王潇",
+      analyzeDate: "2026-01-11 10:30:00"
     }
   },
   { 
@@ -206,8 +206,8 @@ const relatedFaults = [
     cmsMessage: "APU BLEED SERVO VALVE", 
     registration: "B-104X", 
     ataChapter: "49", 
-    faultDate: "2024-01-05 16:45:00", 
-    route: "SHA-CAN", 
+    faultDate: "2026-01-05 16:45:00", 
+    route: "ZSSS-ZGSZ", 
     status: "pending" as const,
     basicInfo: {
       partNumber: "11CB67",
@@ -223,8 +223,8 @@ const relatedFaults = [
     cmsMessage: "APU BLEED SERVO VALVE", 
     registration: "B-104X", 
     ataChapter: "49", 
-    faultDate: "2023-12-28 11:20:00", 
-    route: "CAN-PEK", 
+    faultDate: "2025-12-28 11:20:00", 
+    route: "ZSSS-ZGSZ", 
     status: "analyzed" as const,
     basicInfo: {
       partNumber: "11CB65",
@@ -237,8 +237,8 @@ const relatedFaults = [
       conclusion: "引气伺服阀机械卡滞。",
       rootCause: "阀芯表面有异物附着。",
       recommendation: "清洁阀芯并进行功能测试。",
-      analyst: "王工",
-      analyzeDate: "2023-12-29 14:00:00"
+      analyst: "王潇",
+      analyzeDate: "2025-12-29 14:00:00"
     }
   },
   { 
@@ -246,8 +246,8 @@ const relatedFaults = [
     cmsMessage: "APU BLEED SERVO VALVE", 
     registration: "B-104X", 
     ataChapter: "49", 
-    faultDate: "2023-12-20 08:30:00", 
-    route: "PEK-CAN", 
+    faultDate: "2025-12-20 08:30:00", 
+    route: "ZSSS-ZGSZ", 
     status: "analyzed" as const,
     basicInfo: {
       partNumber: "11CB65",
@@ -260,8 +260,8 @@ const relatedFaults = [
       conclusion: "间歇性信号问题，阀门本身无故障。",
       rootCause: "连接器接触不良。",
       recommendation: "清洁并紧固连接器。",
-      analyst: "赵工",
-      analyzeDate: "2023-12-21 11:00:00"
+      analyst: "王潇",
+      analyzeDate: "2025-12-21 11:00:00"
     }
   },
   { 
@@ -269,8 +269,8 @@ const relatedFaults = [
     cmsMessage: "APU BLEED SERVO VALVE", 
     registration: "B-104X", 
     ataChapter: "49", 
-    faultDate: "2023-12-15 15:10:00", 
-    route: "SHA-CTU", 
+    faultDate: "2025-12-15 15:10:00", 
+    route: "ZSSS-ZGSZ", 
     status: "analyzed" as const,
     basicInfo: {
       partNumber: "11CB65",
@@ -283,8 +283,8 @@ const relatedFaults = [
       conclusion: "低温环境下阀门响应延迟。",
       rootCause: "润滑脂在低温下粘度增加。",
       recommendation: "更换低温润滑脂。",
-      analyst: "张工",
-      analyzeDate: "2023-12-16 09:30:00"
+      analyst: "王潇",
+      analyzeDate: "2025-12-16 09:30:00"
     }
   },
 ];
