@@ -116,57 +116,112 @@ interface InstallRecord {
   aircraft: string;
   msn: string;
 }
+interface SNRecord {
+  sn: string;
+  removalType: string;
+  installRecords: InstallRecord[];
+}
 interface PartHistory {
   partNumber: string;
   lru: string;
-  serialNumbers: string[];
-  removalType: string;
-  installRecords: InstallRecord[];
+  snRecords: SNRecord[];
 }
 
 const partHistoryData: Record<string, PartHistory> = {
   "11CB67": {
     partNumber: "11CB67",
     lru: "APU引气阀",
-    serialNumbers: ["SN-2031045", "SN-2031046"],
-    removalType: "计划性拆换（定期维修）",
-    installRecords: [
-      { from: "2025-01-01", to: "2025-05-20", aircraft: "B-652K", msn: "181" },
-      { from: "2025-05-21", to: "2026-01-20", aircraft: "B-652M", msn: "188" },
-      { from: "2026-01-21", to: "至今", aircraft: "B-605W", msn: "139" },
+    snRecords: [
+      {
+        sn: "SN-2031045",
+        removalType: "计划性拆换（定期维修）",
+        installRecords: [
+          { from: "2025-01-01", to: "2025-05-20", aircraft: "B-652K", msn: "181" },
+          { from: "2025-05-21", to: "2026-01-20", aircraft: "B-652M", msn: "188" },
+          { from: "2026-01-21", to: "至今", aircraft: "B-605W", msn: "139" },
+        ],
+      },
+      {
+        sn: "SN-2031046",
+        removalType: "非计划性拆换（故障）",
+        installRecords: [
+          { from: "2024-03-10", to: "2024-09-05", aircraft: "B-652K", msn: "181" },
+          { from: "2024-09-06", to: "2025-04-18", aircraft: "B-919A", msn: "201" },
+          { from: "2025-04-19", to: "至今", aircraft: "B-652M", msn: "188" },
+        ],
+      },
     ],
   },
   "39-967": {
     partNumber: "39-967",
     lru: "刹车控制阀",
-    serialNumbers: ["SN-3192001"],
-    removalType: "非计划性拆换（故障）",
-    installRecords: [
-      { from: "2024-06-10", to: "2024-11-30", aircraft: "B-919A", msn: "201" },
-      { from: "2024-12-01", to: "2025-07-15", aircraft: "B-919B", msn: "205" },
-      { from: "2025-07-16", to: "至今", aircraft: "B-919C", msn: "212" },
+    snRecords: [
+      {
+        sn: "SN-3192001",
+        removalType: "非计划性拆换（故障）",
+        installRecords: [
+          { from: "2024-06-10", to: "2024-11-30", aircraft: "B-919A", msn: "201" },
+          { from: "2024-12-01", to: "2025-07-15", aircraft: "B-919B", msn: "205" },
+          { from: "2025-07-16", to: "至今", aircraft: "B-919C", msn: "212" },
+        ],
+      },
+      {
+        sn: "SN-3192002",
+        removalType: "计划性拆换（寿命控制）",
+        installRecords: [
+          { from: "2023-08-01", to: "2024-02-20", aircraft: "B-919D", msn: "208" },
+          { from: "2024-02-21", to: "2025-01-10", aircraft: "B-605W", msn: "139" },
+          { from: "2025-01-11", to: "至今", aircraft: "B-919A", msn: "201" },
+        ],
+      },
     ],
   },
   "138-025-01": {
     partNumber: "138-025-01",
     lru: "刹车切断阀",
-    serialNumbers: ["SN-1380251", "SN-1380252", "SN-1380253"],
-    removalType: "计划性拆换（寿命控制）",
-    installRecords: [
-      { from: "2024-03-01", to: "2024-09-10", aircraft: "B-919D", msn: "208" },
-      { from: "2024-09-11", to: "2025-04-22", aircraft: "B-919E", msn: "214" },
-      { from: "2025-04-23", to: "至今", aircraft: "B-652K", msn: "181" },
+    snRecords: [
+      {
+        sn: "SN-1380251",
+        removalType: "计划性拆换（寿命控制）",
+        installRecords: [
+          { from: "2024-03-01", to: "2024-09-10", aircraft: "B-919D", msn: "208" },
+          { from: "2024-09-11", to: "2025-04-22", aircraft: "B-919E", msn: "214" },
+          { from: "2025-04-23", to: "至今", aircraft: "B-652K", msn: "181" },
+        ],
+      },
+      {
+        sn: "SN-1380252",
+        removalType: "非计划性拆换（检查发现）",
+        installRecords: [
+          { from: "2023-11-01", to: "2024-06-15", aircraft: "B-652M", msn: "188" },
+          { from: "2024-06-16", to: "2025-02-28", aircraft: "B-605W", msn: "139" },
+          { from: "2025-03-01", to: "至今", aircraft: "B-919B", msn: "205" },
+        ],
+      },
+      {
+        sn: "SN-1380253",
+        removalType: "计划性拆换（定期维修）",
+        installRecords: [
+          { from: "2024-07-01", to: "2025-01-20", aircraft: "B-919C", msn: "212" },
+          { from: "2025-01-21", to: "2025-09-10", aircraft: "B-652K", msn: "181" },
+          { from: "2025-09-11", to: "至今", aircraft: "B-919D", msn: "208" },
+        ],
+      },
     ],
   },
   "6243A0000-02": {
     partNumber: "6243A0000-02",
     lru: "前起落架收放作动筒",
-    serialNumbers: ["SN-6243001"],
-    removalType: "非计划性拆换（检查发现）",
-    installRecords: [
-      { from: "2023-11-15", to: "2024-08-01", aircraft: "B-652M", msn: "188" },
-      { from: "2024-08-02", to: "2025-03-19", aircraft: "B-605W", msn: "139" },
-      { from: "2025-03-20", to: "至今", aircraft: "B-652K", msn: "181" },
+    snRecords: [
+      {
+        sn: "SN-6243001",
+        removalType: "非计划性拆换（检查发现）",
+        installRecords: [
+          { from: "2023-11-15", to: "2024-08-01", aircraft: "B-652M", msn: "188" },
+          { from: "2024-08-02", to: "2025-03-19", aircraft: "B-605W", msn: "139" },
+          { from: "2025-03-20", to: "至今", aircraft: "B-652K", msn: "181" },
+        ],
+      },
     ],
   },
 };
@@ -201,7 +256,7 @@ const initialApiData: ApiConfig[] = [
   { id: 2, name: "WQAR数据上传API", endpoint: "/api/v1/wqar/upload", method: "POST", status: "active", calls: 8920, lastCall: "2024-01-15 14:28:00", description: "用于上传WQAR原始数据", authType: "API Key", timeout: 60000, retryCount: 2 },
   { id: 3, name: "故障报告查询API", endpoint: "/api/v1/fault-report", method: "GET", status: "active", calls: 5640, lastCall: "2024-01-15 14:25:00", description: "查询故障报告记录", authType: "Bearer Token", timeout: 15000, retryCount: 3 },
   { id: 4, name: "模型预测API", endpoint: "/api/v1/model/predict", method: "POST", status: "inactive", calls: 3200, lastCall: "2024-01-14 18:00:00", description: "调用模型进行故障预测", authType: "Bearer Token", timeout: 45000, retryCount: 1 },
-  { id: 5, name: "数据导出API", endpoint: "/api/v1/export", method: "GET", status: "active", calls: 1890, lastCall: "2024-01-15 12:00:00", description: "导出分析报告和数据", authType: "API Key", timeout: 120000, retryCount: 2 },
+  { id: 5, name: "数据导出API", endpoint: "/api/v1/export", method: "GET", status: "active", calls: 1890, lastCall: "2024-01-15 12:00:00", description: "导出分��报告和数据", authType: "API Key", timeout: 120000, retryCount: 2 },
 ];
 
 // WQAR 数据
@@ -369,6 +424,7 @@ export default function DataManagementPage() {
   const [lruSearchTerm, setLruSearchTerm] = useState("");
   const [partHistoryOpen, setPartHistoryOpen] = useState(false);
   const [selectedPartNumber, setSelectedPartNumber] = useState<string | null>(null);
+  const [selectedSN, setSelectedSN] = useState<string | null>(null);
   const [selectedVersion, setSelectedVersion] = useState("base");
   const [airlineConfigs, setAirlineConfigs] = useState<AirlineParameterConfigs>(initialAirlineConfigs);
   const [editingRow, setEditingRow] = useState<number | null>(null);
@@ -1287,7 +1343,9 @@ export default function DataManagementPage() {
                             <button
                               className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors cursor-pointer"
                               onClick={() => {
+                                const ph = partHistoryData[item.partNumber];
                                 setSelectedPartNumber(item.partNumber);
+                                setSelectedSN(ph ? ph.snRecords[0].sn : null);
                                 setPartHistoryOpen(true);
                               }}
                             >
@@ -1411,7 +1469,7 @@ export default function DataManagementPage() {
                 <div className="flex items-center gap-4">
                   <CardTitle className="text-base flex items-center gap-2">
                     <Sliders className="h-4 w-4 text-primary" />
-                    参数配置
+                    参数配��
                   </CardTitle>
                   {/* 版本选择器 */}
                   <div className="flex items-center gap-2">
@@ -2975,68 +3033,91 @@ export default function DataManagementPage() {
 
       {/* 件履历弹窗 */}
       <Dialog open={partHistoryOpen} onOpenChange={setPartHistoryOpen}>
-        <DialogContent className="max-w-2xl w-[90vw] h-auto max-h-[85vh] flex flex-col p-0 gap-0">
+        <DialogContent className="max-w-3xl w-[92vw] h-[82vh] flex flex-col p-0 gap-0">
           {selectedPartNumber && partHistoryData[selectedPartNumber] && (() => {
             const ph = partHistoryData[selectedPartNumber];
+            const activeSNRecord = ph.snRecords.find((r) => r.sn === selectedSN) ?? ph.snRecords[0];
             return (
               <>
+                {/* 标题栏 */}
                 <DialogHeader className="px-6 pt-5 pb-4 border-b border-border flex-shrink-0">
                   <DialogTitle className="flex items-center gap-2">
                     <History className="h-4 w-4 text-primary" />
-                    件履历 — <span className="font-mono">{ph.partNumber}</span>
+                    件履历 —&nbsp;<span className="font-mono">{ph.partNumber}</span>
                   </DialogTitle>
                   <DialogDescription>{ph.lru}</DialogDescription>
                 </DialogHeader>
 
-                <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
-                  {/* 基本信息 */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="rounded-lg border border-border p-4 space-y-1">
-                      <p className="text-xs text-muted-foreground">序列号（SN）</p>
-                      <div className="flex flex-wrap gap-1.5 mt-1">
-                        {ph.serialNumbers.map((sn) => (
-                          <Badge key={sn} variant="secondary" className="font-mono text-xs">{sn}</Badge>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="rounded-lg border border-border p-4 space-y-1">
-                      <p className="text-xs text-muted-foreground">拆换类型</p>
-                      <div className="flex items-center gap-1.5 mt-1">
-                        <Wrench className="h-3.5 w-3.5 text-muted-foreground" />
-                        <span className="text-sm font-medium">{ph.removalType}</span>
-                      </div>
+                {/* 主体：左侧 SN 列表 + 右侧详情 */}
+                <div className="flex flex-1 min-h-0">
+                  {/* 左侧 SN 列表 */}
+                  <div className="w-44 flex-shrink-0 border-r border-border bg-muted/30 flex flex-col">
+                    <p className="px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide border-b border-border">
+                      序列号
+                    </p>
+                    <div className="flex-1 overflow-y-auto py-2">
+                      {ph.snRecords.map((snRec) => (
+                        <button
+                          key={snRec.sn}
+                          onClick={() => setSelectedSN(snRec.sn)}
+                          className={`w-full text-left px-4 py-2.5 text-sm font-mono transition-colors ${
+                            selectedSN === snRec.sn
+                              ? "bg-primary/10 text-primary font-semibold border-r-2 border-primary"
+                              : "text-foreground hover:bg-muted"
+                          }`}
+                        >
+                          {snRec.sn}
+                        </button>
+                      ))}
                     </div>
                   </div>
 
-                  {/* 装机记录 */}
-                  <div>
-                    <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-                      <History className="h-4 w-4 text-primary" />
-                      最近装机记录
-                    </h3>
-                    <div className="space-y-2">
-                      {ph.installRecords.map((rec, idx) => (
-                        <div
-                          key={idx}
-                          className="flex items-center justify-between rounded-lg border border-border px-4 py-3 bg-muted/30"
-                        >
-                          <div className="flex items-center gap-3">
-                            <span className="h-6 w-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center flex-shrink-0">
-                              {ph.installRecords.length - idx}
-                            </span>
-                            <div>
-                              <p className="text-sm font-mono text-foreground">
-                                {rec.from} &nbsp;—&nbsp; {rec.to}
-                              </p>
-                              <p className="text-xs text-muted-foreground mt-0.5">装机时段</p>
+                  {/* 右侧详情 */}
+                  <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+                    {/* 拆换类型 */}
+                    <div className="rounded-lg border border-border px-4 py-3 flex items-center gap-3">
+                      <Wrench className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">拆换类型</p>
+                        <p className="text-sm font-medium text-foreground mt-0.5">{activeSNRecord.removalType}</p>
+                      </div>
+                    </div>
+
+                    {/* 装机记录时间线 */}
+                    <div>
+                      <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                        <History className="h-4 w-4 text-primary" />
+                        装机记录
+                        <span className="text-xs font-normal text-muted-foreground">（共 {activeSNRecord.installRecords.length} 条）</span>
+                      </h3>
+                      <div className="relative pl-5 space-y-0">
+                        {activeSNRecord.installRecords.map((rec, idx) => {
+                          const isLast = idx === activeSNRecord.installRecords.length - 1;
+                          return (
+                            <div key={idx} className="relative flex gap-4 pb-4">
+                              {/* 时间线竖线 */}
+                              {!isLast && (
+                                <span className="absolute left-0 top-3 bottom-0 w-px bg-border" />
+                              )}
+                              {/* 时间线圆点 */}
+                              <span className={`relative z-10 mt-1 h-2.5 w-2.5 rounded-full flex-shrink-0 -ml-1.5 ${rec.to === "至今" ? "bg-primary" : "bg-muted-foreground/40"}`} />
+                              {/* 内容卡片 */}
+                              <div className="flex-1 rounded-lg border border-border px-4 py-3 bg-card flex items-center justify-between">
+                                <div>
+                                  <p className="text-sm font-mono text-foreground">
+                                    {rec.from}&nbsp;—&nbsp;{rec.to}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground mt-0.5">装机时段</p>
+                                </div>
+                                <div className="text-right">
+                                  <p className="text-sm font-semibold text-foreground">{rec.aircraft}</p>
+                                  <p className="text-xs text-muted-foreground">MSN {rec.msn}</p>
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-sm font-semibold text-foreground">{rec.aircraft}</p>
-                            <p className="text-xs text-muted-foreground">MSN {rec.msn}</p>
-                          </div>
-                        </div>
-                      ))}
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
                 </div>
