@@ -401,6 +401,58 @@ const baseParameterData: ParameterConfig[] = [
   { id: 15, parameterAssignment: "015", mnemonic: "MACH", portName: "MACH_NUMBER", signalType: "INT", unit: "", customName: "", customDescription: "", ataChapter: "" },
 ];
 
+// 中国东方航空 ATA-49 参数配置（来源：49章数据.xlsx）
+const cesAta49Params: ParameterConfig[] = [
+  { id: 1,  parameterAssignment: "216",  mnemonic: "APUSERNO",  portName: "LA-DCU-1", signalType: "BNR", unit: "/",    customName: "APU序列号",                     customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 2,  parameterAssignment: "225",  mnemonic: "L265B18",   portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU发电机关闭",                 customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 3,  parameterAssignment: "234",  mnemonic: "L076B222",  portName: "LA-DCU-2", signalType: "DIS", unit: "/",    customName: "APU蓄电池电压警告",             customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 4,  parameterAssignment: "236",  mnemonic: "L076B182",  portName: "LA-DCU-2", signalType: "DIS", unit: "/",    customName: "APU直接汇流条有电",             customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 5,  parameterAssignment: "448",  mnemonic: "APUEGT",    portName: "LA-DCU-1", signalType: "BNR", unit: "℃",   customName: "APU排气温度",                   customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 6,  parameterAssignment: "474",  mnemonic: "APUFF",     portName: "LA-DCU-1", signalType: "BNR", unit: "lb/h", customName: "APU燃油流量",                   customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 7,  parameterAssignment: "475",  mnemonic: "APUSPEED",  portName: "LA-DCU-1", signalType: "BNR", unit: "%",    customName: "APU转速",                       customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 8,  parameterAssignment: "481",  mnemonic: "APUBLDAF",  portName: "LA-DCU-1", signalType: "BNR", unit: "kg/s", customName: "APU引气流量",                   customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 9,  parameterAssignment: "495",  mnemonic: "L053B20",   portName: "LA-DCU-2", signalType: "DIS", unit: "/",    customName: "APU燃油切断阀关闭",             customDescription: "0 NOT-CLD / 1 CLD",              ataChapter: "ATA-49" },
+  { id: 10, parameterAssignment: "496",  mnemonic: "L053B19",   portName: "LA-DCU-2", signalType: "DIS", unit: "/",    customName: "APU燃油切断阀打开",             customDescription: "0 NOT-OPN / 1 OPN",              ataChapter: "ATA-49" },
+  { id: 11, parameterAssignment: "511",  mnemonic: "L002B16",   portName: "LA-DCU-2", signalType: "DIS", unit: "/",    customName: "APU火警",                       customDescription: "0 NO-FIRE / 1 FIRE",             ataChapter: "ATA-49" },
+  { id: 12, parameterAssignment: "512",  mnemonic: "L002B24",   portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU引气管路渗漏过热",           customDescription: "0 NO-OVHT / 1 OVHT",             ataChapter: "ATA-49" },
+  { id: 13, parameterAssignment: "737",  mnemonic: "APUMNT1H",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息1高位",              customDescription: "19 Ignitor Plug A Open Fault",   ataChapter: "ATA-49" },
+  { id: 14, parameterAssignment: "738",  mnemonic: "APUMNT1L",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息1低位",              customDescription: "11 Fuel Filter Impending Blockage", ataChapter: "ATA-49" },
+  { id: 15, parameterAssignment: "739",  mnemonic: "APUMNT2H",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息2高位",              customDescription: "14 ESC Fault - Shutdown",        ataChapter: "ATA-49" },
+  { id: 16, parameterAssignment: "740",  mnemonic: "APUMNT2L",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息2低位",              customDescription: "11 FADEC Fault - Warning",       ataChapter: "ATA-49" },
+  { id: 17, parameterAssignment: "741",  mnemonic: "APUMNT3H",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息3高位",              customDescription: "18 Low Oil Pressure",            ataChapter: "ATA-49" },
+  { id: 18, parameterAssignment: "742",  mnemonic: "APUMNT3L",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息3低位",              customDescription: "11 Overspeed",                   ataChapter: "ATA-49" },
+  { id: 19, parameterAssignment: "743",  mnemonic: "APUMNT4H",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息4高位",              customDescription: "22 Door Wrap Around Test Fault", ataChapter: "ATA-49" },
+  { id: 20, parameterAssignment: "744",  mnemonic: "APUMNT4L",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息4低位",              customDescription: "11 FADEC Power Interrupt",       ataChapter: "ATA-49" },
+  { id: 21, parameterAssignment: "745",  mnemonic: "APUMNT4M",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息4中位",              customDescription: "14 APU Master Switch Failed",    ataChapter: "ATA-49" },
+  { id: 22, parameterAssignment: "821",  mnemonic: "AGOL2",     portName: "LA-DCU-2", signalType: "DIS", unit: "/",    customName: "APU发电机关闭",                 customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 23, parameterAssignment: "997",  mnemonic: "IADFO",     portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-进气风门全开",       customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 24, parameterAssignment: "999",  mnemonic: "ASDA",      portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-APU正在关车",        customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 25, parameterAssignment: "1000", mnemonic: "NBAC",      portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-不间断供电开启",     customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 26, parameterAssignment: "1001", mnemonic: "IADFC",     portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-APU进气风门全关",    customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 27, parameterAssignment: "1002", mnemonic: "TPBFC",     portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-APU状态趋势报告",    customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 28, parameterAssignment: "1003", mnemonic: "ATRBFM",    portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-APU对主发起动趋势报告", customDescription: "0 FALSE / 1 TRUE",            ataChapter: "ATA-49" },
+  { id: 29, parameterAssignment: "1004", mnemonic: "AEDR",      portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字2-EGT显示红色",        customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 30, parameterAssignment: "1005", mnemonic: "AEDA",      portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字2-EGT显示琥珀色",      customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 31, parameterAssignment: "1006", mnemonic: "ASDR",      portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字2-转速显示红色",        customDescription: "0 FALSE / 1 TRUE",              ataChapter: "ATA-49" },
+  { id: 32, parameterAssignment: "1007", mnemonic: "IIASDA",    portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字2-转速显示琥珀色",      customDescription: "0 FALSE / 1 TRUE",              ataChapter: "ATA-49" },
+  { id: 33, parameterAssignment: "1009", mnemonic: "AORE",      portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-APU过载",            customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 34, parameterAssignment: "1010", mnemonic: "IADPO",     portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-APU进气风门部分开",  customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 35, parameterAssignment: "1063", mnemonic: "APUGL",     portName: "LA-DCU-1", signalType: "BNR", unit: "A",    customName: "APU负载",                       customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 36, parameterAssignment: "1065", mnemonic: "APUOILT",   portName: "LA-DCU-1", signalType: "BNR", unit: "℃",   customName: "APU滑油温度",                   customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 37, parameterAssignment: "1084", mnemonic: "IIAIDFO",   portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU进气风门失效在开位",         customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 38, parameterAssignment: "1085", mnemonic: "IIAIDFC",   portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU进气风门失效在关位",         customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 39, parameterAssignment: "1086", mnemonic: "AFSL",      portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU燃油供给不足",               customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 40, parameterAssignment: "1087", mnemonic: "AIDPA",     portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU进气风门位置(A)",            customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 41, parameterAssignment: "1090", mnemonic: "AIDPB",     portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU进气风门位置（B）",          customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 42, parameterAssignment: "1091", mnemonic: "AIDPC",     portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU进气风门位置(C)",            customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 43, parameterAssignment: "1204", mnemonic: "APUH",      portName: "LA-DCU-1", signalType: "BNR", unit: "hr",   customName: "APU总工作时间",                 customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 44, parameterAssignment: "1205", mnemonic: "APUSC",     portName: "LA-DCU-1", signalType: "BNR", unit: "/",    customName: "APU循环次数",                   customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 45, parameterAssignment: "1206", mnemonic: "APUH",      portName: "LA-DCU-1", signalType: "BNR", unit: "hr",   customName: "APU总工作时间",                 customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 46, parameterAssignment: "1207", mnemonic: "APUSC",     portName: "LA-DCU-1", signalType: "BNR", unit: "/",    customName: "APU循环次数",                   customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 47, parameterAssignment: "1208", mnemonic: "APUBSCMD",  portName: "LA-DCU-1", signalType: "BNR", unit: "mA",   customName: "APU引气阀控制指令",             customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 48, parameterAssignment: "1243", mnemonic: "APUOILP",   portName: "LA-DCU-1", signalType: "BNR", unit: "psi",  customName: "APU滑油压力",                   customDescription: "",                               ataChapter: "ATA-49" },
+];
+
 // 各航司的自定义配置数据
 type AirlineParameterConfigs = {
   [key: string]: ParameterConfig[];
@@ -408,12 +460,7 @@ type AirlineParameterConfigs = {
 
 const initialAirlineConfigs: AirlineParameterConfigs = {
   base: baseParameterData.map(p => ({ ...p })),
-  ces: baseParameterData.map(p => ({ 
-    ...p,
-    customName: p.mnemonic === "N1_1" ? "发动机1低压转子转速" : (p.mnemonic === "EGT_1" ? "发动机1排气温度" : ""),
-    customDescription: p.mnemonic === "N1_1" ? "1号发动机低压转子转速百分比" : (p.mnemonic === "EGT_1" ? "1号发动机排气温度监测" : ""),
-    ataChapter: p.mnemonic === "N1_1" ? "72-00" : (p.mnemonic === "EGT_1" ? "72-50" : "")
-  })),
+  ces: cesAta49Params,
   csc: baseParameterData.map(p => ({ ...p })),
   cca: baseParameterData.map(p => ({ ...p })),
 };
@@ -1428,7 +1475,7 @@ export default function DataManagementPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[160px]">存储名���</TableHead>
+                    <TableHead className="w-[160px]">存储名����</TableHead>
                     <TableHead>路径</TableHead>
                     <TableHead className="w-[100px]">大小</TableHead>
                     <TableHead className="w-[100px]">文件数</TableHead>
