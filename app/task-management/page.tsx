@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { AppShell } from "@/components/app-shell";
 import {
   Dialog,
   DialogContent,
@@ -266,39 +267,18 @@ export default function TaskManagementPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* 顶部标题栏 */}
+    <AppShell>
       <header className="border-b border-border bg-card">
         <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex items-center gap-3">
-            <Link href="/">
-              <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center">
-                <Activity className="h-6 w-6 text-primary-foreground" />
-              </div>
-            </Link>
-            <div>
-              <h1 className="text-xl font-semibold text-foreground">
-                健康管理与性能监控平台
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                Aircraft Health Management & Performance Monitoring System
-              </p>
-            </div>
+          <div className="flex items-center gap-2">
+            <ClipboardList className="h-5 w-5 text-primary" />
+            <h1 className="text-lg font-semibold text-foreground">任务管理</h1>
           </div>
         </div>
       </header>
 
       {/* 主内容区 */}
       <main className="max-w-6xl mx-auto px-6 py-6">
-        {/* 面包屑导航 */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-          <Link href="/" className="hover:text-foreground">
-            首页
-          </Link>
-          <ChevronRight className="h-4 w-4" />
-          <span className="text-foreground">任务管理</span>
-        </div>
-
         {/* 分类标签 */}
         <div className="flex items-center gap-2 mb-4">
           <Button
@@ -630,6 +610,6 @@ export default function TaskManagementPage() {
           </CardContent>
         </Card>
       </main>
-    </div>
+    </AppShell>
   );
 }

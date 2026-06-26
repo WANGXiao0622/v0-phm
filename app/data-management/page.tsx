@@ -79,6 +79,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { AppShell } from "@/components/app-shell";
 
 // 第一行标签页 - 基本不需要更改的数据
 const primaryTabs = [
@@ -901,38 +902,17 @@ export default function DataManagementPage() {
   };
   
   return (
-    <div className="min-h-screen bg-background">
-      {/* 顶部标题栏 */}
+    <AppShell>
       <header className="border-b border-border bg-card">
         <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center gap-3">
-            <Link href="/">
-              <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center">
-                <Activity className="h-6 w-6 text-primary-foreground" />
-              </div>
-            </Link>
-            <div>
-              <h1 className="text-xl font-semibold text-foreground">
-                健康管理与性能监控平台
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                Aircraft Health Management & Performance Monitoring System
-              </p>
-            </div>
+          <div className="flex items-center gap-2">
+            <Database className="h-5 w-5 text-primary" />
+            <h1 className="text-lg font-semibold text-foreground">数据管理</h1>
           </div>
         </div>
       </header>
 
       <main className="max-w-7xl mx-auto px-6 py-6">
-        {/* 面包屑导航 */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-          <Link href="/" className="hover:text-foreground">
-            首页
-          </Link>
-          <ChevronRight className="h-4 w-4" />
-          <span className="text-foreground">数据管理</span>
-        </div>
-
         {/* 第一行标签页 - 基本不需要更改的数据 */}
         <div className="mb-2">
           <div className="text-xs text-muted-foreground mb-1.5">基础数据管理</div>
@@ -2916,6 +2896,6 @@ export default function DataManagementPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </AppShell>
   );
 }

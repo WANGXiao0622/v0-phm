@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { AppShell } from "@/components/app-shell";
 import {
   Activity,
   AlertTriangle,
@@ -330,25 +331,16 @@ export default function WorkspacePage() {
   const completionRate = Math.round((monthlyStats.completedAnalysis / monthlyStats.totalFaults) * 100);
 
   return (
-    <div className="min-h-screen bg-background">
+    <AppShell>
       {/* 顶部导航 */}
       <header className="border-b border-border bg-card sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link href="/">
-                <Button variant="ghost" size="sm" className="gap-2">
-                  <ArrowLeft className="h-4 w-4" />
-                  返回首页
-                </Button>
-              </Link>
-              <div className="h-6 w-px bg-border" />
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg bg-amber-100 flex items-center justify-center">
-                  <Activity className="h-4 w-4 text-amber-600" />
-                </div>
-                <h1 className="text-lg font-semibold text-foreground">个人工作台</h1>
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-8 rounded-lg bg-amber-100 flex items-center justify-center">
+                <Activity className="h-4 w-4 text-amber-600" />
               </div>
+              <h1 className="text-lg font-semibold text-foreground">个人工作台</h1>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <CalendarDays className="h-4 w-4" />
@@ -605,6 +597,6 @@ export default function WorkspacePage() {
           </section>
         </div>
       </main>
-    </div>
+    </AppShell>
   );
 }

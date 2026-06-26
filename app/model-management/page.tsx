@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AppShell } from "@/components/app-shell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -382,7 +383,7 @@ const modelData: ModelData[] = [
     status: "testing",
     version: "v1.1.0-beta",
     updatedAt: "2024-01-04",
-    developmentApproach: "基于功率平衡原理建立电源负载模型，通过对比预期负载与实际负载识别异常功耗设备。",
+    developmentApproach: "基于功率平衡原理建立电源负载模型，通过对比预期负载与实际负载识别异常功耗设备��",
     parameters: [
       { name: "load_imbalance", type: "float", description: "负载不平衡阈值(%)", required: true },
       { name: "overload_threshold", type: "float", description: "过载阈值(kW)", required: true },
