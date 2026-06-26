@@ -320,7 +320,7 @@ export default function FaultAnalysisPage() {
 
   // 故障基本信息编辑状态
   const [isBasicInfoEditing, setIsBasicInfoEditing] = useState(false);
-  const [basicInfoForm, setBasicInfoForm] = useState({
+  const initialBasicInfo = {
     ataChapter: "49",
     registration: "B-104X",
     faultDate: "2024-01-15",
@@ -331,16 +331,25 @@ export default function FaultAnalysisPage() {
     eicas: "暂无",
     description: "航后检查发现有历史CMS信息：APU BLEED SERVO VALVE。",
     newInfo: "拆下件号4952545，序号：9BV19（原装机件）。",
-  });
-  const [savedBasicInfoForm, setSavedBasicInfoForm] = useState({ ...basicInfoForm });
+  };
+  // originalBasicInfoForm 存储原始值（从不改变），用于高亮对比
+  const [originalBasicInfoForm] = useState(initialBasicInfo);
+  // basicInfoForm 存储当前展示值（编辑时实时更新）
+  const [basicInfoForm, setBasicInfoForm] = useState(initialBasicInfo);
+  // editDraftForm 存储进入编辑时的快照，用于"取消"回退
+  const [editDraftForm, setEditDraftForm] = useState(initialBasicInfo);
+
+  const handleBasicInfoEdit = () => {
+    setEditDraftForm({ ...basicInfoForm });
+    setIsBasicInfoEditing(true);
+  };
 
   const handleBasicInfoSave = () => {
-    setSavedBasicInfoForm({ ...basicInfoForm });
     setIsBasicInfoEditing(false);
   };
 
   const handleBasicInfoCancel = () => {
-    setBasicInfoForm({ ...savedBasicInfoForm });
+    setBasicInfoForm({ ...editDraftForm });
     setIsBasicInfoEditing(false);
   };
 
@@ -503,7 +512,7 @@ export default function FaultAnalysisPage() {
                   size="sm"
                   variant="ghost"
                   className="h-7 px-2 text-muted-foreground hover:text-foreground"
-                  onClick={() => setIsBasicInfoEditing(true)}
+                  onClick={handleBasicInfoEdit}
                 >
                   <Pencil className="h-3.5 w-3.5 mr-1" />
                   编辑
@@ -524,7 +533,7 @@ export default function FaultAnalysisPage() {
                   { key: "partNumber", label: "件号" },
                 ] as { key: keyof typeof basicInfoForm; label: string }[]
               ).map(({ key, label }) => {
-                const isChanged = basicInfoForm[key] !== savedBasicInfoForm[key];
+                const isChanged = basicInfoForm[key] !== originalBasicInfoForm[key];
                 const showHighlight = !isBasicInfoEditing && isChanged;
                 return (
                   <div key={key}>
@@ -557,7 +566,7 @@ export default function FaultAnalysisPage() {
                   { key: "eicas", label: "EICAS信息" },
                 ] as { key: keyof typeof basicInfoForm; label: string }[]
               ).map(({ key, label }) => {
-                const isChanged = basicInfoForm[key] !== savedBasicInfoForm[key];
+                const isChanged = basicInfoForm[key] !== originalBasicInfoForm[key];
                 const showHighlight = !isBasicInfoEditing && isChanged;
                 return (
                   <div key={key}>
@@ -602,7 +611,7 @@ export default function FaultAnalysisPage() {
                     <span>报送时间: 2024-01-15 14:32:00</span>
                   </div>
                   {(() => {
-                    const descChanged = basicInfoForm.description !== savedBasicInfoForm.description;
+                    const descChanged = basicInfoForm.description !== originalBasicInfoForm.description;
                     const showHighlight = !isBasicInfoEditing && descChanged;
                     return (
                       <Textarea
@@ -925,7 +934,7 @@ export default function FaultAnalysisPage() {
                     <div className="bg-secondary/30 rounded-lg p-3 border border-border">
                       <div className="text-sm font-medium mb-2 flex items-center gap-2">
                         <span className="h-2 w-2 rounded-full bg-purple-500"></span>
-                        性能指标
+                        性��指标
                       </div>
                       <ResponsiveContainer width="100%" height={180}>
                         <AreaChart data={trendChartData}>
