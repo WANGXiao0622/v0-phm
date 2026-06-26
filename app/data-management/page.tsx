@@ -1428,7 +1428,7 @@ export default function DataManagementPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[160px]">存储名称</TableHead>
+                    <TableHead className="w-[160px]">存储名��</TableHead>
                     <TableHead>路径</TableHead>
                     <TableHead className="w-[100px]">大小</TableHead>
                     <TableHead className="w-[100px]">文件数</TableHead>
@@ -3033,7 +3033,7 @@ export default function DataManagementPage() {
 
       {/* 件履历弹窗 */}
       <Dialog open={partHistoryOpen} onOpenChange={setPartHistoryOpen}>
-        <DialogContent className="max-w-3xl w-[92vw] h-[82vh] flex flex-col p-0 gap-0">
+        <DialogContent className="max-w-5xl w-[92vw] h-[82vh] flex flex-col p-0 gap-0">
           {selectedPartNumber && partHistoryData[selectedPartNumber] && (() => {
             const ph = partHistoryData[selectedPartNumber];
             const activeSNRecord = ph.snRecords.find((r) => r.sn === selectedSN) ?? ph.snRecords[0];
@@ -3102,15 +3102,17 @@ export default function DataManagementPage() {
                               {/* 时间线圆点 */}
                               <span className={`relative z-10 mt-1 h-2.5 w-2.5 rounded-full flex-shrink-0 -ml-1.5 ${rec.to === "至今" ? "bg-primary" : "bg-muted-foreground/40"}`} />
                               {/* 内容卡片 */}
-                              <div className="flex-1 rounded-lg border border-border px-4 py-3 bg-card flex items-center justify-between">
-                                <div>
+                              <div className="flex-1 rounded-lg border border-border px-4 py-3 bg-card">
+                                {/* 第一行：时间范围 + 架机号 */}
+                                <div className="flex items-center justify-between">
                                   <p className="text-sm font-mono text-foreground">
                                     {rec.from}&nbsp;—&nbsp;{rec.to}
                                   </p>
-                                  <p className="text-xs text-muted-foreground mt-0.5">装机时段</p>
-                                </div>
-                                <div className="text-right">
                                   <p className="text-sm font-semibold text-foreground">{rec.aircraft}</p>
+                                </div>
+                                {/* 第二行：装机时段标签 + MSN */}
+                                <div className="flex items-center justify-between mt-1">
+                                  <p className="text-xs text-muted-foreground">装机时段</p>
                                   <p className="text-xs text-muted-foreground">MSN {rec.msn}</p>
                                 </div>
                               </div>
