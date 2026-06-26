@@ -525,20 +525,24 @@ export default function FaultAnalysisPage() {
                 ] as { key: keyof typeof basicInfoForm; label: string }[]
               ).map(({ key, label }) => {
                 const isChanged = basicInfoForm[key] !== savedBasicInfoForm[key];
+                const showHighlight = !isBasicInfoEditing && isChanged;
                 return (
                   <div key={key}>
                     <Label className="text-muted-foreground text-xs">{label}</Label>
                     <Input
                       value={basicInfoForm[key]}
-                      disabled={!isBasicInfoEditing}
+                      readOnly={!isBasicInfoEditing}
                       onChange={(e) =>
                         setBasicInfoForm((prev) => ({ ...prev, [key]: e.target.value }))
                       }
-                      className={`h-8 mt-1 border-border ${
-                        isBasicInfoEditing
-                          ? "bg-background text-foreground"
-                          : "bg-input text-foreground"
-                      } ${isChanged && !isBasicInfoEditing ? "text-orange-500 font-medium" : ""}`}
+                      className="h-8 mt-1 border-border"
+                      style={
+                        showHighlight
+                          ? { color: "#ea580c", backgroundColor: "#fefce8", fontWeight: 500 }
+                          : isBasicInfoEditing
+                          ? { cursor: "text" }
+                          : { cursor: "default" }
+                      }
                     />
                   </div>
                 );
@@ -554,20 +558,24 @@ export default function FaultAnalysisPage() {
                 ] as { key: keyof typeof basicInfoForm; label: string }[]
               ).map(({ key, label }) => {
                 const isChanged = basicInfoForm[key] !== savedBasicInfoForm[key];
+                const showHighlight = !isBasicInfoEditing && isChanged;
                 return (
                   <div key={key}>
                     <Label className="text-muted-foreground text-xs">{label}</Label>
                     <Input
                       value={basicInfoForm[key]}
-                      disabled={!isBasicInfoEditing}
+                      readOnly={!isBasicInfoEditing}
                       onChange={(e) =>
                         setBasicInfoForm((prev) => ({ ...prev, [key]: e.target.value }))
                       }
-                      className={`h-8 mt-1 border-border ${
-                        isBasicInfoEditing
-                          ? "bg-background text-foreground"
-                          : "bg-input text-foreground"
-                      } ${isChanged && !isBasicInfoEditing ? "text-orange-500 font-medium" : ""}`}
+                      className="h-8 mt-1 border-border"
+                      style={
+                        showHighlight
+                          ? { color: "#ea580c", backgroundColor: "#fefce8", fontWeight: 500 }
+                          : isBasicInfoEditing
+                          ? { cursor: "text" }
+                          : { cursor: "default" }
+                      }
                     />
                   </div>
                 );
@@ -593,18 +601,25 @@ export default function FaultAnalysisPage() {
                     <Clock className="h-3 w-3" />
                     <span>报送时间: 2024-01-15 14:32:00</span>
                   </div>
-                  <Textarea
-                    value={basicInfoForm.description}
-                    disabled={!isBasicInfoEditing}
-                    onChange={(e) =>
-                      setBasicInfoForm((prev) => ({ ...prev, description: e.target.value }))
-                    }
-                    className={`mt-1 border-border text-sm min-h-[50px] ${
-                      isBasicInfoEditing
-                        ? "bg-background text-foreground"
-                        : `bg-input ${basicInfoForm.description !== savedBasicInfoForm.description ? "text-orange-500" : "text-foreground"}`
-                    }`}
-                  />
+                  {(() => {
+                    const descChanged = basicInfoForm.description !== savedBasicInfoForm.description;
+                    const showHighlight = !isBasicInfoEditing && descChanged;
+                    return (
+                      <Textarea
+                        value={basicInfoForm.description}
+                        readOnly={!isBasicInfoEditing}
+                        onChange={(e) =>
+                          setBasicInfoForm((prev) => ({ ...prev, description: e.target.value }))
+                        }
+                        className="mt-1 border-border text-sm min-h-[50px]"
+                        style={
+                          showHighlight
+                            ? { color: "#ea580c", backgroundColor: "#fefce8" }
+                            : {}
+                        }
+                      />
+                    );
+                  })()}
                   <div>
                     <Label className="text-muted-foreground text-xs">新增信息</Label>
                     {isBasicInfoEditing ? (
