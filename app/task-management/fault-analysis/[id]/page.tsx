@@ -630,7 +630,7 @@ export default function FaultAnalysisPage() {
                     );
                   })()}
                   <div>
-                    <Label className="text-muted-foreground text-xs">新增信息</Label>
+                    <Label className="text-muted-foreground text-xs">���增信息</Label>
                     {isBasicInfoEditing ? (
                       <Textarea
                         value={basicInfoForm.newInfo}
@@ -650,111 +650,6 @@ export default function FaultAnalysisPage() {
                     )}
                   </div>
                 </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* 故障关联列表 */}
-        <Card className="bg-card border-border shadow-sm">
-          <CardHeader className="border-b border-border py-2 px-4">
-            <CardTitle className="flex items-center gap-2 text-foreground text-base">
-              <Link2 className="h-4 w-4 text-primary" />
-              故障关联列表
-              <Badge variant="outline" className="ml-2 text-xs">
-                基于 APU BLEED SERVO VALVE & B-104X 匹配
-              </Badge>
-              <Badge className="ml-1 bg-blue-100 text-blue-700 border-blue-200 text-xs">
-                {relatedFaults.length} 条相关记录
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-3">
-            <div className="space-y-2">
-              {/* 默认显示前3条 */}
-              {relatedFaults.slice(0, 3).map((fault) => (
-                <div 
-                  key={fault.id} 
-                  className={`flex items-center justify-between p-2 bg-secondary/30 rounded-lg border border-border hover:bg-secondary/50 transition-colors ${fault.status === "analyzed" ? "cursor-pointer" : ""}`}
-                  onClick={() => {
-                    if (fault.status === "analyzed") {
-                      setSelectedRelatedFault(fault);
-                      setRelatedFaultDialogOpen(true);
-                    }
-                  }}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm">{fault.cmsMessage}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span>{fault.faultDate.split(" ")[0]}</span>
-                    <Badge variant="outline" className="text-xs">{fault.route}</Badge>
-                    <Badge 
-                      variant="outline" 
-                      className={fault.status === "analyzed" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}
-                    >
-                      {fault.status === "analyzed" ? "已分析" : "待分析"}
-                    </Badge>
-                    {fault.status === "analyzed" && (
-                      <Eye className="h-3.5 w-3.5 text-muted-foreground" />
-                    )}
-                  </div>
-                </div>
-              ))}
-              
-              {/* 可展开的更多记录 */}
-              {relatedFaults.length > 3 && (
-                <>
-                  {isRelatedFaultsExpanded && (
-                    <div className="space-y-2">
-                      {relatedFaults.slice(3).map((fault) => (
-                        <div 
-                          key={fault.id} 
-                          className={`flex items-center justify-between p-2 bg-secondary/30 rounded-lg border border-border hover:bg-secondary/50 transition-colors ${fault.status === "analyzed" ? "cursor-pointer" : ""}`}
-                          onClick={() => {
-                            if (fault.status === "analyzed") {
-                              setSelectedRelatedFault(fault);
-                              setRelatedFaultDialogOpen(true);
-                            }
-                          }}
-                        >
-                          <div className="flex items-center gap-3">
-                            <span className="text-sm">{fault.cmsMessage}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <span>{fault.faultDate.split(" ")[0]}</span>
-                            <Badge variant="outline" className="text-xs">{fault.route}</Badge>
-                            <Badge 
-                              variant="outline" 
-                              className={fault.status === "analyzed" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}
-                            >
-                              {fault.status === "analyzed" ? "已分析" : "待分析"}
-                            </Badge>
-                            {fault.status === "analyzed" && (
-                              <Eye className="h-3.5 w-3.5 text-muted-foreground" />
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <button
-                    onClick={() => setIsRelatedFaultsExpanded(!isRelatedFaultsExpanded)}
-                    className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 transition-colors w-full justify-center py-2"
-                  >
-                    {isRelatedFaultsExpanded ? (
-                      <>
-                        <ChevronUp className="h-4 w-4" />
-                        收起更多记录
-                      </>
-                    ) : (
-                      <>
-                        <ChevronDown className="h-4 w-4" />
-                        展开更多 {relatedFaults.length - 3} 条记录
-                      </>
-                    )}
-                  </button>
-                </>
               )}
             </div>
           </CardContent>
@@ -1150,7 +1045,110 @@ export default function FaultAnalysisPage() {
           </CardContent>
         </Card>
 
-        {/* 第四部分：分析结果 */}
+        {/* 第四部分：关联故障分析 */}
+        <Card className="bg-card border-border shadow-sm">
+          <CardHeader className="border-b border-border py-2 px-4">
+            <CardTitle className="flex items-center gap-2 text-foreground text-base">
+              <Link2 className="h-4 w-4 text-primary" />
+              关联故障分析
+              <Badge variant="outline" className="ml-2 text-xs">
+                基于 APU BLEED SERVO VALVE & B-104X 匹配
+              </Badge>
+              <Badge className="ml-1 bg-blue-100 text-blue-700 border-blue-200 text-xs">
+                {relatedFaults.length} 条相关记录
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-3">
+            <div className="space-y-2">
+              {relatedFaults.slice(0, 3).map((fault) => (
+                <div
+                  key={fault.id}
+                  className={`flex items-center justify-between p-2 bg-secondary/30 rounded-lg border border-border hover:bg-secondary/50 transition-colors ${fault.status === "analyzed" ? "cursor-pointer" : ""}`}
+                  onClick={() => {
+                    if (fault.status === "analyzed") {
+                      setSelectedRelatedFault(fault);
+                      setRelatedFaultDialogOpen(true);
+                    }
+                  }}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm">{fault.cmsMessage}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span>{fault.faultDate.split(" ")[0]}</span>
+                    <Badge variant="outline" className="text-xs">{fault.route}</Badge>
+                    <Badge
+                      variant="outline"
+                      className={fault.status === "analyzed" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}
+                    >
+                      {fault.status === "analyzed" ? "已分析" : "待分析"}
+                    </Badge>
+                    {fault.status === "analyzed" && (
+                      <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+                    )}
+                  </div>
+                </div>
+              ))}
+
+              {relatedFaults.length > 3 && (
+                <>
+                  {isRelatedFaultsExpanded && (
+                    <div className="space-y-2">
+                      {relatedFaults.slice(3).map((fault) => (
+                        <div
+                          key={fault.id}
+                          className={`flex items-center justify-between p-2 bg-secondary/30 rounded-lg border border-border hover:bg-secondary/50 transition-colors ${fault.status === "analyzed" ? "cursor-pointer" : ""}`}
+                          onClick={() => {
+                            if (fault.status === "analyzed") {
+                              setSelectedRelatedFault(fault);
+                              setRelatedFaultDialogOpen(true);
+                            }
+                          }}
+                        >
+                          <div className="flex items-center gap-3">
+                            <span className="text-sm">{fault.cmsMessage}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span>{fault.faultDate.split(" ")[0]}</span>
+                            <Badge variant="outline" className="text-xs">{fault.route}</Badge>
+                            <Badge
+                              variant="outline"
+                              className={fault.status === "analyzed" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}
+                            >
+                              {fault.status === "analyzed" ? "已分析" : "待分析"}
+                            </Badge>
+                            {fault.status === "analyzed" && (
+                              <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <button
+                    onClick={() => setIsRelatedFaultsExpanded(!isRelatedFaultsExpanded)}
+                    className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 transition-colors w-full justify-center py-2"
+                  >
+                    {isRelatedFaultsExpanded ? (
+                      <>
+                        <ChevronUp className="h-4 w-4" />
+                        收起更多记录
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="h-4 w-4" />
+                        展开更多 {relatedFaults.length - 3} 条记录
+                      </>
+                    )}
+                  </button>
+                </>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 第五部分：分析结果 */}
         <Card className="bg-card border-border shadow-sm">
           <CardHeader className="border-b border-border py-2 px-4">
             <CardTitle className="flex items-center gap-2 text-foreground text-base">
