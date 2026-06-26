@@ -1428,7 +1428,7 @@ export default function DataManagementPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[160px]">存储名��</TableHead>
+                    <TableHead className="w-[160px]">存储名���</TableHead>
                     <TableHead>路径</TableHead>
                     <TableHead className="w-[100px]">大小</TableHead>
                     <TableHead className="w-[100px]">文件数</TableHead>
@@ -2414,7 +2414,7 @@ export default function DataManagementPage() {
 
       {/* 同步确认对话框 */}
       <Dialog open={syncDialogOpen} onOpenChange={setSyncDialogOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>同步配置到其他航司</DialogTitle>
           </DialogHeader>
