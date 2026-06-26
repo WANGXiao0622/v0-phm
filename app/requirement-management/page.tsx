@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -577,15 +576,15 @@ export default function RequirementManagementPage() {
           新建需求 Dialog
       ════════════════════════════════════════════════════════════════════ */}
       <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
-          <DialogHeader>
+        <DialogContent className="max-w-4xl w-[90vw] h-[88vh] flex flex-col p-0 gap-0">
+          <DialogHeader className="px-6 pt-5 pb-4 border-b border-border flex-shrink-0">
             <DialogTitle className="flex items-center gap-2">
               <FileText className="h-4 w-4 text-primary" />
               新建需求
             </DialogTitle>
           </DialogHeader>
 
-          <ScrollArea className="flex-1 pr-2">
+          <div className="flex-1 overflow-y-auto px-6 py-4">
             <div className="space-y-5 py-1">
               {/* 需求基本信息 */}
               <section className="space-y-3">
@@ -743,9 +742,9 @@ export default function RequirementManagementPage() {
                 </div>
               </section>
             </div>
-          </ScrollArea>
+          </div>
 
-          <DialogFooter className="gap-2 pt-2 border-t border-border">
+          <DialogFooter className="gap-2 px-6 py-4 border-t border-border flex-shrink-0">
             <Button variant="outline" size="sm" onClick={() => setCreateDialogOpen(false)}>
               取消
             </Button>
@@ -763,10 +762,10 @@ export default function RequirementManagementPage() {
           详情 / 审批 / 响应 Dialog
       ════════════════════════════════════════════════════════════════════ */}
       <Dialog open={detailDialogOpen} onOpenChange={setDetailDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
+        <DialogContent className="max-w-4xl w-[90vw] h-[88vh] flex flex-col p-0 gap-0">
           {selectedReq && (
             <>
-              <DialogHeader>
+              <DialogHeader className="px-6 pt-5 pb-4 border-b border-border flex-shrink-0">
                 <DialogTitle className="flex items-center gap-2 text-base">
                   <span className="font-mono text-sm text-muted-foreground">{selectedReq.id}</span>
                   <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
@@ -774,7 +773,7 @@ export default function RequirementManagementPage() {
                 </DialogTitle>
               </DialogHeader>
 
-              <ScrollArea className="flex-1 pr-2">
+              <div className="flex-1 overflow-y-auto px-6 py-4">
                 <div className="space-y-5 py-1">
                   {/* 基本信息摘要 */}
                   <div className="grid grid-cols-3 gap-2">
@@ -944,9 +943,9 @@ export default function RequirementManagementPage() {
                     </section>
                   )}
                 </div>
-              </ScrollArea>
+              </div>
 
-              <DialogFooter className="pt-2 border-t border-border">
+              <DialogFooter className="px-6 py-4 border-t border-border flex-shrink-0">
                 <Button variant="outline" size="sm" onClick={() => setDetailDialogOpen(false)}>
                   关闭
                 </Button>
