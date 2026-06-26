@@ -364,15 +364,9 @@ export default function RequirementManagementPage() {
       {/* 页头 */}
       <header className="border-b border-border bg-card sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <MessageSquare className="h-5 w-5 text-primary" />
-              <h1 className="text-lg font-semibold text-foreground">需求管理</h1>
-            </div>
-            <Button size="sm" className="gap-2" onClick={() => setCreateDialogOpen(true)}>
-              <Plus className="h-4 w-4" />
-              提出需求
-            </Button>
+          <div className="flex items-center gap-2">
+            <MessageSquare className="h-5 w-5 text-primary" />
+            <h1 className="text-lg font-semibold text-foreground">需求管理</h1>
           </div>
         </div>
       </header>
@@ -417,31 +411,38 @@ export default function RequirementManagementPage() {
 
         {/* 三大模块 Tabs */}
         <Tabs defaultValue="submit" className="space-y-4">
-          <TabsList className="h-9">
-            <TabsTrigger value="submit" className="text-sm gap-1.5">
-              <FileText className="h-3.5 w-3.5" />
-              需求提出
-              <span className="ml-1 text-xs bg-muted rounded px-1">
-                {filtered.filter((r) => r.status === "draft" || r.status === "pending").length}
-              </span>
-            </TabsTrigger>
-            <TabsTrigger value="approval" className="text-sm gap-1.5">
-              <ClipboardCheck className="h-3.5 w-3.5" />
-              需求审批
-              {pendingCount > 0 && (
-                <span className="ml-1 text-xs bg-amber-100 text-amber-700 rounded px-1">
-                  {pendingCount}
+          <div className="flex items-center justify-between">
+            <TabsList className="h-10">
+              <TabsTrigger value="submit" className="text-base gap-1.5 px-5">
+                <FileText className="h-4 w-4" />
+                需求提出
+                <span className="ml-1 text-xs bg-muted rounded px-1">
+                  {filtered.filter((r) => r.status === "draft" || r.status === "pending").length}
                 </span>
-              )}
-            </TabsTrigger>
-            <TabsTrigger value="response" className="text-sm gap-1.5">
-              <Layers className="h-3.5 w-3.5" />
-              需求响应
-              <span className="ml-1 text-xs bg-muted rounded px-1">
-                {filtered.filter((r) => r.status === "approved" || r.status === "responded").length}
-              </span>
-            </TabsTrigger>
-          </TabsList>
+              </TabsTrigger>
+              <TabsTrigger value="approval" className="text-base gap-1.5 px-5">
+                <ClipboardCheck className="h-4 w-4" />
+                需求审批
+                {pendingCount > 0 && (
+                  <span className="ml-1 text-xs bg-amber-100 text-amber-700 rounded px-1">
+                    {pendingCount}
+                  </span>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="response" className="text-base gap-1.5 px-5">
+                <Layers className="h-4 w-4" />
+                需求响应
+                <span className="ml-1 text-xs bg-muted rounded px-1">
+                  {filtered.filter((r) => r.status === "approved" || r.status === "responded").length}
+                </span>
+              </TabsTrigger>
+            </TabsList>
+
+            <Button size="sm" className="gap-2" onClick={() => setCreateDialogOpen(true)}>
+              <Plus className="h-4 w-4" />
+              提出需求
+            </Button>
+          </div>
 
           {/* ── 需求提出 ───────────────────────────────────────────────────── */}
           <TabsContent value="submit" className="space-y-3">
