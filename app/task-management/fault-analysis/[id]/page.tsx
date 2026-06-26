@@ -1060,33 +1060,18 @@ export default function FaultAnalysisPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-3 space-y-3">
-            <div className="space-y-3">
-              {[
-                { key: "faultSegmentDescription", label: "故障航段描述", color: "bg-red-500", placeholder: "请输入故障航段描述..." },
-                { key: "dataAnalysis", label: "数据分析", color: "bg-amber-500", placeholder: "请输入数据分析内容..." },
-                { key: "previousSegmentAnomaly", label: "前序航段异常", color: "bg-orange-500", placeholder: "请输入前序航段异常情况..." },
-                { key: "modelAnalysis", label: "模型分析", color: "bg-blue-500", placeholder: "请输入模型分析内容..." },
-                { key: "lruReplacement", label: "LRU拆换信息", color: "bg-emerald-500", placeholder: "请输入LRU拆换信息..." },
-                { key: "conclusion", label: "结论", color: "bg-primary", placeholder: "请输入结论..." },
-              ].map((section) => (
-                <div key={section.key} className="space-y-1.5">
-                  <h3 className="text-foreground font-medium flex items-center gap-2 text-sm">
-                    <span className={`h-2 w-2 rounded-full ${section.color}`}></span>
-                    {section.label}
-                  </h3>
-                  <Textarea
-                    value={analysisResultForm[section.key as keyof typeof analysisResultForm]}
-                    onChange={(e) =>
-                      setAnalysisResultForm((prev) => ({
-                        ...prev,
-                        [section.key]: e.target.value,
-                      }))
-                    }
-                    placeholder={section.placeholder}
-                    className="bg-input border-border text-foreground text-sm min-h-[70px] resize-y"
-                  />
-                </div>
-              ))}
+            <div className="space-y-1.5">
+              <Textarea
+                value={analysisResultForm.faultSegmentDescription}
+                onChange={(e) =>
+                  setAnalysisResultForm((prev) => ({
+                    ...prev,
+                    faultSegmentDescription: e.target.value,
+                  }))
+                }
+                placeholder={"请填写分析结果，建议包含以下内容：\n1. 故障航段描述\n2. 数据分析\n3. 前序航段异常\n4. 模型分析\n5. LRU拆换信息\n6. 结论"}
+                className="bg-input border-border text-foreground text-sm min-h-[220px] resize-y"
+              />
             </div>
 
             <div className="flex justify-end gap-3 pt-1">
