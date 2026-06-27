@@ -306,10 +306,9 @@ const storageData = [
 const metadataData = [
   { id: 1, tableName: "fleet_meta", displayName: "机队元数据表", description: "存储机队基本信息，包括机型、注册号、机龄等", records: 156, fields: 28, lastSync: "2026-06-15 08:00:00" },
   { id: 2, tableName: "flight_info", displayName: "航班信息表", description: "存储航班基本信息，包括航班号、航线、起降时间等", records: 125840, fields: 42, lastSync: "2026-06-15 14:30:00" },
-  { id: 3, tableName: "fault_report", displayName: "故障报告表", description: "存储故障报告信息，包括故障代码、描述、处理措施等", records: 8920, fields: 35, lastSync: "2026-06-15 12:00:00" },
-  { id: 4, tableName: "maintenance_record", displayName: "维修记录表", description: "存储维修工作记录，包括工卡号、维修动作、工时等", records: 45620, fields: 38, lastSync: "2026-06-14 18:00:00" },
-  { id: 5, tableName: "part_change_log", displayName: "部件更换记录表", description: "存储部件更换历史，包括件号、序号、装机位置等", records: 12350, fields: 25, lastSync: "2026-06-15 10:00:00" },
-  { id: 6, tableName: "parameter_definition", displayName: "参数定义表", description: "存储WQAR参数定义，包括参数名、单位、采样率等", records: 3850, fields: 18, lastSync: "2026-06-12 08:00:00" },
+  { id: 3, tableName: "fault_report", displayName: "故障报告表", description: "存储故障报告信息，包括故障描述、CMS、处理措施等", records: 8920, fields: 35, lastSync: "2026-06-15 12:00:00" },
+  { id: 4, tableName: "part_change_log", displayName: "部件更换记录表", description: "存储部件更换历史，包括件号、序号、装机位置等", records: 12350, fields: 25, lastSync: "2026-06-15 10:00:00" },
+  { id: 5, tableName: "parameter_definition", displayName: "参数定义表", description: "存储WQAR参数定义，包括参数名、单位、采样率等", records: 3850, fields: 18, lastSync: "2026-06-12 08:00:00" },
 ];
 
 // 故障统计数据
@@ -2398,8 +2397,8 @@ export default function DataManagementPage() {
                   </Button>
                   {apiTestResult.status !== "idle" && (
                     <div className={`flex items-center gap-2 text-sm ${apiTestResult.status === "success" ? "text-emerald-600" :
-                        apiTestResult.status === "error" ? "text-red-600" :
-                          "text-muted-foreground"
+                      apiTestResult.status === "error" ? "text-red-600" :
+                        "text-muted-foreground"
                       }`}>
                       {apiTestResult.status === "success" && <Check className="h-4 w-4" />}
                       {apiTestResult.status === "error" && <X className="h-4 w-4" />}
@@ -2827,8 +2826,8 @@ export default function DataManagementPage() {
                         <div
                           key={dashboard.id}
                           className={`border rounded-lg p-4 transition-all ${activeDashboardId === dashboard.id
-                              ? "border-primary bg-primary/5"
-                              : "border-border hover:border-primary/50"
+                            ? "border-primary bg-primary/5"
+                            : "border-border hover:border-primary/50"
                             }`}
                         >
                           <div className="flex items-center justify-between mb-3">
@@ -3105,8 +3104,8 @@ export default function DataManagementPage() {
                           key={snRec.sn}
                           onClick={() => setSelectedSN(snRec.sn)}
                           className={`w-full text-left px-4 py-2.5 text-sm font-mono transition-colors ${selectedSN === snRec.sn
-                              ? "bg-primary/10 text-primary font-semibold border-r-2 border-primary"
-                              : "text-foreground hover:bg-muted"
+                            ? "bg-primary/10 text-primary font-semibold border-r-2 border-primary"
+                            : "text-foreground hover:bg-muted"
                             }`}
                         >
                           {snRec.sn}

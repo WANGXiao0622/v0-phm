@@ -165,32 +165,52 @@ const otherTaskList = [
   },
 ];
 
+// 根据故障时间计算应完成时间（故障时间之后3天）
+const getDueDate = (faultTime: string): string => {
+  const datePart = faultTime.split(" ")[0];
+  const due = new Date(`${datePart}T00:00:00`);
+  due.setDate(due.getDate() + 3);
+  const y = due.getFullYear();
+  const m = String(due.getMonth() + 1).padStart(2, "0");
+  const d = String(due.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+};
+
+// 判断是否逾期：超过应完成时间且状态仍为处理中
+const isOverdue = (faultTime: string, status: string): boolean => {
+  if (status !== "processing") return false;
+  const due = new Date(`${getDueDate(faultTime)}T23:59:59`);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return today > due;
+};
+
 const getStatusBadge = (status: string) => {
   switch (status) {
     case "pending":
       return (
-        <Badge variant="outline" className="text-muted-foreground border-muted-foreground/30">
+        <Badge variant="outline" className="text-muted-foreground border-muted-foreground/30 font-semibold">
           <Clock className="h-3 w-3 mr-1" />
           待处理
         </Badge>
       );
     case "processing":
       return (
-        <Badge variant="outline" className="text-blue-600 border-blue-300">
+        <Badge variant="outline" className="text-blue-600 border-blue-300 font-semibold">
           <Activity className="h-3 w-3 mr-1" />
           处理中
         </Badge>
       );
     case "completed":
       return (
-        <Badge variant="outline" className="text-emerald-600 border-emerald-300">
+        <Badge variant="outline" className="text-emerald-600 border-emerald-300 font-semibold">
           <CheckCircle2 className="h-3 w-3 mr-1" />
           已完成
         </Badge>
       );
     case "transferred":
       return (
-        <Badge variant="outline" className="text-purple-600 border-purple-300">
+        <Badge variant="outline" className="text-purple-600 border-purple-300 font-semibold">
           <Users className="h-3 w-3 mr-1" />
           已转派
         </Badge>
@@ -485,10 +505,11 @@ export default function TaskManagementPage() {
                   <div className="col-span-2">故障时间</div>
                   <div className="col-span-1">ATA章节</div>
                   <div className="col-span-1">注册号</div>
-                  <div className="col-span-2">地点</div>
+                  <div className="col-span-1">地点</div>
                   <div className="col-span-2">故障描述</div>
                   <div className="col-span-1">状态</div>
-                  <div className="col-span-2">WQAR数据</div>
+                  <div className="col-span-1">WQAR数据</div>
+                  <div className="col-span-2">应完成时间</div>
                   <div className="col-span-1">操作</div>
                 </div>
                 {filteredFaults.map((fault) => (
@@ -499,10 +520,10 @@ export default function TaskManagementPage() {
                     <div className="col-span-2 text-muted-foreground">{fault.time}</div>
                     <div className="col-span-1 font-medium text-foreground">{fault.ata}</div>
                     <div className="col-span-1 text-muted-foreground">{fault.registration}</div>
-                    <div className="col-span-2 text-muted-foreground truncate">{fault.location}</div>
+                    <div className="col-span-1 text-muted-foreground truncate">{fault.location}</div>
                     <div className="col-span-2 text-muted-foreground truncate">{fault.description}</div>
                     <div className="col-span-1">{getStatusBadge(fault.status)}</div>
-                    <div className="col-span-2">
+                    <div className="col-span-1">
                       {fault.hasWQAR ? (
                         <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200">
                           <Database className="h-3 w-3 mr-1" />
@@ -514,6 +535,15 @@ export default function TaskManagementPage() {
                           无数据
                         </Badge>
                       )}
+                    </div>
+                    <div
+                      className={`col-span-2 ${
+                        isOverdue(fault.time, fault.status)
+                          ? "text-red-600 font-semibold"
+                          : "text-muted-foreground"
+                      }`}
+                    >
+                      {getDueDate(fault.time)}
                     </div>
                     <div className="col-span-1">
                       <Link href={`/task-management/fault-analysis/${fault.id}`}>
