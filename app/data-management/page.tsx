@@ -252,23 +252,23 @@ interface ApiConfig {
 
 // API 数据
 const initialApiData: ApiConfig[] = [
-  { id: 1, name: "飞行数据采集API", endpoint: "/api/v1/flight-data", method: "POST", status: "active", calls: 12580, lastCall: "2024-01-15 14:32:00", description: "用于采集飞行数据", authType: "Bearer Token", timeout: 30000, retryCount: 3 },
-  { id: 2, name: "WQAR数据上传API", endpoint: "/api/v1/wqar/upload", method: "POST", status: "active", calls: 8920, lastCall: "2024-01-15 14:28:00", description: "用于上传WQAR原始数据", authType: "API Key", timeout: 60000, retryCount: 2 },
-  { id: 3, name: "故障报告查询API", endpoint: "/api/v1/fault-report", method: "GET", status: "active", calls: 5640, lastCall: "2024-01-15 14:25:00", description: "查询故障报告记录", authType: "Bearer Token", timeout: 15000, retryCount: 3 },
-  { id: 4, name: "模型预测API", endpoint: "/api/v1/model/predict", method: "POST", status: "inactive", calls: 3200, lastCall: "2024-01-14 18:00:00", description: "调用模型进行故障预测", authType: "Bearer Token", timeout: 45000, retryCount: 1 },
+  { id: 1, name: "飞行数据采集API", endpoint: "/api/v1/flight-data", method: "POST", status: "active", calls: 12580, lastCall: "2026-05-15 14:32:00", description: "用于采集飞行数据", authType: "Bearer Token", timeout: 30000, retryCount: 3 },
+  { id: 2, name: "WQAR数据上传API", endpoint: "/api/v1/wqar/upload", method: "POST", status: "active", calls: 8920, lastCall: "2026-05-15 14:28:00", description: "用于上传WQAR原始数据", authType: "API Key", timeout: 60000, retryCount: 2 },
+  { id: 3, name: "故障报告查询API", endpoint: "/api/v1/fault-report", method: "GET", status: "active", calls: 5640, lastCall: "2026-06-15 14:25:00", description: "查询故障报告记录", authType: "Bearer Token", timeout: 15000, retryCount: 3 },
+  { id: 4, name: "模型预测API", endpoint: "/api/v1/model/predict", method: "POST", status: "inactive", calls: 3200, lastCall: "2026-06-14 18:00:00", description: "调用模型进行故障预测", authType: "Bearer Token", timeout: 45000, retryCount: 1 },
   { id: 5, name: "数据导出API", endpoint: "/api/v1/export", method: "GET", status: "active", calls: 1890, lastCall: "2024-01-15 12:00:00", description: "导出分��报告和数据", authType: "API Key", timeout: 120000, retryCount: 2 },
 ];
 
 // WQAR 数据
 const wqarData = [
-  { id: 1, flightNo: "MU5123", registration: "B-1234", date: "2024-01-15 14:32:45", route: "PVG-PEK", fileSize: "256MB", status: "parsed", parameters: 2450 },
-  { id: 2, flightNo: "MU5678", registration: "B-5678", date: "2024-01-15 10:15:22", route: "PVG-CAN", fileSize: "189MB", status: "parsing", parameters: 0 },
-  { id: 3, flightNo: "MU2234", registration: "B-9012", date: "2024-01-14 18:45:33", route: "PEK-SHA", fileSize: "312MB", status: "parsed", parameters: 3120 },
-  { id: 4, flightNo: "MU3345", registration: "B-3456", date: "2024-01-14 09:20:18", route: "CAN-CTU", fileSize: "178MB", status: "error", parameters: 0 },
-  { id: 5, flightNo: "MU4456", registration: "B-7890", date: "2024-01-13 16:08:55", route: "SHA-SZX", fileSize: "245MB", status: "parsed", parameters: 2890 },
-  { id: 6, flightNo: "MU6789", registration: "B-1234", date: "2024-01-13 08:30:12", route: "PEK-CAN", fileSize: "278MB", status: "parsed", parameters: 2680 },
-  { id: 7, flightNo: "MU7890", registration: "B-5678", date: "2024-01-12 22:15:40", route: "SHA-PEK", fileSize: "198MB", status: "parsed", parameters: 2150 },
-  { id: 8, flightNo: "MU8901", registration: "B-9012", date: "2024-01-12 14:50:28", route: "CAN-SHA", fileSize: "265MB", status: "parsed", parameters: 2780 },
+  { id: 1, flightNo: "MU6474", registration: "B-1234", date: "2026-01-15 14:32:45", route: "ZUCK-ZBAA", fileSize: "256MB", status: "parsed", parameters: 4995 },
+  { id: 2, flightNo: "MU5678", registration: "B-5678", date: "2026-01-15 10:15:22", route: "ZSHC-ZGGG", fileSize: "189MB", status: "parsed", parameters: 4995 },
+  { id: 3, flightNo: "MU6474", registration: "B-9012", date: "2026-01-14 18:45:33", route: "ZUCK-ZBAA", fileSize: "312MB", status: "parsed", parameters: 4995 },
+  { id: 4, flightNo: "MU3345", registration: "B-3456", date: "2026-01-14 09:20:18", route: "ZSHC-ZGGG", fileSize: "178MB", status: "error", parameters: 0 },
+  { id: 5, flightNo: "MU6474", registration: "B-7890", date: "2026-01-13 16:08:55", route: "ZUCK-ZBAA", fileSize: "245MB", status: "parsed", parameters: 4995 },
+  { id: 6, flightNo: "MU6789", registration: "B-1234", date: "2026-01-13 08:30:12", route: "ZSHC-ZGGG", fileSize: "278MB", status: "parsed", parameters: 4995 },
+  { id: 7, flightNo: "MU6474", registration: "B-5678", date: "2026-01-12 22:15:40", route: "ZUCK-ZBAA", fileSize: "198MB", status: "parsed", parameters: 4995 },
+  { id: 8, flightNo: "MU8901", registration: "B-9012", date: "2026-01-12 14:50:28", route: "ZSHC-ZGGG", fileSize: "265MB", status: "parsed", parameters: 4995 },
 ];
 
 // 模板数据类型
@@ -287,10 +287,10 @@ interface TemplateConfig {
 
 // 初始模板数据
 const initialTemplateData: TemplateConfig[] = [
-  { id: 1, name: "APU EGT超温", ataChapter: "49", coreParameters: 12, description: "监控APU排气温度超限情况，用于预测APU性能衰退", lru: "APU", version: "v2.3", updatedAt: "2024-01-10", status: "active", selectedParameters: ["EGT_1", "EGT_2", "N1_1", "N2_1"] },
-  { id: 2, name: "HPV开关响应", ataChapter: "36", coreParameters: 8, description: "监控高压活门开关响应时间及状态，检测气源系统异常", lru: "HPV, PRSOV", version: "v1.8", updatedAt: "2024-01-08", status: "active", selectedParameters: ["N1_1", "N1_2", "FF_1", "FF_2"] },
-  { id: 3, name: "PRSOV开关响应", ataChapter: "36", coreParameters: 10, description: "监控引气预冷器出口活门响应，评估活门健康状态", lru: "PRSOV, FAV", version: "v2.0", updatedAt: "2024-01-05", status: "active", selectedParameters: ["N2_1", "N2_2", "OIP_1", "OIT_1"] },
-  { id: 4, name: "刹车温度不一致", ataChapter: "32", coreParameters: 16, description: "监控各轮刹车温度差异，识别刹车磨损不均或传感器故障", lru: "BSCU, 刹车组件", version: "v1.5", updatedAt: "2024-01-03", status: "active", selectedParameters: ["ALT", "IAS", "MACH"] },
+  { id: 1, name: "APU EGT超温", ataChapter: "49", coreParameters: 12, description: "监控APU排气温度超限情况，用于预测APU性能衰退", lru: "APU", version: "v2.3", updatedAt: "2026-01-10", status: "active", selectedParameters: ["EGT_1", "EGT_2", "N1_1", "N2_1"] },
+  { id: 2, name: "HPV开关响应", ataChapter: "36", coreParameters: 8, description: "监控高压活门开关响应时间及状态，检测气源系统异常", lru: "HPV, PRSOV", version: "v1.8", updatedAt: "2026-04-08", status: "active", selectedParameters: ["N1_1", "N1_2", "FF_1", "FF_2"] },
+  { id: 3, name: "PRSOV开关响应", ataChapter: "36", coreParameters: 10, description: "监控引气预冷器出口活门响应，评估活门健康状态", lru: "PRSOV, FAV", version: "v2.0", updatedAt: "2026-05-05", status: "active", selectedParameters: ["N2_1", "N2_2", "OIP_1", "OIT_1"] },
+  { id: 4, name: "刹车温度不一致", ataChapter: "32", coreParameters: 16, description: "监控各轮刹车温度差异，识别刹车磨损不均或传感器故障", lru: "BSCU, 刹车组件", version: "v1.5", updatedAt: "2026-06-03", status: "active", selectedParameters: ["ALT", "IAS", "MACH"] },
 ];
 
 // 存储数据
@@ -304,12 +304,11 @@ const storageData = [
 
 // 元数据 - 业务元数��表
 const metadataData = [
-  { id: 1, tableName: "fleet_meta", displayName: "机队元数据表", description: "存储机队基本信息，包括机型、注册号、机龄等", records: 156, fields: 28, lastSync: "2024-01-15 08:00:00" },
-  { id: 2, tableName: "flight_info", displayName: "航班信息表", description: "存储航班基本信息，包括航班号、航线、起降时间等", records: 125840, fields: 42, lastSync: "2024-01-15 14:30:00" },
-  { id: 3, tableName: "fault_report", displayName: "故障报告表", description: "存储故障报告信息，包括故障代码、描述、处理措施等", records: 8920, fields: 35, lastSync: "2024-01-15 12:00:00" },
-  { id: 4, tableName: "maintenance_record", displayName: "维修记录表", description: "存储维修工作记录，包括工卡号、维修动作、工时等", records: 45620, fields: 38, lastSync: "2024-01-14 18:00:00" },
-  { id: 5, tableName: "part_change_log", displayName: "部件更换记录表", description: "存储部件更换历史，包括件号、序号、装机位置等", records: 12350, fields: 25, lastSync: "2024-01-15 10:00:00" },
-  { id: 6, tableName: "parameter_definition", displayName: "参数定义表", description: "存储WQAR参数定义，包括参数名、单位、采样率等", records: 3850, fields: 18, lastSync: "2024-01-12 08:00:00" },
+  { id: 1, tableName: "fleet_meta", displayName: "机队元数据表", description: "存储机队基本信息，包括机型、注册号、机龄等", records: 156, fields: 28, lastSync: "2026-06-15 08:00:00" },
+  { id: 2, tableName: "flight_info", displayName: "航班信息表", description: "存储航班基本信息，包括航班号、航线、起降时间等", records: 125840, fields: 42, lastSync: "2026-06-15 14:30:00" },
+  { id: 3, tableName: "fault_report", displayName: "故障报告表", description: "存储故障报告信息，包括故障描述、CMS、处理措施等", records: 8920, fields: 35, lastSync: "2026-06-15 12:00:00" },
+  { id: 4, tableName: "part_change_log", displayName: "部件更换记录表", description: "存储部件更换历史，包括件号、序号、装机位置等", records: 12350, fields: 25, lastSync: "2026-06-15 10:00:00" },
+  { id: 5, tableName: "parameter_definition", displayName: "参数定义表", description: "存储WQAR参数定义，包括参数名、单位、采样率等", records: 3850, fields: 18, lastSync: "2026-06-12 08:00:00" },
 ];
 
 // 故障统计数据
@@ -330,18 +329,18 @@ interface FaultRecord {
 }
 
 const faultData: FaultRecord[] = [
-  { id: 1, faultCode: "2100-01", cmsMessage: "PACK 1 FAULT", registration: "B-1234", airline: "成都航空", airlineCode: "UEA", ataChapter: "21", faultDate: "2024-01-15 14:32:00", flightNo: "UEA5123", route: "PVG-PEK", severity: "high", status: "analyzed", analysisId: "FA-2024-0156" },
-  { id: 2, faultCode: "3600-05", cmsMessage: "BLEED 1 OVHT", registration: "B-5678", airline: "东方航空", airlineCode: "CES", ataChapter: "36", faultDate: "2024-01-15 10:15:00", flightNo: "MU5678", route: "PVG-CAN", severity: "high", status: "pending" },
-  { id: 3, faultCode: "2700-12", cmsMessage: "ELAC 1 FAULT", registration: "B-9012", airline: "成都航空", airlineCode: "UEA", ataChapter: "27", faultDate: "2024-01-14 18:45:00", flightNo: "UEA2234", route: "PEK-SHA", severity: "medium", status: "analyzed", analysisId: "FA-2024-0148" },
-  { id: 4, faultCode: "3200-08", cmsMessage: "BRAKE TEMP HI", registration: "B-3456", airline: "南方航空", airlineCode: "CSN", ataChapter: "32", faultDate: "2024-01-14 09:20:00", flightNo: "CZ3345", route: "CAN-CTU", severity: "medium", status: "no_qar" },
-  { id: 5, faultCode: "4900-03", cmsMessage: "APU EGT OVLM", registration: "B-7890", airline: "东方航空", airlineCode: "CES", ataChapter: "49", faultDate: "2024-01-13 16:08:00", flightNo: "MU4456", route: "SHA-SZX", severity: "high", status: "analyzed", analysisId: "FA-2024-0142" },
-  { id: 6, faultCode: "7200-15", cmsMessage: "ENG 1 VIB HI", registration: "B-1234", airline: "成都航空", airlineCode: "UEA", ataChapter: "72", faultDate: "2024-01-13 08:30:00", flightNo: "UEA6789", route: "PEK-CAN", severity: "high", status: "pending" },
-  { id: 7, faultCode: "2900-06", cmsMessage: "HYD SYS 1 LO PR", registration: "B-5678", airline: "东方航空", airlineCode: "CES", ataChapter: "29", faultDate: "2024-01-12 22:15:00", flightNo: "MU7890", route: "SHA-PEK", severity: "medium", status: "ignored" },
-  { id: 8, faultCode: "2400-09", cmsMessage: "GEN 1 FAULT", registration: "B-9012", airline: "成都航空", airlineCode: "UEA", ataChapter: "24", faultDate: "2024-01-12 14:50:00", flightNo: "UEA8901", route: "CAN-SHA", severity: "low", status: "analyzed", analysisId: "FA-2024-0135" },
-  { id: 9, faultCode: "3600-02", cmsMessage: "PRSOV 1 FAULT", registration: "B-3456", airline: "南方航空", airlineCode: "CSN", ataChapter: "36", faultDate: "2024-01-12 10:30:00", flightNo: "CZ9012", route: "CTU-PVG", severity: "medium", status: "pending" },
-  { id: 10, faultCode: "2100-08", cmsMessage: "DUCT OVHT", registration: "B-7890", airline: "东方航空", airlineCode: "CES", ataChapter: "21", faultDate: "2024-01-11 15:45:00", flightNo: "MU1234", route: "PEK-CAN", severity: "high", status: "no_qar" },
-  { id: 11, faultCode: "3200-03", cmsMessage: "LGCIU 1 FAULT", registration: "B-1234", airline: "成都航空", airlineCode: "UEA", ataChapter: "32", faultDate: "2024-01-11 09:20:00", flightNo: "UEA5678", route: "SHA-PEK", severity: "low", status: "analyzed", analysisId: "FA-2024-0128" },
-  { id: 12, faultCode: "4900-07", cmsMessage: "APU FIRE DET", registration: "B-5678", airline: "东方航空", airlineCode: "CES", ataChapter: "49", faultDate: "2024-01-10 18:00:00", flightNo: "MU2345", route: "CAN-PVG", severity: "high", status: "analyzed", analysisId: "FA-2024-0122" },
+  { id: 1, faultCode: "2100-01", cmsMessage: "PACK 1 FAULT", registration: "B-1234", airline: "成都航空", airlineCode: "UEA", ataChapter: "21", faultDate: "2026-06-15 14:32:00", flightNo: "UEA5123", route: "PVG-PEK", severity: "high", status: "analyzed", analysisId: "FA-2026-0156" },
+  { id: 2, faultCode: "3600-05", cmsMessage: "BLEED 1 OVHT", registration: "B-5678", airline: "东方航空", airlineCode: "CES", ataChapter: "36", faultDate: "2026-01-15 10:15:00", flightNo: "MU5678", route: "PVG-CAN", severity: "high", status: "pending" },
+  { id: 3, faultCode: "2700-12", cmsMessage: "ELAC 1 FAULT", registration: "B-9012", airline: "成都航空", airlineCode: "UEA", ataChapter: "27", faultDate: "2026-01-14 18:45:00", flightNo: "UEA2234", route: "PEK-SHA", severity: "medium", status: "analyzed", analysisId: "FA-2026-0148" },
+  { id: 4, faultCode: "3200-08", cmsMessage: "BRAKE TEMP HI", registration: "B-3456", airline: "南方航空", airlineCode: "CSN", ataChapter: "32", faultDate: "2026-01-14 09:20:00", flightNo: "CZ3345", route: "CAN-CTU", severity: "medium", status: "no_qar" },
+  { id: 5, faultCode: "4900-03", cmsMessage: "APU EGT OVLM", registration: "B-7890", airline: "东方航空", airlineCode: "CES", ataChapter: "49", faultDate: "2026-01-13 16:08:00", flightNo: "MU4456", route: "SHA-SZX", severity: "high", status: "analyzed", analysisId: "FA-2026-0142" },
+  { id: 6, faultCode: "7200-15", cmsMessage: "ENG 1 VIB HI", registration: "B-1234", airline: "成都航空", airlineCode: "UEA", ataChapter: "72", faultDate: "2026-01-13 08:30:00", flightNo: "UEA6789", route: "PEK-CAN", severity: "high", status: "pending" },
+  { id: 7, faultCode: "2900-06", cmsMessage: "HYD SYS 1 LO PR", registration: "B-5678", airline: "东方航空", airlineCode: "CES", ataChapter: "29", faultDate: "2026-01-12 22:15:00", flightNo: "MU7890", route: "SHA-PEK", severity: "medium", status: "ignored" },
+  { id: 8, faultCode: "2400-09", cmsMessage: "GEN 1 FAULT", registration: "B-9012", airline: "成都航空", airlineCode: "UEA", ataChapter: "24", faultDate: "2026-01-12 14:50:00", flightNo: "UEA8901", route: "CAN-SHA", severity: "low", status: "analyzed", analysisId: "FA-2026-0135" },
+  { id: 9, faultCode: "3600-02", cmsMessage: "PRSOV 1 FAULT", registration: "B-3456", airline: "南方航空", airlineCode: "CSN", ataChapter: "36", faultDate: "2026-01-12 10:30:00", flightNo: "CZ9012", route: "CTU-PVG", severity: "medium", status: "pending" },
+  { id: 10, faultCode: "2100-08", cmsMessage: "DUCT OVHT", registration: "B-7890", airline: "东方航空", airlineCode: "CES", ataChapter: "21", faultDate: "2026-01-11 15:45:00", flightNo: "MU1234", route: "PEK-CAN", severity: "high", status: "no_qar" },
+  { id: 11, faultCode: "3200-03", cmsMessage: "LGCIU 1 FAULT", registration: "B-1234", airline: "成都航空", airlineCode: "UEA", ataChapter: "32", faultDate: "2026-01-11 09:20:00", flightNo: "UEA5678", route: "SHA-PEK", severity: "low", status: "analyzed", analysisId: "FA-2026-0128" },
+  { id: 12, faultCode: "4900-07", cmsMessage: "APU FIRE DET", registration: "B-5678", airline: "东方航空", airlineCode: "CES", ataChapter: "49", faultDate: "2026-01-10 18:00:00", flightNo: "MU2345", route: "CAN-PVG", severity: "high", status: "analyzed", analysisId: "FA-2026-0122" },
 ];
 
 // 航司列表
@@ -403,54 +402,54 @@ const baseParameterData: ParameterConfig[] = [
 
 // 中国东方航空 ATA-49 参数配置（来源：49章数据.xlsx）
 const cesAta49Params: ParameterConfig[] = [
-  { id: 1,  parameterAssignment: "216",  mnemonic: "APUSERNO",  portName: "LA-DCU-1", signalType: "BNR", unit: "/",    customName: "APU序列号",                     customDescription: "",                               ataChapter: "ATA-49" },
-  { id: 2,  parameterAssignment: "225",  mnemonic: "L265B18",   portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU发电机关闭",                 customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
-  { id: 3,  parameterAssignment: "234",  mnemonic: "L076B222",  portName: "LA-DCU-2", signalType: "DIS", unit: "/",    customName: "APU蓄电池电压警告",             customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
-  { id: 4,  parameterAssignment: "236",  mnemonic: "L076B182",  portName: "LA-DCU-2", signalType: "DIS", unit: "/",    customName: "APU直接汇流条有电",             customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
-  { id: 5,  parameterAssignment: "448",  mnemonic: "APUEGT",    portName: "LA-DCU-1", signalType: "BNR", unit: "℃",   customName: "APU排气温度",                   customDescription: "",                               ataChapter: "ATA-49" },
-  { id: 6,  parameterAssignment: "474",  mnemonic: "APUFF",     portName: "LA-DCU-1", signalType: "BNR", unit: "lb/h", customName: "APU燃油流量",                   customDescription: "",                               ataChapter: "ATA-49" },
-  { id: 7,  parameterAssignment: "475",  mnemonic: "APUSPEED",  portName: "LA-DCU-1", signalType: "BNR", unit: "%",    customName: "APU转速",                       customDescription: "",                               ataChapter: "ATA-49" },
-  { id: 8,  parameterAssignment: "481",  mnemonic: "APUBLDAF",  portName: "LA-DCU-1", signalType: "BNR", unit: "kg/s", customName: "APU引气流量",                   customDescription: "",                               ataChapter: "ATA-49" },
-  { id: 9,  parameterAssignment: "495",  mnemonic: "L053B20",   portName: "LA-DCU-2", signalType: "DIS", unit: "/",    customName: "APU燃油切断阀关闭",             customDescription: "0 NOT-CLD / 1 CLD",              ataChapter: "ATA-49" },
-  { id: 10, parameterAssignment: "496",  mnemonic: "L053B19",   portName: "LA-DCU-2", signalType: "DIS", unit: "/",    customName: "APU燃油切断阀打开",             customDescription: "0 NOT-OPN / 1 OPN",              ataChapter: "ATA-49" },
-  { id: 11, parameterAssignment: "511",  mnemonic: "L002B16",   portName: "LA-DCU-2", signalType: "DIS", unit: "/",    customName: "APU火警",                       customDescription: "0 NO-FIRE / 1 FIRE",             ataChapter: "ATA-49" },
-  { id: 12, parameterAssignment: "512",  mnemonic: "L002B24",   portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU引气管路渗漏过热",           customDescription: "0 NO-OVHT / 1 OVHT",             ataChapter: "ATA-49" },
-  { id: 13, parameterAssignment: "737",  mnemonic: "APUMNT1H",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息1高位",              customDescription: "19 Ignitor Plug A Open Fault",   ataChapter: "ATA-49" },
-  { id: 14, parameterAssignment: "738",  mnemonic: "APUMNT1L",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息1低位",              customDescription: "11 Fuel Filter Impending Blockage", ataChapter: "ATA-49" },
-  { id: 15, parameterAssignment: "739",  mnemonic: "APUMNT2H",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息2高位",              customDescription: "14 ESC Fault - Shutdown",        ataChapter: "ATA-49" },
-  { id: 16, parameterAssignment: "740",  mnemonic: "APUMNT2L",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息2低位",              customDescription: "11 FADEC Fault - Warning",       ataChapter: "ATA-49" },
-  { id: 17, parameterAssignment: "741",  mnemonic: "APUMNT3H",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息3高位",              customDescription: "18 Low Oil Pressure",            ataChapter: "ATA-49" },
-  { id: 18, parameterAssignment: "742",  mnemonic: "APUMNT3L",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息3低位",              customDescription: "11 Overspeed",                   ataChapter: "ATA-49" },
-  { id: 19, parameterAssignment: "743",  mnemonic: "APUMNT4H",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息4高位",              customDescription: "22 Door Wrap Around Test Fault", ataChapter: "ATA-49" },
-  { id: 20, parameterAssignment: "744",  mnemonic: "APUMNT4L",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息4低位",              customDescription: "11 FADEC Power Interrupt",       ataChapter: "ATA-49" },
-  { id: 21, parameterAssignment: "745",  mnemonic: "APUMNT4M",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息4中位",              customDescription: "14 APU Master Switch Failed",    ataChapter: "ATA-49" },
-  { id: 22, parameterAssignment: "821",  mnemonic: "AGOL2",     portName: "LA-DCU-2", signalType: "DIS", unit: "/",    customName: "APU发电机关闭",                 customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
-  { id: 23, parameterAssignment: "997",  mnemonic: "IADFO",     portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-进气风门全开",       customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
-  { id: 24, parameterAssignment: "999",  mnemonic: "ASDA",      portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-APU正在关车",        customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
-  { id: 25, parameterAssignment: "1000", mnemonic: "NBAC",      portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-不间断供电开启",     customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
-  { id: 26, parameterAssignment: "1001", mnemonic: "IADFC",     portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-APU进气风门全关",    customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
-  { id: 27, parameterAssignment: "1002", mnemonic: "TPBFC",     portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-APU状态趋势报告",    customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
-  { id: 28, parameterAssignment: "1003", mnemonic: "ATRBFM",    portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-APU对主发起动趋势报告", customDescription: "0 FALSE / 1 TRUE",            ataChapter: "ATA-49" },
-  { id: 29, parameterAssignment: "1004", mnemonic: "AEDR",      portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字2-EGT显示红色",        customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
-  { id: 30, parameterAssignment: "1005", mnemonic: "AEDA",      portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字2-EGT显示琥珀色",      customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
-  { id: 31, parameterAssignment: "1006", mnemonic: "ASDR",      portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字2-转速显示红色",        customDescription: "0 FALSE / 1 TRUE",              ataChapter: "ATA-49" },
-  { id: 32, parameterAssignment: "1007", mnemonic: "IIASDA",    portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字2-转速显示琥珀色",      customDescription: "0 FALSE / 1 TRUE",              ataChapter: "ATA-49" },
-  { id: 33, parameterAssignment: "1009", mnemonic: "AORE",      portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-APU过载",            customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
-  { id: 34, parameterAssignment: "1010", mnemonic: "IADPO",     portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-APU进气风门部分开",  customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
-  { id: 35, parameterAssignment: "1063", mnemonic: "APUGL",     portName: "LA-DCU-1", signalType: "BNR", unit: "A",    customName: "APU负载",                       customDescription: "",                               ataChapter: "ATA-49" },
-  { id: 36, parameterAssignment: "1065", mnemonic: "APUOILT",   portName: "LA-DCU-1", signalType: "BNR", unit: "℃",   customName: "APU滑油温度",                   customDescription: "",                               ataChapter: "ATA-49" },
-  { id: 37, parameterAssignment: "1084", mnemonic: "IIAIDFO",   portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU进气风门失效在开位",         customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
-  { id: 38, parameterAssignment: "1085", mnemonic: "IIAIDFC",   portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU进气风门失效在关位",         customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
-  { id: 39, parameterAssignment: "1086", mnemonic: "AFSL",      portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU燃油供给不足",               customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
-  { id: 40, parameterAssignment: "1087", mnemonic: "AIDPA",     portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU进气风门位置(A)",            customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
-  { id: 41, parameterAssignment: "1090", mnemonic: "AIDPB",     portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU进气风门位置（B）",          customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
-  { id: 42, parameterAssignment: "1091", mnemonic: "AIDPC",     portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU进气风门位置(C)",            customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
-  { id: 43, parameterAssignment: "1204", mnemonic: "APUH",      portName: "LA-DCU-1", signalType: "BNR", unit: "hr",   customName: "APU总工作时间",                 customDescription: "",                               ataChapter: "ATA-49" },
-  { id: 44, parameterAssignment: "1205", mnemonic: "APUSC",     portName: "LA-DCU-1", signalType: "BNR", unit: "/",    customName: "APU循环次数",                   customDescription: "",                               ataChapter: "ATA-49" },
-  { id: 45, parameterAssignment: "1206", mnemonic: "APUH",      portName: "LA-DCU-1", signalType: "BNR", unit: "hr",   customName: "APU总工作时间",                 customDescription: "",                               ataChapter: "ATA-49" },
-  { id: 46, parameterAssignment: "1207", mnemonic: "APUSC",     portName: "LA-DCU-1", signalType: "BNR", unit: "/",    customName: "APU循环次数",                   customDescription: "",                               ataChapter: "ATA-49" },
-  { id: 47, parameterAssignment: "1208", mnemonic: "APUBSCMD",  portName: "LA-DCU-1", signalType: "BNR", unit: "mA",   customName: "APU引气阀控制指令",             customDescription: "",                               ataChapter: "ATA-49" },
-  { id: 48, parameterAssignment: "1243", mnemonic: "APUOILP",   portName: "LA-DCU-1", signalType: "BNR", unit: "psi",  customName: "APU滑油压力",                   customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 1, parameterAssignment: "APU_SERIAL_NUMBER", mnemonic: "APUSERNO", portName: "LA-DCU-1", signalType: "BNR", unit: "/", customName: "APU序列号", customDescription: "", ataChapter: "ATA-49" },
+  { id: 2, parameterAssignment: "APU GEN OFF", mnemonic: "L265B18", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU发电机关闭", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 3, parameterAssignment: "ELECTRICAL SYNOPTIC 3-APU BATT VOLTS WH", mnemonic: "L076B222", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "APU蓄电池电压警告", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 4, parameterAssignment: "ELECTRICAL SYNOPTIC 3-APU DIR BUS POWER", mnemonic: "L076B182", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "APU直接汇流条有电", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 5, parameterAssignment: "APU EGT", mnemonic: "APUEGT", portName: "LA-DCU-1", signalType: "BNR", unit: "℃", customName: "APU排气温度", customDescription: "", ataChapter: "ATA-49" },
+  { id: 6, parameterAssignment: "APU FUEL FLOW", mnemonic: "APUFF", portName: "LA-DCU-1", signalType: "BNR", unit: "lb/h", customName: "APU燃油流量", customDescription: "", ataChapter: "ATA-49" },
+  { id: 7, parameterAssignment: "APU SPEED", mnemonic: "APUSPEED", portName: "LA-DCU-1", signalType: "BNR", unit: "%", customName: "APU转速", customDescription: "", ataChapter: "ATA-49" },
+  { id: 8, parameterAssignment: "APU BLEED AIR FLOW", mnemonic: "APUBLDAF", portName: "LA-DCU-1", signalType: "BNR", unit: "kg/s", customName: "APU引气流量", customDescription: "", ataChapter: "ATA-49" },
+  { id: 9, parameterAssignment: "FUEL SYNOPTIC 1-CLOSED APU FUEL FEED SOV", mnemonic: "L053B20", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "APU燃油切断阀关闭", customDescription: "0 NOT-CLD / 1 CLD", ataChapter: "ATA-49" },
+  { id: 10, parameterAssignment: "FUEL SYNOPTIC 1-OPEN APU FUEL FEED SOV", mnemonic: "L053B19", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "APU燃油切断阀打开", customDescription: "0 NOT-OPN / 1 OPN", ataChapter: "ATA-49" },
+  { id: 11, parameterAssignment: "WARNING DISC 2-APU FIRE", mnemonic: "L002B16", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "APU火警", customDescription: "0 NO-FIRE / 1 FIRE", ataChapter: "ATA-49" },
+  { id: 12, parameterAssignment: "WARNING DISC 2-APU BLEED OVERHEAT", mnemonic: "L002B24", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU引气管路渗漏过热", customDescription: "0 NO-OVHT / 1 OVHT", ataChapter: "ATA-49" },
+  { id: 13, parameterAssignment: "APU MAINTENANCE WORD 1 HIGH BITS", mnemonic: "APUMNT1H", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息1高位", customDescription: "19 Ignitor Plug A Open Fault", ataChapter: "ATA-49" },
+  { id: 14, parameterAssignment: "APU MAINTENANCE WORD 1 LOW BITS", mnemonic: "APUMNT1L", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息1低位", customDescription: "11 Fuel Filter Impending Blockage", ataChapter: "ATA-49" },
+  { id: 15, parameterAssignment: "APU MAINTENANCE WORD 2 HIGH BITS", mnemonic: "APUMNT2H", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息2高位", customDescription: "14 ESC Fault - Shutdown", ataChapter: "ATA-49" },
+  { id: 16, parameterAssignment: "APU MAINTENANCE WORD 2 LOW BITS", mnemonic: "APUMNT2L", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息2低位", customDescription: "11 FADEC Fault - Warning", ataChapter: "ATA-49" },
+  { id: 17, parameterAssignment: "APU MAINTENANCE WORD 3 HIGH BITS", mnemonic: "APUMNT3H", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息3高位", customDescription: "18 Low Oil Pressure", ataChapter: "ATA-49" },
+  { id: 18, parameterAssignment: "APU MAINTENANCE WORD 3 LOW BITS", mnemonic: "APUMNT3L", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息3低位", customDescription: "11 Overspeed", ataChapter: "ATA-49" },
+  { id: 19, parameterAssignment: "APU MAINTENANCE WORD 4 HIGH BITS", mnemonic: "APUMNT4H", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息4高位", customDescription: "22 Door Wrap Around Test Fault", ataChapter: "ATA-49" },
+  { id: 20, parameterAssignment: "APU MAINTENANCE WORD 4 LOW BITS", mnemonic: "APUMNT4L", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息4低位", customDescription: "11 FADEC Power Interrupt", ataChapter: "ATA-49" },
+  { id: 21, parameterAssignment: "APU MAINTENANCE WORD 4 MID BITS", mnemonic: "APUMNT4M", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息4中位", customDescription: "14 APU Master Switch Failed", ataChapter: "ATA-49" },
+  { id: 22, parameterAssignment: "APU GEN OFF [ELTAF]", mnemonic: "AGOL2", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "APU发电机关闭", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 23, parameterAssignment: "APU Status Word I-INLET AIR DOOR FULL OP", mnemonic: "IADFO", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-进气风门全开", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 24, parameterAssignment: "APU SHUTTING DOWN [APHCD]", mnemonic: "ASDA", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-APU正在关车", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 25, parameterAssignment: "APU Status Word I-NBPT ACTIVE", mnemonic: "NBAC", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-不间断供电开启", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 26, parameterAssignment: "APU Status Word I-INLET AIR DOOR FULL CL", mnemonic: "IADFC", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-APU进气风门全关", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 27, parameterAssignment: "TREND REPORT BIT FOR APU START", mnemonic: "TPBFC", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-APU状态趋势报告", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 28, parameterAssignment: "APU TREND REPORT BIT FOR MES", mnemonic: "ATRBFM", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-APU对主发起动趋势报告", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 29, parameterAssignment: "APU EGT Display = Red [APHER]", mnemonic: "AEDR", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字2-EGT显示红色", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 30, parameterAssignment: "APU EGT Display = Amber [APHEY]", mnemonic: "AEDA", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字2-EGT显示琥珀色", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 31, parameterAssignment: "APU Speed Display = Red [APHSR]", mnemonic: "ASDR", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字2-转速显示红色", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 32, parameterAssignment: "APU Status Word II-APU Speed Display = A", mnemonic: "IIASDA", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字2-转速显示琥珀色", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 33, parameterAssignment: "APU OVERLOAD ENVELOPE", mnemonic: "AORE", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-APU过载", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 34, parameterAssignment: "APU Status Word I-INLET AIR DOOR PARTIAL OPEN", mnemonic: "IADPO", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-APU进气风门部分开", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 35, parameterAssignment: "APU Generator Load", mnemonic: "APUGL", portName: "LA-DCU-1", signalType: "BNR", unit: "A", customName: "APU负载", customDescription: "", ataChapter: "ATA-49" },
+  { id: 36, parameterAssignment: "APU OIL TEMPERATURE", mnemonic: "APUOILT", portName: "LA-DCU-1", signalType: "BNR", unit: "℃", customName: "APU滑油温度", customDescription: "", ataChapter: "ATA-49" },
+  { id: 37, parameterAssignment: "APU Status Word II-APU Inlet Door Failed Open", mnemonic: "IIAIDFO", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU进气风门失效在开位", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 38, parameterAssignment: "APU Status Word II-APU Inlet Door Failed Closed", mnemonic: "IIAIDFC", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU进气风门失效在关位", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 39, parameterAssignment: "APU Fuel Supply Low", mnemonic: "AFSL", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU燃油供给不足", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 40, parameterAssignment: "APU INLET DOOR POSITION A", mnemonic: "AIDPA", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU进气风门位置(A)", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 41, parameterAssignment: "APU INLET DOOR POSITION B", mnemonic: "AIDPB", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU进气风门位置（B）", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 42, parameterAssignment: "APU INLET DOOR POSITION C", mnemonic: "AIDPC", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU进气风门位置(C)", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
+  { id: 43, parameterAssignment: "APU Hour", mnemonic: "APUH", portName: "LA-DCU-1", signalType: "BNR", unit: "hr", customName: "APU总工作时间", customDescription: "", ataChapter: "ATA-49" },
+  { id: 44, parameterAssignment: "APU Start Cycle", mnemonic: "APUSC", portName: "LA-DCU-1", signalType: "BNR", unit: "/", customName: "APU循环次数", customDescription: "", ataChapter: "ATA-49" },
+  { id: 45, parameterAssignment: "APU Hour", mnemonic: "APUH", portName: "LA-DCU-1", signalType: "BNR", unit: "hr", customName: "APU总工作时间", customDescription: "", ataChapter: "ATA-49" },
+  { id: 46, parameterAssignment: "APU Start Cycle", mnemonic: "APUSC", portName: "LA-DCU-1", signalType: "BNR", unit: "/", customName: "APU循环次数", customDescription: "", ataChapter: "ATA-49" },
+  { id: 47, parameterAssignment: "APU bleed servo CMD", mnemonic: "APUBSCMD", portName: "LA-DCU-1", signalType: "BNR", unit: "mA", customName: "APU引气阀控制指令", customDescription: "", ataChapter: "ATA-49" },
+  { id: 48, parameterAssignment: "APU OIL PRESSURE", mnemonic: "APUOILP", portName: "LA-DCU-1", signalType: "BNR", unit: "psi", customName: "APU滑油压力", customDescription: "", ataChapter: "ATA-49" },
 ];
 
 // 各航司的自定义配置数据
@@ -475,13 +474,13 @@ export default function DataManagementPage() {
   const [selectedVersion, setSelectedVersion] = useState("base");
   const [airlineConfigs, setAirlineConfigs] = useState<AirlineParameterConfigs>(initialAirlineConfigs);
   const [editingRow, setEditingRow] = useState<number | null>(null);
-  const [editValues, setEditValues] = useState<{customName: string; customDescription: string; ataChapter: string}>({
+  const [editValues, setEditValues] = useState<{ customName: string; customDescription: string; ataChapter: string }>({
     customName: "",
     customDescription: "",
     ataChapter: ""
   });
   const [syncDialogOpen, setSyncDialogOpen] = useState(false);
-  const [syncInfo, setSyncInfo] = useState<{parameterId: number; mnemonic: string; affectedAirlines: string[]}>({ parameterId: 0, mnemonic: "", affectedAirlines: [] });
+  const [syncInfo, setSyncInfo] = useState<{ parameterId: number; mnemonic: string; affectedAirlines: string[] }>({ parameterId: 0, mnemonic: "", affectedAirlines: [] });
 
   // 模板编辑状态
   const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
@@ -506,7 +505,7 @@ export default function DataManagementPage() {
   const [parameterSearchTerm, setParameterSearchTerm] = useState("");
   const [parameterFilterType, setParameterFilterType] = useState<"all" | "mnemonic" | "customName" | "customDescription" | "ataChapter">("all");
   const [ataChapterFilter, setAtaChapterFilter] = useState("");
-  
+
   // Dashboard 编辑状态
   const [activeDashboardId, setActiveDashboardId] = useState<string | null>(null);
   const [dashboardEditMode, setDashboardEditMode] = useState<"select" | "preview">("select");
@@ -518,7 +517,7 @@ export default function DataManagementPage() {
     endDate: "",
     registration: ""
   });
-  
+
   // WQAR筛选状态
   const [wqarFilters, setWqarFilters] = useState({
     registration: "",
@@ -609,8 +608,8 @@ export default function DataManagementPage() {
       };
       setApiList([...apiList, newApi]);
     } else if (apiDialogMode === "edit" && selectedApi) {
-      setApiList(apiList.map(api => 
-        api.id === selectedApi.id 
+      setApiList(apiList.map(api =>
+        api.id === selectedApi.id
           ? { ...api, ...apiForm }
           : api
       ));
@@ -674,7 +673,7 @@ export default function DataManagementPage() {
   const saveEditing = (param: ParameterConfig) => {
     // 找出其他航司中有相同MNEMONIC的配置
     const affectedAirlines: string[] = [];
-    
+
     Object.keys(airlineConfigs).forEach(airlineId => {
       if (airlineId !== selectedVersion) {
         const hasMatchingParam = airlineConfigs[airlineId].some(
@@ -706,10 +705,10 @@ export default function DataManagementPage() {
   // 执行保存
   const doSave = (parameterId: number, mnemonic: string, syncToOthers: boolean) => {
     const newConfigs = { ...airlineConfigs };
-    
+
     // 更新当前航司的配置
-    newConfigs[selectedVersion] = newConfigs[selectedVersion].map(p => 
-      p.id === parameterId 
+    newConfigs[selectedVersion] = newConfigs[selectedVersion].map(p =>
+      p.id === parameterId
         ? { ...p, ...editValues }
         : p
     );
@@ -718,7 +717,7 @@ export default function DataManagementPage() {
     if (syncToOthers) {
       Object.keys(newConfigs).forEach(airlineId => {
         if (airlineId !== selectedVersion) {
-          newConfigs[airlineId] = newConfigs[airlineId].map(p => 
+          newConfigs[airlineId] = newConfigs[airlineId].map(p =>
             p.mnemonic === mnemonic
               ? { ...p, ...editValues }
               : p
@@ -790,18 +789,18 @@ export default function DataManagementPage() {
   const saveTemplate = () => {
     if (editingTemplate) {
       // 编辑现有模板
-      setTemplates(prev => prev.map(t => 
-        t.id === editingTemplate.id 
+      setTemplates(prev => prev.map(t =>
+        t.id === editingTemplate.id
           ? {
-              ...t,
-              name: templateForm.name,
-              ataChapter: templateForm.ataChapter,
-              description: templateForm.description,
-              lru: templateForm.lru,
-              selectedParameters: templateForm.selectedParameters,
-              coreParameters: templateForm.selectedParameters.length,
-              updatedAt: new Date().toISOString().split('T')[0]
-            }
+            ...t,
+            name: templateForm.name,
+            ataChapter: templateForm.ataChapter,
+            description: templateForm.description,
+            lru: templateForm.lru,
+            selectedParameters: templateForm.selectedParameters,
+            coreParameters: templateForm.selectedParameters.length,
+            updatedAt: new Date().toISOString().split('T')[0]
+          }
           : t
       ));
     } else {
@@ -865,7 +864,7 @@ export default function DataManagementPage() {
   const updateDashboard = (id: string, updates: Partial<typeof templateForm.dashboards[number]>) => {
     setTemplateForm(prev => ({
       ...prev,
-      dashboards: prev.dashboards.map(d => 
+      dashboards: prev.dashboards.map(d =>
         d.id === id ? { ...d, ...updates } : d
       )
     }));
@@ -874,7 +873,7 @@ export default function DataManagementPage() {
   const addParameterToDashboard = (dashboardId: string, mnemonic: string) => {
     setTemplateForm(prev => ({
       ...prev,
-      dashboards: prev.dashboards.map(d => 
+      dashboards: prev.dashboards.map(d =>
         d.id === dashboardId && !d.parameters.includes(mnemonic)
           ? { ...d, parameters: [...d.parameters, mnemonic] }
           : d
@@ -885,7 +884,7 @@ export default function DataManagementPage() {
   const removeParameterFromDashboard = (dashboardId: string, mnemonic: string) => {
     setTemplateForm(prev => ({
       ...prev,
-      dashboards: prev.dashboards.map(d => 
+      dashboards: prev.dashboards.map(d =>
         d.id === dashboardId
           ? { ...d, parameters: d.parameters.filter(p => p !== mnemonic) }
           : d
@@ -925,19 +924,19 @@ export default function DataManagementPage() {
   const filteredParametersForTemplate = baseParameterData.filter(param => {
     const searchLower = parameterSearchTerm.toLowerCase();
     const ataFilterLower = ataChapterFilter.toLowerCase();
-    
+
     // ATA章节筛选
     if (ataFilterLower && !param.ataChapter.toLowerCase().includes(ataFilterLower)) {
       return false;
     }
-    
+
     // 搜索词筛选
     if (!searchLower) return true;
-    
+
     switch (parameterFilterType) {
       case "mnemonic":
         return param.mnemonic.toLowerCase().includes(searchLower) ||
-               param.portName.toLowerCase().includes(searchLower);
+          param.portName.toLowerCase().includes(searchLower);
       case "customName":
         return param.customName.toLowerCase().includes(searchLower);
       case "customDescription":
@@ -947,10 +946,10 @@ export default function DataManagementPage() {
       case "all":
       default:
         return param.mnemonic.toLowerCase().includes(searchLower) ||
-               param.portName.toLowerCase().includes(searchLower) ||
-               param.customName.toLowerCase().includes(searchLower) ||
-               param.customDescription.toLowerCase().includes(searchLower) ||
-               param.ataChapter.toLowerCase().includes(searchLower);
+          param.portName.toLowerCase().includes(searchLower) ||
+          param.customName.toLowerCase().includes(searchLower) ||
+          param.customDescription.toLowerCase().includes(searchLower) ||
+          param.ataChapter.toLowerCase().includes(searchLower);
     }
   });
 
@@ -971,7 +970,7 @@ export default function DataManagementPage() {
     // 搜索词筛选
     if (searchTerm && activeTab === "wqar") {
       return item.flightNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-             item.registration.toLowerCase().includes(searchTerm.toLowerCase());
+        item.registration.toLowerCase().includes(searchTerm.toLowerCase());
     }
     return true;
   });
@@ -991,12 +990,12 @@ export default function DataManagementPage() {
       }
       return true;
     });
-    
+
     const totalSize = filtered.reduce((acc, item) => {
       const size = parseInt(item.fileSize.replace("MB", ""));
       return acc + size;
     }, 0);
-    
+
     return {
       count: filtered.length,
       totalSize: totalSize >= 1024 ? `${(totalSize / 1024).toFixed(2)} GB` : `${totalSize} MB`
@@ -1069,7 +1068,7 @@ export default function DataManagementPage() {
         return <Badge variant="outline">{severity}</Badge>;
     }
   };
-  
+
   return (
     <AppShell>
       <header className="border-b border-border bg-card">
@@ -1225,7 +1224,7 @@ export default function DataManagementPage() {
                   </Button>
                 </div>
               </div>
-              
+
               {/* 筛选区域 */}
               <div className="flex flex-wrap items-center gap-3 mt-3 pt-3 border-t border-border">
                 <div className="flex items-center gap-2">
@@ -1579,7 +1578,7 @@ export default function DataManagementPage() {
                   </div>
                 </div>
               )}
-              
+
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
@@ -1603,13 +1602,13 @@ export default function DataManagementPage() {
                         <TableCell className="font-mono text-xs font-medium">{param.mnemonic}</TableCell>
                         <TableCell className="font-mono text-xs text-muted-foreground">{param.portName}</TableCell>
                         <TableCell>
-<Badge variant="outline" className={
-                                  param.signalType === "BNR" ? "bg-amber-50 text-amber-600" : 
-                                  param.signalType === "DIS" ? "bg-sky-50 text-sky-600" : 
-                                  "bg-purple-50 text-purple-600"
-                                }>
-                                  {param.signalType}
-                                </Badge>
+                          <Badge variant="outline" className={
+                            param.signalType === "BNR" ? "bg-amber-50 text-amber-600" :
+                              param.signalType === "DIS" ? "bg-sky-50 text-sky-600" :
+                                "bg-purple-50 text-purple-600"
+                          }>
+                            {param.signalType}
+                          </Badge>
                         </TableCell>
                         <TableCell className="text-xs">{param.unit || "-"}</TableCell>
                         <TableCell className="w-[1px] bg-primary/10 p-0"></TableCell>
@@ -1980,7 +1979,7 @@ export default function DataManagementPage() {
                           </PopoverContent>
                         </Popover>
                       </TableHead>
-                      
+
                       {/* 注册号 - 直接选项列表 */}
                       <TableHead className="w-[80px]">
                         <Popover>
@@ -2015,7 +2014,7 @@ export default function DataManagementPage() {
                           </PopoverContent>
                         </Popover>
                       </TableHead>
-                      
+
                       {/* 航司 - 直接选项列表 */}
                       <TableHead className="w-[140px]">
                         <Popover>
@@ -2050,7 +2049,7 @@ export default function DataManagementPage() {
                           </PopoverContent>
                         </Popover>
                       </TableHead>
-                      
+
                       {/* ATA - 直接选项列表 */}
                       <TableHead className="w-[80px]">
                         <Popover>
@@ -2085,7 +2084,7 @@ export default function DataManagementPage() {
                           </PopoverContent>
                         </Popover>
                       </TableHead>
-                      
+
                       {/* 故障时间 - 日期范围筛选 */}
                       <TableHead className="w-[150px]">
                         <Popover>
@@ -2119,10 +2118,10 @@ export default function DataManagementPage() {
                           </PopoverContent>
                         </Popover>
                       </TableHead>
-                      
+
                       <TableHead className="w-[100px]">航班号</TableHead>
                       <TableHead className="w-[100px]">航线</TableHead>
-                      
+
                       {/* 状态 - 直接选项列表 */}
                       <TableHead className="w-[90px]">
                         <Popover>
@@ -2178,7 +2177,7 @@ export default function DataManagementPage() {
                           </PopoverContent>
                         </Popover>
                       </TableHead>
-                      
+
                       <TableHead className="w-[80px]">操作</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -2248,7 +2247,7 @@ export default function DataManagementPage() {
               {apiDialogMode === "create" ? "配置新的API接口信息" : apiDialogMode === "edit" ? "修改API配置参数" : "查看API配置详情和测试连接"}
             </DialogDescription>
           </DialogHeader>
-          
+
           <ScrollArea className="flex-1 px-1">
             <div className="space-y-4 py-4">
               {/* 基本信息 */}
@@ -2270,8 +2269,8 @@ export default function DataManagementPage() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="api-method">请求方法 *</Label>
-                    <Select 
-                      value={apiForm.method} 
+                    <Select
+                      value={apiForm.method}
                       onValueChange={(v) => setApiForm({ ...apiForm, method: v })}
                       disabled={apiDialogMode === "view"}
                     >
@@ -2321,8 +2320,8 @@ export default function DataManagementPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="api-auth">认证方式</Label>
-                    <Select 
-                      value={apiForm.authType} 
+                    <Select
+                      value={apiForm.authType}
                       onValueChange={(v) => setApiForm({ ...apiForm, authType: v })}
                       disabled={apiDialogMode === "view"}
                     >
@@ -2383,8 +2382,8 @@ export default function DataManagementPage() {
                   连接测试
                 </h4>
                 <div className="flex items-center gap-4">
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     onClick={testApiConnection}
                     disabled={apiTestResult.status === "loading" || !apiForm.endpoint}
                     className="gap-2"
@@ -2397,11 +2396,10 @@ export default function DataManagementPage() {
                     测试连接
                   </Button>
                   {apiTestResult.status !== "idle" && (
-                    <div className={`flex items-center gap-2 text-sm ${
-                      apiTestResult.status === "success" ? "text-emerald-600" : 
-                      apiTestResult.status === "error" ? "text-red-600" : 
-                      "text-muted-foreground"
-                    }`}>
+                    <div className={`flex items-center gap-2 text-sm ${apiTestResult.status === "success" ? "text-emerald-600" :
+                      apiTestResult.status === "error" ? "text-red-600" :
+                        "text-muted-foreground"
+                      }`}>
                       {apiTestResult.status === "success" && <Check className="h-4 w-4" />}
                       {apiTestResult.status === "error" && <X className="h-4 w-4" />}
                       {apiTestResult.message}
@@ -2446,8 +2444,8 @@ export default function DataManagementPage() {
                 编辑
               </Button>
             ) : (
-              <Button 
-                onClick={saveApiConfig} 
+              <Button
+                onClick={saveApiConfig}
                 disabled={!apiForm.name || !apiForm.endpoint}
                 className="gap-1"
               >
@@ -2500,13 +2498,13 @@ export default function DataManagementPage() {
               选择下载数据的范围和条件
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="space-y-4 py-4">
             {/* 注册号选择 */}
             <div className="space-y-2">
               <Label>注册号</Label>
-              <Select 
-                value={downloadFilters.registration} 
+              <Select
+                value={downloadFilters.registration}
                 onValueChange={(v) => setDownloadFilters(prev => ({ ...prev, registration: v === " " ? "" : v }))}
               >
                 <SelectTrigger>
@@ -2570,7 +2568,7 @@ export default function DataManagementPage() {
             <Button variant="outline" onClick={() => setDownloadDialogOpen(false)}>
               取消
             </Button>
-            <Button 
+            <Button
               className="gap-1"
               disabled={calculateDownloadStats().count === 0}
               onClick={() => {
@@ -2595,7 +2593,7 @@ export default function DataManagementPage() {
               配置模板基本信息并选择核心参数
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="flex-1 overflow-y-auto py-4 space-y-6">
             {/* 基本信�� */}
             <div className="grid grid-cols-3 gap-4">
@@ -2647,11 +2645,11 @@ export default function DataManagementPage() {
                   已选择 {templateForm.selectedParameters.length} 个参数
                 </Badge>
               </div>
-              
+
               {/* 筛选区域 */}
               <div className="flex flex-wrap gap-3 p-4 bg-muted/30 rounded-lg border">
                 <div className="flex items-center gap-2">
-                    <Label className="text-sm text-muted-foreground whitespace-nowrap">筛选方式:</Label>
+                  <Label className="text-sm text-muted-foreground whitespace-nowrap">筛选方式:</Label>
                   <Select value={parameterFilterType} onValueChange={(v: typeof parameterFilterType) => setParameterFilterType(v)}>
                     <SelectTrigger className="w-[140px] h-8">
                       <SelectValue />
@@ -2683,9 +2681,9 @@ export default function DataManagementPage() {
                     className="w-[100px] h-8"
                   />
                 </div>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   className="h-8"
                   onClick={() => {
                     setParameterSearchTerm("");
@@ -2743,9 +2741,8 @@ export default function DataManagementPage() {
                         filteredParametersForTemplate.map((param) => (
                           <TableRow
                             key={param.id}
-                            className={`cursor-pointer hover:bg-muted/50 transition-colors ${
-                              templateForm.selectedParameters.includes(param.mnemonic) ? "bg-primary/5" : ""
-                            }`}
+                            className={`cursor-pointer hover:bg-muted/50 transition-colors ${templateForm.selectedParameters.includes(param.mnemonic) ? "bg-primary/5" : ""
+                              }`}
                             onClick={() => toggleParameterSelection(param.mnemonic)}
                           >
                             <TableCell>
@@ -2826,13 +2823,12 @@ export default function DataManagementPage() {
                     // 参数配置模式
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                       {templateForm.dashboards.map((dashboard, index) => (
-                        <div 
+                        <div
                           key={dashboard.id}
-                          className={`border rounded-lg p-4 transition-all ${
-                            activeDashboardId === dashboard.id 
-                              ? "border-primary bg-primary/5" 
-                              : "border-border hover:border-primary/50"
-                          }`}
+                          className={`border rounded-lg p-4 transition-all ${activeDashboardId === dashboard.id
+                            ? "border-primary bg-primary/5"
+                            : "border-border hover:border-primary/50"
+                            }`}
                         >
                           <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center gap-2">
@@ -2846,9 +2842,9 @@ export default function DataManagementPage() {
                             <div className="flex items-center gap-2">
                               <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                 <span>尺寸:</span>
-                                <Button 
-                                  variant="ghost" 
-                                  size="sm" 
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
                                   className="h-6 w-6 p-0"
                                   onClick={() => resizeDashboard(dashboard.id, 'width', -1)}
                                   disabled={dashboard.width <= 1}
@@ -2856,9 +2852,9 @@ export default function DataManagementPage() {
                                   <Minimize2 className="h-3 w-3" />
                                 </Button>
                                 <span className="w-8 text-center">{dashboard.width}x{dashboard.height}</span>
-                                <Button 
-                                  variant="ghost" 
-                                  size="sm" 
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
                                   className="h-6 w-6 p-0"
                                   onClick={() => resizeDashboard(dashboard.id, 'width', 1)}
                                   disabled={dashboard.width >= 4}
@@ -2887,7 +2883,7 @@ export default function DataManagementPage() {
                                 <span className="text-xs text-muted-foreground">点击下方参数添加到此Dashboard</span>
                               ) : (
                                 dashboard.parameters.map(param => (
-                                  <Badge 
+                                  <Badge
                                     key={param}
                                     variant="secondary"
                                     className="gap-1 cursor-pointer hover:bg-destructive/10"
@@ -2908,7 +2904,7 @@ export default function DataManagementPage() {
                             </Label>
                             <div className="flex flex-wrap gap-1 max-h-[80px] overflow-y-auto p-2 bg-secondary/30 rounded border">
                               {templateForm.selectedParameters.filter(p => !dashboard.parameters.includes(p)).map(param => (
-                                <Badge 
+                                <Badge
                                   key={param}
                                   variant="outline"
                                   className="cursor-pointer hover:bg-primary/10 transition-colors"
@@ -2992,8 +2988,8 @@ export default function DataManagementPage() {
                                   暂无参数曲线
                                 </div>
                               ) : (
-                                <svg 
-                                  viewBox="0 0 200 100" 
+                                <svg
+                                  viewBox="0 0 200 100"
                                   className="w-full h-full"
                                   preserveAspectRatio="none"
                                 >
@@ -3004,13 +3000,13 @@ export default function DataManagementPage() {
                                     </pattern>
                                   </defs>
                                   <rect width="200" height="100" fill={`url(#grid-${dashboard.id})`} />
-                                  
+
                                   {/* 示意曲线 */}
                                   {dashboard.parameters.map((param, idx) => {
                                     const data = generateMockChartData(param);
                                     const colors = ['#3b82f6', '#ef4444', '#22c55e', '#f59e0b', '#8b5cf6'];
                                     const color = colors[idx % colors.length];
-                                    const pathD = data.map((p, i) => 
+                                    const pathD = data.map((p, i) =>
                                       `${i === 0 ? 'M' : 'L'} ${p.x * 10} ${100 - p.y}`
                                     ).join(' ');
                                     return (
@@ -3067,7 +3063,7 @@ export default function DataManagementPage() {
             <Button variant="outline" onClick={() => setTemplateDialogOpen(false)}>
               取消
             </Button>
-            <Button 
+            <Button
               onClick={saveTemplate}
               disabled={!templateForm.name || !templateForm.ataChapter || templateForm.selectedParameters.length === 0}
             >
@@ -3107,11 +3103,10 @@ export default function DataManagementPage() {
                         <button
                           key={snRec.sn}
                           onClick={() => setSelectedSN(snRec.sn)}
-                          className={`w-full text-left px-4 py-2.5 text-sm font-mono transition-colors ${
-                            selectedSN === snRec.sn
-                              ? "bg-primary/10 text-primary font-semibold border-r-2 border-primary"
-                              : "text-foreground hover:bg-muted"
-                          }`}
+                          className={`w-full text-left px-4 py-2.5 text-sm font-mono transition-colors ${selectedSN === snRec.sn
+                            ? "bg-primary/10 text-primary font-semibold border-r-2 border-primary"
+                            : "text-foreground hover:bg-muted"
+                            }`}
                         >
                           {snRec.sn}
                         </button>
