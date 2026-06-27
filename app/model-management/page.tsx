@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AppShell } from "@/components/app-shell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -382,7 +383,7 @@ const modelData: ModelData[] = [
     status: "testing",
     version: "v1.1.0-beta",
     updatedAt: "2024-01-04",
-    developmentApproach: "基于功率平衡原理建立电源负载模型，通过对比预期负载与实际负载识别异常功耗设备。",
+    developmentApproach: "基于功率平衡原理建立电源负载模型，通过对��预期负载与实际负载识别异常功耗设备��",
     parameters: [
       { name: "load_imbalance", type: "float", description: "负载不平衡阈值(%)", required: true },
       { name: "overload_threshold", type: "float", description: "过载阈值(kW)", required: true },
@@ -502,20 +503,12 @@ export default function ModelManagementPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* 顶部导航 */}
+    <AppShell>
       <header className="border-b border-border bg-card sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-6 py-3">
-          <div className="flex items-center gap-2 text-sm">
-            <Link href="/" className="text-muted-foreground hover:text-foreground flex items-center gap-1">
-              <Activity className="h-4 w-4" />
-              首页
-            </Link>
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
-            <span className="text-foreground font-medium flex items-center gap-1">
-              <Cpu className="h-4 w-4" />
-              模型管理
-            </span>
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center gap-2">
+            <Cpu className="h-5 w-5 text-primary" />
+            <h1 className="text-lg font-semibold text-foreground">模型管理</h1>
           </div>
         </div>
       </header>
@@ -1006,6 +999,6 @@ export default function ModelManagementPage() {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </AppShell>
   );
 }

@@ -45,6 +45,8 @@ import {
   Minimize2,
   GripVertical,
   Cpu,
+  History,
+  Wrench,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -79,6 +81,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { AppShell } from "@/components/app-shell";
 
 // 第一行标签页 - 基本不需要更改的数据
 const primaryTabs = [
@@ -105,6 +108,123 @@ const lruData: LruItem[] = [
   { id: 3, aircraftType: "C919", lru: "刹车切断阀", ataChapter: "32", partNumber: "138-025-01", relatedModel: "SOV故障预测与性能监控模型" },
   { id: 4, aircraftType: "C909", lru: "前起落架收放作动筒", ataChapter: "32", partNumber: "6243A0000-02", relatedModel: "" },
 ];
+
+// 件履历数据类型
+interface InstallRecord {
+  from: string;
+  to: string;
+  aircraft: string;
+  msn: string;
+}
+interface SNRecord {
+  sn: string;
+  removalType: string;
+  installRecords: InstallRecord[];
+}
+interface PartHistory {
+  partNumber: string;
+  lru: string;
+  snRecords: SNRecord[];
+}
+
+const partHistoryData: Record<string, PartHistory> = {
+  "11CB67": {
+    partNumber: "11CB67",
+    lru: "APU引气阀",
+    snRecords: [
+      {
+        sn: "SN-2031045",
+        removalType: "计划性拆换（定期维修）",
+        installRecords: [
+          { from: "2025-01-01", to: "2025-05-20", aircraft: "B-652K", msn: "181" },
+          { from: "2025-05-21", to: "2026-01-20", aircraft: "B-652M", msn: "188" },
+          { from: "2026-01-21", to: "至今", aircraft: "B-605W", msn: "139" },
+        ],
+      },
+      {
+        sn: "SN-2031046",
+        removalType: "非计划性拆换（故障）",
+        installRecords: [
+          { from: "2024-03-10", to: "2024-09-05", aircraft: "B-652K", msn: "181" },
+          { from: "2024-09-06", to: "2025-04-18", aircraft: "B-919A", msn: "201" },
+          { from: "2025-04-19", to: "至今", aircraft: "B-652M", msn: "188" },
+        ],
+      },
+    ],
+  },
+  "39-967": {
+    partNumber: "39-967",
+    lru: "刹车控制阀",
+    snRecords: [
+      {
+        sn: "SN-3192001",
+        removalType: "非计划性拆换（故障）",
+        installRecords: [
+          { from: "2024-06-10", to: "2024-11-30", aircraft: "B-919A", msn: "201" },
+          { from: "2024-12-01", to: "2025-07-15", aircraft: "B-919B", msn: "205" },
+          { from: "2025-07-16", to: "至今", aircraft: "B-919C", msn: "212" },
+        ],
+      },
+      {
+        sn: "SN-3192002",
+        removalType: "计划性拆换（寿命控制）",
+        installRecords: [
+          { from: "2023-08-01", to: "2024-02-20", aircraft: "B-919D", msn: "208" },
+          { from: "2024-02-21", to: "2025-01-10", aircraft: "B-605W", msn: "139" },
+          { from: "2025-01-11", to: "至今", aircraft: "B-919A", msn: "201" },
+        ],
+      },
+    ],
+  },
+  "138-025-01": {
+    partNumber: "138-025-01",
+    lru: "刹车切断阀",
+    snRecords: [
+      {
+        sn: "SN-1380251",
+        removalType: "计划性拆换（寿命控制）",
+        installRecords: [
+          { from: "2024-03-01", to: "2024-09-10", aircraft: "B-919D", msn: "208" },
+          { from: "2024-09-11", to: "2025-04-22", aircraft: "B-919E", msn: "214" },
+          { from: "2025-04-23", to: "至今", aircraft: "B-652K", msn: "181" },
+        ],
+      },
+      {
+        sn: "SN-1380252",
+        removalType: "非计划性拆换（检查发现）",
+        installRecords: [
+          { from: "2023-11-01", to: "2024-06-15", aircraft: "B-652M", msn: "188" },
+          { from: "2024-06-16", to: "2025-02-28", aircraft: "B-605W", msn: "139" },
+          { from: "2025-03-01", to: "至今", aircraft: "B-919B", msn: "205" },
+        ],
+      },
+      {
+        sn: "SN-1380253",
+        removalType: "计划性拆换（定期维修）",
+        installRecords: [
+          { from: "2024-07-01", to: "2025-01-20", aircraft: "B-919C", msn: "212" },
+          { from: "2025-01-21", to: "2025-09-10", aircraft: "B-652K", msn: "181" },
+          { from: "2025-09-11", to: "至今", aircraft: "B-919D", msn: "208" },
+        ],
+      },
+    ],
+  },
+  "6243A0000-02": {
+    partNumber: "6243A0000-02",
+    lru: "前起落架收放作动筒",
+    snRecords: [
+      {
+        sn: "SN-6243001",
+        removalType: "非计划性拆换（检查发现）",
+        installRecords: [
+          { from: "2023-11-15", to: "2024-08-01", aircraft: "B-652M", msn: "188" },
+          { from: "2024-08-02", to: "2025-03-19", aircraft: "B-605W", msn: "139" },
+          { from: "2025-03-20", to: "至今", aircraft: "B-652K", msn: "181" },
+        ],
+      },
+    ],
+  },
+};
 
 // 第二行标签页 - 需要个性化配置的
 const secondaryTabs = [
@@ -136,7 +256,7 @@ const initialApiData: ApiConfig[] = [
   { id: 2, name: "WQAR数据上传API", endpoint: "/api/v1/wqar/upload", method: "POST", status: "active", calls: 8920, lastCall: "2024-01-15 14:28:00", description: "用于上传WQAR原始数据", authType: "API Key", timeout: 60000, retryCount: 2 },
   { id: 3, name: "故障报告查询API", endpoint: "/api/v1/fault-report", method: "GET", status: "active", calls: 5640, lastCall: "2024-01-15 14:25:00", description: "查询故障报告记录", authType: "Bearer Token", timeout: 15000, retryCount: 3 },
   { id: 4, name: "模型预测API", endpoint: "/api/v1/model/predict", method: "POST", status: "inactive", calls: 3200, lastCall: "2024-01-14 18:00:00", description: "调用模型进行故障预测", authType: "Bearer Token", timeout: 45000, retryCount: 1 },
-  { id: 5, name: "数据导出API", endpoint: "/api/v1/export", method: "GET", status: "active", calls: 1890, lastCall: "2024-01-15 12:00:00", description: "导出分析报告和数据", authType: "API Key", timeout: 120000, retryCount: 2 },
+  { id: 5, name: "数据导出API", endpoint: "/api/v1/export", method: "GET", status: "active", calls: 1890, lastCall: "2024-01-15 12:00:00", description: "导出分��报告和数据", authType: "API Key", timeout: 120000, retryCount: 2 },
 ];
 
 // WQAR 数据
@@ -281,6 +401,58 @@ const baseParameterData: ParameterConfig[] = [
   { id: 15, parameterAssignment: "015", mnemonic: "MACH", portName: "MACH_NUMBER", signalType: "INT", unit: "", customName: "", customDescription: "", ataChapter: "" },
 ];
 
+// 中国东方航空 ATA-49 参数配置（来源：49章数据.xlsx）
+const cesAta49Params: ParameterConfig[] = [
+  { id: 1,  parameterAssignment: "216",  mnemonic: "APUSERNO",  portName: "LA-DCU-1", signalType: "BNR", unit: "/",    customName: "APU序列号",                     customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 2,  parameterAssignment: "225",  mnemonic: "L265B18",   portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU发电机关闭",                 customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 3,  parameterAssignment: "234",  mnemonic: "L076B222",  portName: "LA-DCU-2", signalType: "DIS", unit: "/",    customName: "APU蓄电池电压警告",             customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 4,  parameterAssignment: "236",  mnemonic: "L076B182",  portName: "LA-DCU-2", signalType: "DIS", unit: "/",    customName: "APU直接汇流条有电",             customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 5,  parameterAssignment: "448",  mnemonic: "APUEGT",    portName: "LA-DCU-1", signalType: "BNR", unit: "℃",   customName: "APU排气温度",                   customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 6,  parameterAssignment: "474",  mnemonic: "APUFF",     portName: "LA-DCU-1", signalType: "BNR", unit: "lb/h", customName: "APU燃油流量",                   customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 7,  parameterAssignment: "475",  mnemonic: "APUSPEED",  portName: "LA-DCU-1", signalType: "BNR", unit: "%",    customName: "APU转速",                       customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 8,  parameterAssignment: "481",  mnemonic: "APUBLDAF",  portName: "LA-DCU-1", signalType: "BNR", unit: "kg/s", customName: "APU引气流量",                   customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 9,  parameterAssignment: "495",  mnemonic: "L053B20",   portName: "LA-DCU-2", signalType: "DIS", unit: "/",    customName: "APU燃油切断阀关闭",             customDescription: "0 NOT-CLD / 1 CLD",              ataChapter: "ATA-49" },
+  { id: 10, parameterAssignment: "496",  mnemonic: "L053B19",   portName: "LA-DCU-2", signalType: "DIS", unit: "/",    customName: "APU燃油切断阀打开",             customDescription: "0 NOT-OPN / 1 OPN",              ataChapter: "ATA-49" },
+  { id: 11, parameterAssignment: "511",  mnemonic: "L002B16",   portName: "LA-DCU-2", signalType: "DIS", unit: "/",    customName: "APU火警",                       customDescription: "0 NO-FIRE / 1 FIRE",             ataChapter: "ATA-49" },
+  { id: 12, parameterAssignment: "512",  mnemonic: "L002B24",   portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU引气管路渗漏过热",           customDescription: "0 NO-OVHT / 1 OVHT",             ataChapter: "ATA-49" },
+  { id: 13, parameterAssignment: "737",  mnemonic: "APUMNT1H",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息1高位",              customDescription: "19 Ignitor Plug A Open Fault",   ataChapter: "ATA-49" },
+  { id: 14, parameterAssignment: "738",  mnemonic: "APUMNT1L",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息1低位",              customDescription: "11 Fuel Filter Impending Blockage", ataChapter: "ATA-49" },
+  { id: 15, parameterAssignment: "739",  mnemonic: "APUMNT2H",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息2高位",              customDescription: "14 ESC Fault - Shutdown",        ataChapter: "ATA-49" },
+  { id: 16, parameterAssignment: "740",  mnemonic: "APUMNT2L",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息2低位",              customDescription: "11 FADEC Fault - Warning",       ataChapter: "ATA-49" },
+  { id: 17, parameterAssignment: "741",  mnemonic: "APUMNT3H",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息3高位",              customDescription: "18 Low Oil Pressure",            ataChapter: "ATA-49" },
+  { id: 18, parameterAssignment: "742",  mnemonic: "APUMNT3L",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息3低位",              customDescription: "11 Overspeed",                   ataChapter: "ATA-49" },
+  { id: 19, parameterAssignment: "743",  mnemonic: "APUMNT4H",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息4高位",              customDescription: "22 Door Wrap Around Test Fault", ataChapter: "ATA-49" },
+  { id: 20, parameterAssignment: "744",  mnemonic: "APUMNT4L",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息4低位",              customDescription: "11 FADEC Power Interrupt",       ataChapter: "ATA-49" },
+  { id: 21, parameterAssignment: "745",  mnemonic: "APUMNT4M",  portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU维护信息4中位",              customDescription: "14 APU Master Switch Failed",    ataChapter: "ATA-49" },
+  { id: 22, parameterAssignment: "821",  mnemonic: "AGOL2",     portName: "LA-DCU-2", signalType: "DIS", unit: "/",    customName: "APU发电机关闭",                 customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 23, parameterAssignment: "997",  mnemonic: "IADFO",     portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-进气风门全开",       customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 24, parameterAssignment: "999",  mnemonic: "ASDA",      portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-APU正在关车",        customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 25, parameterAssignment: "1000", mnemonic: "NBAC",      portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-不间断供电开启",     customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 26, parameterAssignment: "1001", mnemonic: "IADFC",     portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-APU进气风门全关",    customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 27, parameterAssignment: "1002", mnemonic: "TPBFC",     portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-APU状态趋势报告",    customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 28, parameterAssignment: "1003", mnemonic: "ATRBFM",    portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-APU对主发起动趋势报告", customDescription: "0 FALSE / 1 TRUE",            ataChapter: "ATA-49" },
+  { id: 29, parameterAssignment: "1004", mnemonic: "AEDR",      portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字2-EGT显示红色",        customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 30, parameterAssignment: "1005", mnemonic: "AEDA",      portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字2-EGT显示琥珀色",      customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 31, parameterAssignment: "1006", mnemonic: "ASDR",      portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字2-转速显示红色",        customDescription: "0 FALSE / 1 TRUE",              ataChapter: "ATA-49" },
+  { id: 32, parameterAssignment: "1007", mnemonic: "IIASDA",    portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字2-转速显示琥珀色",      customDescription: "0 FALSE / 1 TRUE",              ataChapter: "ATA-49" },
+  { id: 33, parameterAssignment: "1009", mnemonic: "AORE",      portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-APU过载",            customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 34, parameterAssignment: "1010", mnemonic: "IADPO",     portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU状态字1-APU进气风门部分开",  customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 35, parameterAssignment: "1063", mnemonic: "APUGL",     portName: "LA-DCU-1", signalType: "BNR", unit: "A",    customName: "APU负载",                       customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 36, parameterAssignment: "1065", mnemonic: "APUOILT",   portName: "LA-DCU-1", signalType: "BNR", unit: "℃",   customName: "APU滑油温度",                   customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 37, parameterAssignment: "1084", mnemonic: "IIAIDFO",   portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU进气风门失效在开位",         customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 38, parameterAssignment: "1085", mnemonic: "IIAIDFC",   portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU进气风门失效在关位",         customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 39, parameterAssignment: "1086", mnemonic: "AFSL",      portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU燃油供给不足",               customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 40, parameterAssignment: "1087", mnemonic: "AIDPA",     portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU进气风门位置(A)",            customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 41, parameterAssignment: "1090", mnemonic: "AIDPB",     portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU进气风门位置（B）",          customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 42, parameterAssignment: "1091", mnemonic: "AIDPC",     portName: "LA-DCU-1", signalType: "DIS", unit: "/",    customName: "APU进气风门位置(C)",            customDescription: "0 FALSE / 1 TRUE",               ataChapter: "ATA-49" },
+  { id: 43, parameterAssignment: "1204", mnemonic: "APUH",      portName: "LA-DCU-1", signalType: "BNR", unit: "hr",   customName: "APU总工作时间",                 customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 44, parameterAssignment: "1205", mnemonic: "APUSC",     portName: "LA-DCU-1", signalType: "BNR", unit: "/",    customName: "APU循环次数",                   customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 45, parameterAssignment: "1206", mnemonic: "APUH",      portName: "LA-DCU-1", signalType: "BNR", unit: "hr",   customName: "APU总工作时间",                 customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 46, parameterAssignment: "1207", mnemonic: "APUSC",     portName: "LA-DCU-1", signalType: "BNR", unit: "/",    customName: "APU循环次数",                   customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 47, parameterAssignment: "1208", mnemonic: "APUBSCMD",  portName: "LA-DCU-1", signalType: "BNR", unit: "mA",   customName: "APU引气阀控制指令",             customDescription: "",                               ataChapter: "ATA-49" },
+  { id: 48, parameterAssignment: "1243", mnemonic: "APUOILP",   portName: "LA-DCU-1", signalType: "BNR", unit: "psi",  customName: "APU滑油压力",                   customDescription: "",                               ataChapter: "ATA-49" },
+];
+
 // 各航司的自定义配置数据
 type AirlineParameterConfigs = {
   [key: string]: ParameterConfig[];
@@ -288,12 +460,7 @@ type AirlineParameterConfigs = {
 
 const initialAirlineConfigs: AirlineParameterConfigs = {
   base: baseParameterData.map(p => ({ ...p })),
-  ces: baseParameterData.map(p => ({ 
-    ...p,
-    customName: p.mnemonic === "N1_1" ? "发动机1低压转子转速" : (p.mnemonic === "EGT_1" ? "发动机1排气温度" : ""),
-    customDescription: p.mnemonic === "N1_1" ? "1号发动机低压转子转速百分比" : (p.mnemonic === "EGT_1" ? "1号发动机排气温度监测" : ""),
-    ataChapter: p.mnemonic === "N1_1" ? "72-00" : (p.mnemonic === "EGT_1" ? "72-50" : "")
-  })),
+  ces: cesAta49Params,
   csc: baseParameterData.map(p => ({ ...p })),
   cca: baseParameterData.map(p => ({ ...p })),
 };
@@ -302,6 +469,9 @@ export default function DataManagementPage() {
   const [activeTab, setActiveTab] = useState("api");
   const [searchTerm, setSearchTerm] = useState("");
   const [lruSearchTerm, setLruSearchTerm] = useState("");
+  const [partHistoryOpen, setPartHistoryOpen] = useState(false);
+  const [selectedPartNumber, setSelectedPartNumber] = useState<string | null>(null);
+  const [selectedSN, setSelectedSN] = useState<string | null>(null);
   const [selectedVersion, setSelectedVersion] = useState("base");
   const [airlineConfigs, setAirlineConfigs] = useState<AirlineParameterConfigs>(initialAirlineConfigs);
   const [editingRow, setEditingRow] = useState<number | null>(null);
@@ -901,38 +1071,17 @@ export default function DataManagementPage() {
   };
   
   return (
-    <div className="min-h-screen bg-background">
-      {/* 顶部标题栏 */}
+    <AppShell>
       <header className="border-b border-border bg-card">
         <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center gap-3">
-            <Link href="/">
-              <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center">
-                <Activity className="h-6 w-6 text-primary-foreground" />
-              </div>
-            </Link>
-            <div>
-              <h1 className="text-xl font-semibold text-foreground">
-                健康管理与性能监控平台
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                Aircraft Health Management & Performance Monitoring System
-              </p>
-            </div>
+          <div className="flex items-center gap-2">
+            <Database className="h-5 w-5 text-primary" />
+            <h1 className="text-lg font-semibold text-foreground">数据管理</h1>
           </div>
         </div>
       </header>
 
       <main className="max-w-7xl mx-auto px-6 py-6">
-        {/* 面包屑导航 */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-          <Link href="/" className="hover:text-foreground">
-            首页
-          </Link>
-          <ChevronRight className="h-4 w-4" />
-          <span className="text-foreground">数据管理</span>
-        </div>
-
         {/* 第一行标签页 - 基本不需要更改的数据 */}
         <div className="mb-2">
           <div className="text-xs text-muted-foreground mb-1.5">基础数据管理</div>
@@ -1237,7 +1386,19 @@ export default function DataManagementPage() {
                           <TableCell>
                             <Badge variant="outline">ATA {item.ataChapter}</Badge>
                           </TableCell>
-                          <TableCell className="font-mono text-sm">{item.partNumber}</TableCell>
+                          <TableCell className="font-mono text-sm">
+                            <button
+                              className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors cursor-pointer"
+                              onClick={() => {
+                                const ph = partHistoryData[item.partNumber];
+                                setSelectedPartNumber(item.partNumber);
+                                setSelectedSN(ph ? ph.snRecords[0].sn : null);
+                                setPartHistoryOpen(true);
+                              }}
+                            >
+                              {item.partNumber}
+                            </button>
+                          </TableCell>
                           <TableCell>
                             <span className="text-primary">{item.relatedModel}</span>
                           </TableCell>
@@ -1314,7 +1475,7 @@ export default function DataManagementPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[160px]">存储名称</TableHead>
+                    <TableHead className="w-[160px]">存储名����</TableHead>
                     <TableHead>路径</TableHead>
                     <TableHead className="w-[100px]">大小</TableHead>
                     <TableHead className="w-[100px]">文件数</TableHead>
@@ -1355,7 +1516,7 @@ export default function DataManagementPage() {
                 <div className="flex items-center gap-4">
                   <CardTitle className="text-base flex items-center gap-2">
                     <Sliders className="h-4 w-4 text-primary" />
-                    参数配置
+                    参数配��
                   </CardTitle>
                   {/* 版本选择器 */}
                   <div className="flex items-center gap-2">
@@ -2300,7 +2461,7 @@ export default function DataManagementPage() {
 
       {/* 同步确认对话框 */}
       <Dialog open={syncDialogOpen} onOpenChange={setSyncDialogOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>同步配置到其他航司</DialogTitle>
           </DialogHeader>
@@ -2916,6 +3077,110 @@ export default function DataManagementPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+
+      {/* 件履历弹窗 */}
+      <Dialog open={partHistoryOpen} onOpenChange={setPartHistoryOpen}>
+        <DialogContent className="max-w-5xl w-[92vw] h-[82vh] flex flex-col p-0 gap-0">
+          {selectedPartNumber && partHistoryData[selectedPartNumber] && (() => {
+            const ph = partHistoryData[selectedPartNumber];
+            const activeSNRecord = ph.snRecords.find((r) => r.sn === selectedSN) ?? ph.snRecords[0];
+            return (
+              <>
+                {/* 标题栏 */}
+                <DialogHeader className="px-6 pt-5 pb-4 border-b border-border flex-shrink-0">
+                  <DialogTitle className="flex items-center gap-2">
+                    <History className="h-4 w-4 text-primary" />
+                    件履历 —&nbsp;<span className="font-mono">{ph.partNumber}</span>
+                  </DialogTitle>
+                  <DialogDescription>{ph.lru}</DialogDescription>
+                </DialogHeader>
+
+                {/* 主体：左侧 SN 列表 + 右侧详情 */}
+                <div className="flex flex-1 min-h-0">
+                  {/* 左侧 SN 列表 */}
+                  <div className="w-44 flex-shrink-0 border-r border-border bg-muted/30 flex flex-col">
+                    <p className="px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide border-b border-border">
+                      序列号
+                    </p>
+                    <div className="flex-1 overflow-y-auto py-2">
+                      {ph.snRecords.map((snRec) => (
+                        <button
+                          key={snRec.sn}
+                          onClick={() => setSelectedSN(snRec.sn)}
+                          className={`w-full text-left px-4 py-2.5 text-sm font-mono transition-colors ${
+                            selectedSN === snRec.sn
+                              ? "bg-primary/10 text-primary font-semibold border-r-2 border-primary"
+                              : "text-foreground hover:bg-muted"
+                          }`}
+                        >
+                          {snRec.sn}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 右侧详情 */}
+                  <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+                    {/* 拆换类型 */}
+                    <div className="rounded-lg border border-border px-4 py-3 flex items-center gap-3">
+                      <Wrench className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">拆换类型</p>
+                        <p className="text-sm font-medium text-foreground mt-0.5">{activeSNRecord.removalType}</p>
+                      </div>
+                    </div>
+
+                    {/* 装机记录时间线 */}
+                    <div>
+                      <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                        <History className="h-4 w-4 text-primary" />
+                        装机记录
+                        <span className="text-xs font-normal text-muted-foreground">（共 {activeSNRecord.installRecords.length} 条）</span>
+                      </h3>
+                      <div className="relative pl-5 space-y-0">
+                        {activeSNRecord.installRecords.map((rec, idx) => {
+                          const isLast = idx === activeSNRecord.installRecords.length - 1;
+                          return (
+                            <div key={idx} className="relative flex gap-4 pb-4">
+                              {/* 时间线竖线 */}
+                              {!isLast && (
+                                <span className="absolute left-0 top-3 bottom-0 w-px bg-border" />
+                              )}
+                              {/* 时间线圆点 */}
+                              <span className={`relative z-10 mt-1 h-2.5 w-2.5 rounded-full flex-shrink-0 -ml-1.5 ${rec.to === "至今" ? "bg-primary" : "bg-muted-foreground/40"}`} />
+                              {/* 内容卡片 */}
+                              <div className="flex-1 rounded-lg border border-border px-4 py-3 bg-card">
+                                {/* 第一行：时间范围 + 架机号 */}
+                                <div className="flex items-center justify-between">
+                                  <p className="text-sm font-mono text-foreground">
+                                    {rec.from}&nbsp;—&nbsp;{rec.to}
+                                  </p>
+                                  <p className="text-sm font-semibold text-foreground">{rec.aircraft}</p>
+                                </div>
+                                {/* 第二行：装机时段标签 + MSN */}
+                                <div className="flex items-center justify-between mt-1">
+                                  <p className="text-xs text-muted-foreground">装机时段</p>
+                                  <p className="text-xs text-muted-foreground">MSN {rec.msn}</p>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <DialogFooter className="px-6 py-4 border-t border-border flex-shrink-0">
+                  <Button variant="outline" size="sm" onClick={() => setPartHistoryOpen(false)}>
+                    关闭
+                  </Button>
+                </DialogFooter>
+              </>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
+    </AppShell>
   );
 }

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { AppShell } from "@/components/app-shell";
 import {
   Activity,
   AlertTriangle,
@@ -40,9 +41,9 @@ const faultTasks = [
     id: "F2024001",
     type: "fault" as const,
     title: "监控发现APU EGT温度高",
-    time: "2024-01-15 14:32",
-    ata: "72-31",
-    registration: "B-1234",
+    time: "2026-05-17 14:32",
+    ata: "72",
+    registration: "B-104X",
     location: "北京首都机场",
     status: "completed",
     hasWQAR: true,
@@ -51,9 +52,9 @@ const faultTasks = [
     id: "F2024002",
     type: "fault" as const,
     title: "航后检查有APU引气阀故障",
-    time: "2024-01-14 09:15",
-    ata: "29-11",
-    registration: "B-5678",
+    time: "2026-05-16 09:15",
+    ata: "29",
+    registration: "B-620D",
     location: "上海浦东机场",
     status: "processing",
     hasWQAR: true,
@@ -62,20 +63,20 @@ const faultTasks = [
     id: "F2024003",
     type: "fault" as const,
     title: "短停落地后有刹车降级信息",
-    time: "2024-01-13 16:45",
-    ata: "24-22",
-    registration: "B-9012",
+    time: "2026-05-15 16:45",
+    ata: "24",
+    registration: "B-658C",
     location: "广州白云机场",
-    status: "pending",
+    status: "completed",
     hasWQAR: false,
   },
   {
     id: "F2024004",
     type: "fault" as const,
     title: "落地滑跑阶段出现刹车不派遣",
-    time: "2024-01-12 11:20",
-    ata: "73-21",
-    registration: "B-3456",
+    time: "2026-05-14 11:20",
+    ata: "73",
+    registration: "B-620E",
     location: "深圳宝安机场",
     status: "transferred",
     hasWQAR: true,
@@ -84,9 +85,9 @@ const faultTasks = [
     id: "F2024005",
     type: "fault" as const,
     title: "双发启动后出现发动机引气故障",
-    time: "2024-01-11 08:55",
-    ata: "72-50",
-    registration: "B-7890",
+    time: "2026-01-11 08:55",
+    ata: "72",
+    registration: "B-657Y",
     location: "成都双流机场",
     status: "processing",
     hasWQAR: false,
@@ -100,7 +101,7 @@ const modelTasks = [
     type: "model" as const,
     title: "完成PRSOV故障诊断模型航线故障统计与参数确认",
     source: "C919",
-    deadline: "2024-02-15",
+    deadline: "2026-05-15",
     status: "processing",
   },
   {
@@ -108,7 +109,7 @@ const modelTasks = [
     type: "model" as const,
     title: "完成HPV故障诊断模型原理与模型可行性分析",
     source: "C909",
-    deadline: "2024-02-20",
+    deadline: "2026-05-20",
     status: "pending",
   },
   {
@@ -116,7 +117,7 @@ const modelTasks = [
     type: "model" as const,
     title: "完成HPV故障诊断模型开发与部署",
     source: "运行支持",
-    deadline: "2024-01-30",
+    deadline: "2026-05-30",
     status: "completed",
   },
   {
@@ -124,7 +125,7 @@ const modelTasks = [
     type: "model" as const,
     title: "完成C919健康管理模型验证流程梳理",
     source: "创新平台",
-    deadline: "2024-03-01",
+    deadline: "2026-06-01",
     status: "processing",
   },
   {
@@ -132,7 +133,7 @@ const modelTasks = [
     type: "model" as const,
     title: "完成C919健康管理模型验证评审要求",
     source: "其它",
-    deadline: "2024-02-10",
+    deadline: "2026-06-10",
     status: "pending",
   },
 ];
@@ -143,7 +144,7 @@ const otherTasks = [
     id: "O2024001",
     type: "other" as const,
     title: "完成本月模型开发进展汇报ppt",
-    time: "2024-01-16",
+    time: "2026-06-16",
     delivery: "PPT报告",
     status: "processing",
   },
@@ -151,7 +152,7 @@ const otherTasks = [
     id: "O2024002",
     type: "other" as const,
     title: "完成健康管理与性能监控平台需求分析报告",
-    time: "2024-01-18",
+    time: "2026-06-18",
     delivery: "Word文档",
     status: "pending",
   },
@@ -159,7 +160,7 @@ const otherTasks = [
     id: "O2024003",
     type: "other" as const,
     title: "完成健康管理与性能监控平台技术报告",
-    time: "2024-01-10",
+    time: "2026-06-10",
     delivery: "Word文档",
     status: "completed",
   },
@@ -167,14 +168,14 @@ const otherTasks = [
     id: "O2024004",
     type: "other" as const,
     title: "完成健康管理与性能监控平台原型开发",
-    time: "2024-01-20",
+    time: "2026-06-20",
     delivery: "系统原型",
     status: "pending",
   },
 ];
 
 // 合并所有待办任务
-type TodoItem = 
+type TodoItem =
   | (typeof faultTasks[number])
   | (typeof modelTasks[number])
   | (typeof otherTasks[number]);
@@ -183,23 +184,23 @@ const allTodoItems: TodoItem[] = [...faultTasks, ...modelTasks, ...otherTasks];
 
 // 我的模板数据
 const myTemplates = [
-  { id: 1, name: "APU EGT超温", ataChapter: "49", coreParameters: 12, lastUsed: "2024-01-14" },
-  { id: 2, name: "HPV开关响应", ataChapter: "36", coreParameters: 8, lastUsed: "2024-01-12" },
-  { id: 3, name: "刹车温度不一致", ataChapter: "32", coreParameters: 16, lastUsed: "2024-01-10" },
+  { id: 1, name: "APU EGT超温", ataChapter: "49", coreParameters: 12, lastUsed: "2026-01-14" },
+  { id: 2, name: "HPV开关响应", ataChapter: "36", coreParameters: 8, lastUsed: "2026-01-12" },
+  { id: 3, name: "刹车温度不一致", ataChapter: "32", coreParameters: 16, lastUsed: "2026-01-10" },
 ];
 
 // 我的参数配置数据
 const myParameterConfigs = [
-  { id: 1, version: "311A-ARJ-B01-01", name: "基本版本", configuredParams: 45, lastModified: "2024-01-10" },
-  { id: 2, version: "311E-CUH-B01-01", name: "幸福航空", configuredParams: 52, lastModified: "2024-01-12" },
-  { id: 3, version: "3115-CES-B01-01", name: "东航", configuredParams: 48, lastModified: "2024-01-08" },
+  { id: 1, version: "311A-ARJ-B01-01", name: "基本版本", configuredParams: 45, lastModified: "2026-01-10" },
+  { id: 2, version: "311E-CUH-B01-01", name: "成都航空", configuredParams: 52, lastModified: "2026-01-12" },
+  { id: 3, version: "3115-CES-B01-01", name: "东方航空", configuredParams: 48, lastModified: "2026-01-08" },
 ];
 
 export default function WorkspacePage() {
   const [completedIds, setCompletedIds] = useState<string[]>([]);
 
   const toggleTodo = (id: string) => {
-    setCompletedIds(prev => 
+    setCompletedIds(prev =>
       prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
     );
   };
@@ -330,29 +331,20 @@ export default function WorkspacePage() {
   const completionRate = Math.round((monthlyStats.completedAnalysis / monthlyStats.totalFaults) * 100);
 
   return (
-    <div className="min-h-screen bg-background">
+    <AppShell>
       {/* 顶部导航 */}
       <header className="border-b border-border bg-card sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link href="/">
-                <Button variant="ghost" size="sm" className="gap-2">
-                  <ArrowLeft className="h-4 w-4" />
-                  返回首页
-                </Button>
-              </Link>
-              <div className="h-6 w-px bg-border" />
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg bg-amber-100 flex items-center justify-center">
-                  <Activity className="h-4 w-4 text-amber-600" />
-                </div>
-                <h1 className="text-lg font-semibold text-foreground">个人工作台</h1>
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-8 rounded-lg bg-amber-100 flex items-center justify-center">
+                <Activity className="h-4 w-4 text-amber-600" />
               </div>
+              <h1 className="text-lg font-semibold text-foreground">个人工作台</h1>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <CalendarDays className="h-4 w-4" />
-              <span>2024年1月</span>
+              <span>2026年1月</span>
             </div>
           </div>
         </div>
@@ -466,14 +458,13 @@ export default function WorkspacePage() {
                 {allTodoItems.map((item) => {
                   const isCompleted = completedIds.includes(item.id) || item.status === "completed";
                   return (
-                    <div 
-                      key={item.id} 
-                      className={`grid grid-cols-12 gap-2 px-4 py-3 hover:bg-muted/50 transition-colors items-center ${
-                        isCompleted ? "opacity-50 bg-muted/20" : ""
-                      }`}
+                    <div
+                      key={item.id}
+                      className={`grid grid-cols-12 gap-2 px-4 py-3 hover:bg-muted/50 transition-colors items-center ${isCompleted ? "opacity-50 bg-muted/20" : ""
+                        }`}
                     >
                       <div className="col-span-1">
-                        <Checkbox 
+                        <Checkbox
                           checked={isCompleted}
                           onCheckedChange={() => toggleTodo(item.id)}
                         />
@@ -529,8 +520,8 @@ export default function WorkspacePage() {
               <CardContent className="p-0">
                 <div className="divide-y divide-border">
                   {myTemplates.map((template) => (
-                    <Link 
-                      key={template.id} 
+                    <Link
+                      key={template.id}
                       href="/data-management?tab=template"
                       className="flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors cursor-pointer"
                     >
@@ -576,8 +567,8 @@ export default function WorkspacePage() {
               <CardContent className="p-0">
                 <div className="divide-y divide-border">
                   {myParameterConfigs.map((config) => (
-                    <Link 
-                      key={config.id} 
+                    <Link
+                      key={config.id}
                       href="/data-management?tab=parameter"
                       className="flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors cursor-pointer"
                     >
@@ -605,6 +596,6 @@ export default function WorkspacePage() {
           </section>
         </div>
       </main>
-    </div>
+    </AppShell>
   );
 }

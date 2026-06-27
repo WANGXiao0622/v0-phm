@@ -35,6 +35,9 @@ import {
   Link2,
   Clock,
   Eye,
+  Pencil,
+  Check,
+  X,
 } from "lucide-react";
 import {
   LineChart,
@@ -112,11 +115,11 @@ const generateTrendChartData = (segmentIndex: number = 0) => {
 
 // 模拟航段数据
 const flightSegments = [
-  { id: "seg1", registration: "B-104X", startTime: "2026-05-20 07:56:21", departure: "PEK", arrival: "SHA", filename: "B-104X_20260520_075621.csv" },
-  { id: "seg2", registration: "B-104X", startTime: "2026-05-20 10:32:15", departure: "SHA", arrival: "CAN", filename: "B-104X_20260520_103215.csv" },
-  { id: "seg3", registration: "B-104X", startTime: "2026-05-20 14:18:42", departure: "CAN", arrival: "PEK", filename: "B-104X_20260520_141842.csv" },
-  { id: "seg4", registration: "B-104Y", startTime: "2026-05-21 08:05:33", departure: "PEK", arrival: "CTU", filename: "B-104Y_20260521_080533.csv" },
-  { id: "seg5", registration: "B-104Y", startTime: "2026-05-21 12:45:18", departure: "CTU", arrival: "SHA", filename: "B-104Y_20260521_124518.csv" },
+  { id: "seg1", registration: "B-104X", startTime: "2026-05-20 07:56:21", departure: "ZBXH", arrival: "ZBER", filename: "B-104X_20260520_075621.csv" },
+  { id: "seg2", registration: "B-104X", startTime: "2026-05-20 10:32:15", departure: "ZSSS", arrival: "ZGSZ", filename: "B-104X_20260520_103215.csv" },
+  { id: "seg3", registration: "B-104X", startTime: "2026-05-20 14:18:42", departure: "ZBXH", arrival: "ZBER", filename: "B-104X_20260520_141842.csv" },
+  { id: "seg4", registration: "B-104Y", startTime: "2026-05-21 08:05:33", departure: "ZSSS", arrival: "ZGSZ", filename: "B-104Y_20260521_080533.csv" },
+  { id: "seg5", registration: "B-104Y", startTime: "2026-05-21 12:45:18", departure: "ZBXH", arrival: "ZBER", filename: "B-104Y_20260521_124518.csv" },
 ];
 
 // 模拟模型分析图表数据 - 用于多图展示
@@ -158,8 +161,8 @@ const relatedFaults = [
     cmsMessage: "APU BLEED SERVO VALVE", 
     registration: "B-104X", 
     ataChapter: "49", 
-    faultDate: "2024-01-12 14:30:00", 
-    route: "PVG-PEK", 
+    faultDate: "2026-04-12 14:30:00", 
+    route: "ZSSS-ZGSZ", 
     status: "analyzed" as const,
     // 故障基本信息
     basicInfo: {
@@ -174,8 +177,8 @@ const relatedFaults = [
       conclusion: "引气伺服阀内部密封圈老化，导致阀门响应迟缓。",
       rootCause: "部件使用时间超过建议更换周期，密封材料性能下降。",
       recommendation: "建议按照维护手册要求，定期更换密封圈，周期为3000飞行小时。",
-      analyst: "张工",
-      analyzeDate: "2024-01-13 16:20:00"
+      analyst: "王潇",
+      analyzeDate: "2026-04-13 16:20:00"
     }
   },
   { 
@@ -183,8 +186,8 @@ const relatedFaults = [
     cmsMessage: "APU BLEED SERVO VALVE", 
     registration: "B-104X", 
     ataChapter: "49", 
-    faultDate: "2024-01-10 09:15:00", 
-    route: "PEK-SHA", 
+    faultDate: "2026-01-10 09:15:00", 
+    route: "ZSSS-ZGSZ", 
     status: "analyzed" as const,
     basicInfo: {
       partNumber: "11CB67",
@@ -197,8 +200,8 @@ const relatedFaults = [
       conclusion: "瞬态信号干扰导致误报警。",
       rootCause: "电磁环境干扰。",
       recommendation: "持续监控，如再次发生则需检查线路屏蔽。",
-      analyst: "李工",
-      analyzeDate: "2024-01-11 10:30:00"
+      analyst: "王潇",
+      analyzeDate: "2026-01-11 10:30:00"
     }
   },
   { 
@@ -206,8 +209,8 @@ const relatedFaults = [
     cmsMessage: "APU BLEED SERVO VALVE", 
     registration: "B-104X", 
     ataChapter: "49", 
-    faultDate: "2024-01-05 16:45:00", 
-    route: "SHA-CAN", 
+    faultDate: "2026-01-05 16:45:00", 
+    route: "ZSSS-ZGSZ", 
     status: "pending" as const,
     basicInfo: {
       partNumber: "11CB67",
@@ -223,8 +226,8 @@ const relatedFaults = [
     cmsMessage: "APU BLEED SERVO VALVE", 
     registration: "B-104X", 
     ataChapter: "49", 
-    faultDate: "2023-12-28 11:20:00", 
-    route: "CAN-PEK", 
+    faultDate: "2025-12-28 11:20:00", 
+    route: "ZSSS-ZGSZ", 
     status: "analyzed" as const,
     basicInfo: {
       partNumber: "11CB65",
@@ -237,8 +240,8 @@ const relatedFaults = [
       conclusion: "引气伺服阀机械卡滞。",
       rootCause: "阀芯表面有异物附着。",
       recommendation: "清洁阀芯并进行功能测试。",
-      analyst: "王工",
-      analyzeDate: "2023-12-29 14:00:00"
+      analyst: "王潇",
+      analyzeDate: "2025-12-29 14:00:00"
     }
   },
   { 
@@ -246,8 +249,8 @@ const relatedFaults = [
     cmsMessage: "APU BLEED SERVO VALVE", 
     registration: "B-104X", 
     ataChapter: "49", 
-    faultDate: "2023-12-20 08:30:00", 
-    route: "PEK-CAN", 
+    faultDate: "2025-12-20 08:30:00", 
+    route: "ZSSS-ZGSZ", 
     status: "analyzed" as const,
     basicInfo: {
       partNumber: "11CB65",
@@ -260,8 +263,8 @@ const relatedFaults = [
       conclusion: "间歇性信号问题，阀门本身无故障。",
       rootCause: "连接器接触不良。",
       recommendation: "清洁并紧固连接器。",
-      analyst: "赵工",
-      analyzeDate: "2023-12-21 11:00:00"
+      analyst: "王潇",
+      analyzeDate: "2025-12-21 11:00:00"
     }
   },
   { 
@@ -269,8 +272,8 @@ const relatedFaults = [
     cmsMessage: "APU BLEED SERVO VALVE", 
     registration: "B-104X", 
     ataChapter: "49", 
-    faultDate: "2023-12-15 15:10:00", 
-    route: "SHA-CTU", 
+    faultDate: "2025-12-15 15:10:00", 
+    route: "ZSSS-ZGSZ", 
     status: "analyzed" as const,
     basicInfo: {
       partNumber: "11CB65",
@@ -283,8 +286,8 @@ const relatedFaults = [
       conclusion: "低温环境下阀门响应延迟。",
       rootCause: "润滑脂在低温下粘度增加。",
       recommendation: "更换低温润滑脂。",
-      analyst: "张工",
-      analyzeDate: "2023-12-16 09:30:00"
+      analyst: "王潇",
+      analyzeDate: "2025-12-16 09:30:00"
     }
   },
 ];
@@ -314,6 +317,41 @@ export default function FaultAnalysisPage() {
   // 关联故障详情弹窗状态
   const [selectedRelatedFault, setSelectedRelatedFault] = useState<typeof relatedFaults[number] | null>(null);
   const [relatedFaultDialogOpen, setRelatedFaultDialogOpen] = useState(false);
+
+  // 故障基本信息编辑状态
+  const [isBasicInfoEditing, setIsBasicInfoEditing] = useState(false);
+  const initialBasicInfo = {
+    ataChapter: "49",
+    registration: "B-104X",
+    faultDate: "2024-01-15",
+    route: "PEK - SHA",
+    component: "APU",
+    partNumber: "11CB67",
+    cmsMessage: "APU BLEED SERVO VALVE",
+    eicas: "暂无",
+    description: "航后检查发现有历史CMS信息：APU BLEED SERVO VALVE。",
+    newInfo: "拆下件号4952545，序号：9BV19（原装机件）。",
+  };
+  // originalBasicInfoForm 存储原始值（从不改变），用于高亮对比
+  const [originalBasicInfoForm] = useState(initialBasicInfo);
+  // basicInfoForm 存储当前展示值（编辑时实时更新）
+  const [basicInfoForm, setBasicInfoForm] = useState(initialBasicInfo);
+  // editDraftForm 存储进入编辑时的快照，用于"取消"回退
+  const [editDraftForm, setEditDraftForm] = useState(initialBasicInfo);
+
+  const handleBasicInfoEdit = () => {
+    setEditDraftForm({ ...basicInfoForm });
+    setIsBasicInfoEditing(true);
+  };
+
+  const handleBasicInfoSave = () => {
+    setIsBasicInfoEditing(false);
+  };
+
+  const handleBasicInfoCancel = () => {
+    setBasicInfoForm({ ...editDraftForm });
+    setIsBasicInfoEditing(false);
+  };
 
   // 分析结果各小标题内容（可手动输入并暂存）
   const [analysisResultForm, setAnalysisResultForm] = useState({
@@ -444,82 +482,113 @@ export default function FaultAnalysisPage() {
         {/* 第一部分：故障基本信息（紧凑版） */}
         <Card className="bg-card border-border shadow-sm">
           <CardHeader className="border-b border-border py-2 px-4">
-            <CardTitle className="flex items-center gap-2 text-foreground text-base">
-              <AlertCircle className="h-4 w-4 text-primary" />
-              故障基本信息
+            <CardTitle className="flex items-center justify-between text-foreground text-base">
+              <span className="flex items-center gap-2">
+                <AlertCircle className="h-4 w-4 text-primary" />
+                故障基本信息
+              </span>
+              {isBasicInfoEditing ? (
+                <div className="flex items-center gap-1.5">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 px-2 text-muted-foreground hover:text-foreground"
+                    onClick={handleBasicInfoCancel}
+                  >
+                    <X className="h-3.5 w-3.5 mr-1" />
+                    取消
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="h-7 px-3 bg-primary text-primary-foreground"
+                    onClick={handleBasicInfoSave}
+                  >
+                    <Check className="h-3.5 w-3.5 mr-1" />
+                    保存
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-7 px-2 text-muted-foreground hover:text-foreground"
+                  onClick={handleBasicInfoEdit}
+                >
+                  <Pencil className="h-3.5 w-3.5 mr-1" />
+                  编辑
+                </Button>
+              )}
             </CardTitle>
           </CardHeader>
           <CardContent className="p-3">
             {/* 第一排：ATA章节、注册号、日期、起降机场、部件、件号 */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-sm">
-              <div>
-                <Label className="text-muted-foreground text-xs">ATA章节</Label>
-                <Input
-                  value="49"
-                  disabled
-                  className="h-8 bg-input border-border text-foreground mt-1"
-                />
-              </div>
-              <div>
-                <Label className="text-muted-foreground text-xs">注册号</Label>
-                <Input
-                  value="B-104X"
-                  disabled
-                  className="h-8 bg-input border-border text-foreground mt-1"
-                />
-              </div>
-              <div>
-                <Label className="text-muted-foreground text-xs">日期</Label>
-                <Input
-                  value="2024-01-15"
-                  disabled
-                  className="h-8 bg-input border-border text-foreground mt-1"
-                />
-              </div>
-              <div>
-                <Label className="text-muted-foreground text-xs">起降机场</Label>
-                <Input
-                  value="PEK - SHA"
-                  disabled
-                  className="h-8 bg-input border-border text-foreground mt-1"
-                />
-              </div>
-              <div>
-                <Label className="text-muted-foreground text-xs">部件</Label>
-                <Input
-                  value="APU"
-                  disabled
-                  className="h-8 bg-input border-border text-foreground mt-1"
-                />
-              </div>
-              <div>
-                <Label className="text-muted-foreground text-xs">件号</Label>
-                <Input
-                  value="11CB67"
-                  disabled
-                  className="h-8 bg-input border-border text-foreground mt-1"
-                />
-              </div>
+              {(
+                [
+                  { key: "ataChapter", label: "ATA章节" },
+                  { key: "registration", label: "注册号" },
+                  { key: "faultDate", label: "日期" },
+                  { key: "route", label: "起降机场" },
+                  { key: "component", label: "部件" },
+                  { key: "partNumber", label: "件号" },
+                ] as { key: keyof typeof basicInfoForm; label: string }[]
+              ).map(({ key, label }) => {
+                const isChanged = basicInfoForm[key] !== originalBasicInfoForm[key];
+                const showHighlight = !isBasicInfoEditing && isChanged;
+                return (
+                  <div key={key}>
+                    <Label className="text-muted-foreground text-xs">{label}</Label>
+                    <Input
+                      value={basicInfoForm[key]}
+                      readOnly={!isBasicInfoEditing}
+                      onChange={(e) =>
+                        setBasicInfoForm((prev) => ({ ...prev, [key]: e.target.value }))
+                      }
+                      className="h-8 mt-1 border-border"
+                      style={
+                        showHighlight
+                          ? { color: "#ea580c", backgroundColor: "#fefce8", fontWeight: 500 }
+                          : isBasicInfoEditing
+                          ? { cursor: "text" }
+                          : { cursor: "default" }
+                      }
+                    />
+                  </div>
+                );
+              })}
             </div>
 
             {/* 第二排：CMS信息、EICAS信息 */}
             <div className="grid grid-cols-2 gap-3 text-sm mt-3">
-              <div>
-                <Label className="text-muted-foreground text-xs">CMS信息</Label>
-                <Input
-                  value="APU BLEED SERVO VALVE"
-                  disabled
-                  className="h-8 bg-input border-border text-foreground mt-1"
-                />
-              </div>
-              <div>
-                <Label className="text-muted-foreground text-xs">EICAS信息</Label>
-                <Input
-                  value="暂无"
-                  disabled
-                  className="h-8 bg-input border-border text-foreground mt-1"
-                />
-              </div>
+              {(
+                [
+                  { key: "cmsMessage", label: "CMS信息" },
+                  { key: "eicas", label: "EICAS信息" },
+                ] as { key: keyof typeof basicInfoForm; label: string }[]
+              ).map(({ key, label }) => {
+                const isChanged = basicInfoForm[key] !== originalBasicInfoForm[key];
+                const showHighlight = !isBasicInfoEditing && isChanged;
+                return (
+                  <div key={key}>
+                    <Label className="text-muted-foreground text-xs">{label}</Label>
+                    <Input
+                      value={basicInfoForm[key]}
+                      readOnly={!isBasicInfoEditing}
+                      onChange={(e) =>
+                        setBasicInfoForm((prev) => ({ ...prev, [key]: e.target.value }))
+                      }
+                      className="h-8 mt-1 border-border"
+                      style={
+                        showHighlight
+                          ? { color: "#ea580c", backgroundColor: "#fefce8", fontWeight: 500 }
+                          : isBasicInfoEditing
+                          ? { cursor: "text" }
+                          : { cursor: "default" }
+                      }
+                    />
+                  </div>
+                );
+              })}
             </div>
 
             {/* 可折叠的故障描述 */}
@@ -541,121 +610,46 @@ export default function FaultAnalysisPage() {
                     <Clock className="h-3 w-3" />
                     <span>报送时间: 2024-01-15 14:32:00</span>
                   </div>
-                  <Textarea
-                    value="航后检查发现有历史CMS信息：APU BLEED SERVO VALVE。"
-                    disabled
-                    className="bg-input border-border text-foreground text-sm min-h-[50px]"
-                  />
-                  <div className="p-2 bg-orange-50 border border-orange-200 rounded text-sm">
-                    <span className="text-orange-700 font-medium">新增信息：</span>
-                    <span className="text-orange-600">拆下件号4952545，序号：9BV19（原装机件）。</span>
-                  </div>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* 故障关联列表 */}
-        <Card className="bg-card border-border shadow-sm">
-          <CardHeader className="border-b border-border py-2 px-4">
-            <CardTitle className="flex items-center gap-2 text-foreground text-base">
-              <Link2 className="h-4 w-4 text-primary" />
-              故障关联列表
-              <Badge variant="outline" className="ml-2 text-xs">
-                基于 APU BLEED SERVO VALVE & B-104X 匹配
-              </Badge>
-              <Badge className="ml-1 bg-blue-100 text-blue-700 border-blue-200 text-xs">
-                {relatedFaults.length} 条相关记录
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-3">
-            <div className="space-y-2">
-              {/* 默认显示前3条 */}
-              {relatedFaults.slice(0, 3).map((fault) => (
-                <div 
-                  key={fault.id} 
-                  className={`flex items-center justify-between p-2 bg-secondary/30 rounded-lg border border-border hover:bg-secondary/50 transition-colors ${fault.status === "analyzed" ? "cursor-pointer" : ""}`}
-                  onClick={() => {
-                    if (fault.status === "analyzed") {
-                      setSelectedRelatedFault(fault);
-                      setRelatedFaultDialogOpen(true);
-                    }
-                  }}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm">{fault.cmsMessage}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span>{fault.faultDate.split(" ")[0]}</span>
-                    <Badge variant="outline" className="text-xs">{fault.route}</Badge>
-                    <Badge 
-                      variant="outline" 
-                      className={fault.status === "analyzed" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}
-                    >
-                      {fault.status === "analyzed" ? "已分析" : "待分析"}
-                    </Badge>
-                    {fault.status === "analyzed" && (
-                      <Eye className="h-3.5 w-3.5 text-muted-foreground" />
-                    )}
-                  </div>
-                </div>
-              ))}
-              
-              {/* 可展开的更多记录 */}
-              {relatedFaults.length > 3 && (
-                <>
-                  {isRelatedFaultsExpanded && (
-                    <div className="space-y-2">
-                      {relatedFaults.slice(3).map((fault) => (
-                        <div 
-                          key={fault.id} 
-                          className={`flex items-center justify-between p-2 bg-secondary/30 rounded-lg border border-border hover:bg-secondary/50 transition-colors ${fault.status === "analyzed" ? "cursor-pointer" : ""}`}
-                          onClick={() => {
-                            if (fault.status === "analyzed") {
-                              setSelectedRelatedFault(fault);
-                              setRelatedFaultDialogOpen(true);
-                            }
-                          }}
-                        >
-                          <div className="flex items-center gap-3">
-                            <span className="text-sm">{fault.cmsMessage}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <span>{fault.faultDate.split(" ")[0]}</span>
-                            <Badge variant="outline" className="text-xs">{fault.route}</Badge>
-                            <Badge 
-                              variant="outline" 
-                              className={fault.status === "analyzed" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}
-                            >
-                              {fault.status === "analyzed" ? "已分析" : "待分析"}
-                            </Badge>
-                            {fault.status === "analyzed" && (
-                              <Eye className="h-3.5 w-3.5 text-muted-foreground" />
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <button
-                    onClick={() => setIsRelatedFaultsExpanded(!isRelatedFaultsExpanded)}
-                    className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 transition-colors w-full justify-center py-2"
-                  >
-                    {isRelatedFaultsExpanded ? (
-                      <>
-                        <ChevronUp className="h-4 w-4" />
-                        收起更多记录
-                      </>
+                  {(() => {
+                    const descChanged = basicInfoForm.description !== originalBasicInfoForm.description;
+                    const showHighlight = !isBasicInfoEditing && descChanged;
+                    return (
+                      <Textarea
+                        value={basicInfoForm.description}
+                        readOnly={!isBasicInfoEditing}
+                        onChange={(e) =>
+                          setBasicInfoForm((prev) => ({ ...prev, description: e.target.value }))
+                        }
+                        className="mt-1 border-border text-sm min-h-[50px]"
+                        style={
+                          showHighlight
+                            ? { color: "#ea580c", backgroundColor: "#fefce8" }
+                            : {}
+                        }
+                      />
+                    );
+                  })()}
+                  <div>
+                    <Label className="text-muted-foreground text-xs">���增信息</Label>
+                    {isBasicInfoEditing ? (
+                      <Textarea
+                        value={basicInfoForm.newInfo}
+                        onChange={(e) =>
+                          setBasicInfoForm((prev) => ({ ...prev, newInfo: e.target.value }))
+                        }
+                        placeholder="请输入新增信息..."
+                        className="mt-1 bg-background border-border text-foreground text-sm min-h-[50px]"
+                      />
                     ) : (
-                      <>
-                        <ChevronDown className="h-4 w-4" />
-                        展开更多 {relatedFaults.length - 3} 条记录
-                      </>
+                      basicInfoForm.newInfo && (
+                        <div className="mt-1 p-2 bg-orange-50 border border-orange-200 rounded text-sm">
+                          <span className="text-orange-700 font-medium">新增信息：</span>
+                          <span className="text-orange-500">{basicInfoForm.newInfo}</span>
+                        </div>
+                      )
                     )}
-                  </button>
-                </>
+                  </div>
+                </div>
               )}
             </div>
           </CardContent>
@@ -835,7 +829,7 @@ export default function FaultAnalysisPage() {
                     <div className="bg-secondary/30 rounded-lg p-3 border border-border">
                       <div className="text-sm font-medium mb-2 flex items-center gap-2">
                         <span className="h-2 w-2 rounded-full bg-purple-500"></span>
-                        性能指标
+                        性��指标
                       </div>
                       <ResponsiveContainer width="100%" height={180}>
                         <AreaChart data={trendChartData}>
@@ -1051,7 +1045,110 @@ export default function FaultAnalysisPage() {
           </CardContent>
         </Card>
 
-        {/* 第四部分：分析结果 */}
+        {/* 第四部分：关联故障分析 */}
+        <Card className="bg-card border-border shadow-sm">
+          <CardHeader className="border-b border-border py-2 px-4">
+            <CardTitle className="flex items-center gap-2 text-foreground text-base">
+              <Link2 className="h-4 w-4 text-primary" />
+              关联故障分析
+              <Badge variant="outline" className="ml-2 text-xs">
+                基于 APU BLEED SERVO VALVE & B-104X 匹配
+              </Badge>
+              <Badge className="ml-1 bg-blue-100 text-blue-700 border-blue-200 text-xs">
+                {relatedFaults.length} 条相关记录
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-3">
+            <div className="space-y-2">
+              {relatedFaults.slice(0, 3).map((fault) => (
+                <div
+                  key={fault.id}
+                  className={`flex items-center justify-between p-2 bg-secondary/30 rounded-lg border border-border hover:bg-secondary/50 transition-colors ${fault.status === "analyzed" ? "cursor-pointer" : ""}`}
+                  onClick={() => {
+                    if (fault.status === "analyzed") {
+                      setSelectedRelatedFault(fault);
+                      setRelatedFaultDialogOpen(true);
+                    }
+                  }}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm">{fault.cmsMessage}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span>{fault.faultDate.split(" ")[0]}</span>
+                    <Badge variant="outline" className="text-xs">{fault.route}</Badge>
+                    <Badge
+                      variant="outline"
+                      className={fault.status === "analyzed" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}
+                    >
+                      {fault.status === "analyzed" ? "已分析" : "待分析"}
+                    </Badge>
+                    {fault.status === "analyzed" && (
+                      <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+                    )}
+                  </div>
+                </div>
+              ))}
+
+              {relatedFaults.length > 3 && (
+                <>
+                  {isRelatedFaultsExpanded && (
+                    <div className="space-y-2">
+                      {relatedFaults.slice(3).map((fault) => (
+                        <div
+                          key={fault.id}
+                          className={`flex items-center justify-between p-2 bg-secondary/30 rounded-lg border border-border hover:bg-secondary/50 transition-colors ${fault.status === "analyzed" ? "cursor-pointer" : ""}`}
+                          onClick={() => {
+                            if (fault.status === "analyzed") {
+                              setSelectedRelatedFault(fault);
+                              setRelatedFaultDialogOpen(true);
+                            }
+                          }}
+                        >
+                          <div className="flex items-center gap-3">
+                            <span className="text-sm">{fault.cmsMessage}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span>{fault.faultDate.split(" ")[0]}</span>
+                            <Badge variant="outline" className="text-xs">{fault.route}</Badge>
+                            <Badge
+                              variant="outline"
+                              className={fault.status === "analyzed" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}
+                            >
+                              {fault.status === "analyzed" ? "已分析" : "待分析"}
+                            </Badge>
+                            {fault.status === "analyzed" && (
+                              <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <button
+                    onClick={() => setIsRelatedFaultsExpanded(!isRelatedFaultsExpanded)}
+                    className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 transition-colors w-full justify-center py-2"
+                  >
+                    {isRelatedFaultsExpanded ? (
+                      <>
+                        <ChevronUp className="h-4 w-4" />
+                        收起更多记录
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="h-4 w-4" />
+                        展开更多 {relatedFaults.length - 3} 条记录
+                      </>
+                    )}
+                  </button>
+                </>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 第五部分：分析结果 */}
         <Card className="bg-card border-border shadow-sm">
           <CardHeader className="border-b border-border py-2 px-4">
             <CardTitle className="flex items-center gap-2 text-foreground text-base">
