@@ -27,6 +27,7 @@ import {
   ArrowLeft,
   X,
   Save,
+  FileText,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -102,7 +103,7 @@ const modelData: ModelData[] = [
     applicability: "ALL",
     status: "active",
     version: "v2.3.1",
-    updatedAt: "2024-01-10",
+    updatedAt: "2026-01-10",
     developmentApproach: "采用时序分析方法，基于历史EGT数据建立基线模型，通过滑动窗口检测温度异常趋势。模型结合了统计过程控制(SPC)和机器学习方法，能够识别渐进性衰退和突发性异常。",
     parameters: [
       { name: "egt_threshold", type: "float", description: "EGT温度阈值(℃)", required: true },
@@ -131,7 +132,7 @@ const modelData: ModelData[] = [
     applicability: "UEA, CES",
     status: "active",
     version: "v1.8.0",
-    updatedAt: "2024-01-08",
+    updatedAt: "2026-01-08",
     developmentApproach: "基于物理机理建模，结合活门开关指令与实际位置反馈的时间差分析。采用阈值检测和趋势分析相结合的方法，识别响应延迟和卡滞故障的早期征兆。",
     parameters: [
       { name: "response_threshold", type: "float", description: "响应时间阈值(ms)", required: true },
@@ -157,7 +158,7 @@ const modelData: ModelData[] = [
     applicability: "UEA",
     status: "testing",
     version: "v2.0.0-beta",
-    updatedAt: "2024-01-05",
+    updatedAt: "2026-01-05",
     developmentApproach: "采用状态机模型描述活门工作过程，通过监控状态转换时间和异常状态识别潜在故障。结合历史故障数据进行模式识别，提高诊断准确率。",
     parameters: [
       { name: "state_timeout", type: "int", description: "状态转换超时(ms)", required: true },
@@ -182,7 +183,7 @@ const modelData: ModelData[] = [
     applicability: "ALL",
     status: "active",
     version: "v1.5.2",
-    updatedAt: "2024-01-03",
+    updatedAt: "2026-01-03",
     developmentApproach: "基于统计分析方法，建立各轮刹车温度的正常差异范围。通过对比分析和趋势跟踪，识别异常温升和温度不对称问题。",
     parameters: [
       { name: "temp_diff_threshold", type: "float", description: "温差阈值(℃)", required: true },
@@ -209,7 +210,7 @@ const modelData: ModelData[] = [
     applicability: "UEA, CES",
     status: "active",
     version: "v3.1.0",
-    updatedAt: "2024-01-12",
+    updatedAt: "2026-01-12",
     developmentApproach: "采用FFT频谱分析和小波变换方法，提取振动信号的特征频率。结合机器学习分类器，识别不同类型的振动异常模式。",
     parameters: [
       { name: "vib_threshold", type: "float", description: "振动阈值(IPS)", required: true },
@@ -235,7 +236,7 @@ const modelData: ModelData[] = [
     applicability: "UEA",
     status: "active",
     version: "v2.0.1",
-    updatedAt: "2024-01-06",
+    updatedAt: "2026-01-06",
     developmentApproach: "基于质量守恒原理建立液压系统模型，通过监控油量消耗率和压力变化识别泄漏。采用卡尔曼滤波处理测量噪声，提高检测灵敏度。",
     parameters: [
       { name: "leak_rate_threshold", type: "float", description: "泄漏率阈值(ml/h)", required: true },
@@ -260,7 +261,7 @@ const modelData: ModelData[] = [
     applicability: "UEA, CES, CSN",
     status: "testing",
     version: "v1.2.0-beta",
-    updatedAt: "2024-01-02",
+    updatedAt: "2026-01-02",
     developmentApproach: "基于热力学原理建立组件包性能模型，通过进出口温度差和流量计算效率。采用趋势分析方法跟踪性能衰退。",
     parameters: [
       { name: "efficiency_threshold", type: "float", description: "效率阈值(%)", required: true },
@@ -308,7 +309,7 @@ const modelData: ModelData[] = [
     applicability: "UEA, CES",
     status: "active",
     version: "v2.5.0",
-    updatedAt: "2024-01-11",
+    updatedAt: "2026-01-11",
     developmentApproach: "基于系统辨识方法建立作动器动态模型，通过比较实际响应与模型预测识别性能偏差。采用自适应阈值提高检测鲁棒性。",
     parameters: [
       { name: "response_lag", type: "float", description: "响应滞后阈值(ms)", required: true },
@@ -355,7 +356,7 @@ const modelData: ModelData[] = [
     applicability: "ALL",
     status: "active",
     version: "v1.8.5",
-    updatedAt: "2024-01-09",
+    updatedAt: "2026-01-09",
     developmentApproach: "基于状态机模型监控起落架收放过程，通过时序分析识别异常收放时间和中间状态卡滞。",
     parameters: [
       { name: "retract_time_limit", type: "int", description: "收起时间限制(s)", required: true },
@@ -382,8 +383,8 @@ const modelData: ModelData[] = [
     applicability: "UEA",
     status: "testing",
     version: "v1.1.0-beta",
-    updatedAt: "2024-01-04",
-    developmentApproach: "基于功率平衡原理建立电源负载模型，通过对��预期负载与实际负载识别异常功耗设备��",
+    updatedAt: "2026-01-04",
+    developmentApproach: "基于功率平衡原理建立电源负载模型，通过对���预期负载与实际负载识别异常功耗设备��",
     parameters: [
       { name: "load_imbalance", type: "float", description: "负载不平衡阈值(%)", required: true },
       { name: "overload_threshold", type: "float", description: "过载阈值(kW)", required: true },
@@ -397,6 +398,53 @@ const modelData: ModelData[] = [
     ],
   },
 ];
+
+// 参数模板数据（来源：数据管理-模板管理）
+interface ParameterTemplate {
+  id: number;
+  name: string;
+  ataChapter: string;
+  lru: string;
+  coreParameters: number;
+  version: string;
+  updatedAt: string;
+  status: string;
+  description: string;
+}
+
+const parameterTemplateData: ParameterTemplate[] = [
+  { id: 1, name: "APU EGT超温", ataChapter: "49", lru: "APU", coreParameters: 12, version: "v2.3", updatedAt: "2026-01-10", status: "active", description: "监控APU排气温度超限情况，用于预测APU性能衰退" },
+  { id: 2, name: "APU性能趋势", ataChapter: "49", lru: "APU, EGT传感器", coreParameters: 14, version: "v1.6", updatedAt: "2026-03-12", status: "active", description: "综合EGT、转速等参数评估APU整体性能趋势" },
+  { id: 3, name: "HPV开关响应", ataChapter: "36", lru: "HPV, PRSOV", coreParameters: 8, version: "v1.8", updatedAt: "2026-04-08", status: "active", description: "监控高压活门开关响应时间及状态，检测气源系统异常" },
+  { id: 4, name: "PRSOV开关响应", ataChapter: "36", lru: "PRSOV, FAV", coreParameters: 10, version: "v2.0", updatedAt: "2026-05-05", status: "active", description: "监控引气预冷器出口活门响应，评估活门健康状态" },
+  { id: 5, name: "刹车温度不一致", ataChapter: "32", lru: "BSCU, 刹车组件", coreParameters: 16, version: "v1.5", updatedAt: "2026-06-03", status: "active", description: "监控各轮刹车温度差异，识别刹车磨损不均或传感器故障" },
+  { id: 6, name: "起落架收放监控", ataChapter: "32", lru: "起落架作动筒, 位置传感器", coreParameters: 11, version: "v1.2", updatedAt: "2026-05-20", status: "active", description: "监控起落架收放时间与位置反馈，识别作动异常" },
+  { id: 7, name: "发动机振动频谱", ataChapter: "72", lru: "发动机, 振动传感器", coreParameters: 18, version: "v3.0", updatedAt: "2026-06-10", status: "active", description: "基于振动频谱分析检测发动机异常振动" },
+  { id: 8, name: "液压泵压力监控", ataChapter: "29", lru: "液压泵, 蓄压器", coreParameters: 9, version: "v1.4", updatedAt: "2026-04-22", status: "active", description: "监控液压系统压力与蓄压器状态，识别泄漏与衰退" },
+  { id: 9, name: "空调组件温控", ataChapter: "21", lru: "组件包, 涡轮", coreParameters: 13, version: "v1.7", updatedAt: "2026-03-30", status: "active", description: "监控空调组件出口温度与涡轮转速，评估制冷性能" },
+  { id: 10, name: "混合活门调节", ataChapter: "21", lru: "温控器, 混合活门", coreParameters: 7, version: "v1.1", updatedAt: "2026-02-18", status: "testing", description: "监控温控器与混合活门调节响应，诊断温控异常" },
+  { id: 11, name: "飞控作动器响应", ataChapter: "27", lru: "作动器, PCU", coreParameters: 15, version: "v2.1", updatedAt: "2026-05-28", status: "active", description: "监控飞控作动器与PCU响应特性，识别卡滞与延迟" },
+  { id: 12, name: "大气数据一致性", ataChapter: "27", lru: "ADC, AHRS", coreParameters: 10, version: "v1.3", updatedAt: "2026-04-15", status: "active", description: "监控ADC与AHRS数据一致性，识别传感器偏差" },
+  { id: 13, name: "发电机负载监控", ataChapter: "24", lru: "发电机, EPCU", coreParameters: 12, version: "v1.9", updatedAt: "2026-06-01", status: "active", description: "监控发电机输出负载与EPCU状态，评估供电健康度" },
+];
+
+// 拆分部件字符串为部件集合
+const splitParts = (lru: string): string[] =>
+  lru
+    .split(/[,，、]/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+
+// 获取与指定模型相关的参数模板：同一ATA章节 且 至少有一个相关部件
+const getRelatedTemplates = (model: ModelData | null): ParameterTemplate[] => {
+  if (!model) return [];
+  const modelParts = splitParts(model.lru);
+  return parameterTemplateData.filter(
+    (tpl) =>
+      tpl.ataChapter === model.ataChapter &&
+      splitParts(tpl.lru).some((part) => modelParts.includes(part)),
+  );
+};
 
 // 状态徽章
 const getStatusBadge = (status: string) => {
@@ -734,7 +782,7 @@ export default function ModelManagementPage() {
                   适用性配置
                 </TabsTrigger>
                 <TabsTrigger value="mapping" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent">
-                  参数适配关系
+                  关联模板
                 </TabsTrigger>
               </TabsList>
 
@@ -971,28 +1019,77 @@ export default function ModelManagementPage() {
                   )}
                 </TabsContent>
 
-                {/* 参数适配关系 */}
-                <TabsContent value="mapping" className="m-0">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-[200px]">模型参数</TableHead>
-                        <TableHead className="w-[200px]">WQAR参数</TableHead>
-                        <TableHead>转换方式</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {selectedModel?.parameterMapping.map((mapping, idx) => (
-                        <TableRow key={idx}>
-                          <TableCell className="font-mono text-sm font-medium text-blue-600">{mapping.modelParam}</TableCell>
-                          <TableCell className="font-mono text-sm">{mapping.wqarParam}</TableCell>
-                          <TableCell>
-                            <Badge variant="outline">{mapping.transformation}</Badge>
-                          </TableCell>
+                {/* 关联模板 */}
+                <TabsContent value="mapping" className="m-0 space-y-3">
+                  <div className="flex items-center justify-between px-1">
+                    <p className="text-sm text-muted-foreground">
+                      根据模型所属章节（ATA {selectedModel?.ataChapter} - {selectedModel?.ataName}）及相关部件，关联数据管理中的参数模板
+                    </p>
+                    {selectedModel && (
+                      <Badge variant="outline" className="bg-blue-50 text-blue-600 border-blue-200">
+                        共 {getRelatedTemplates(selectedModel).length} 个关联模板
+                      </Badge>
+                    )}
+                  </div>
+                  {selectedModel && getRelatedTemplates(selectedModel).length > 0 ? (
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-[180px]">模板名称</TableHead>
+                          <TableHead className="w-[90px]">ATA章节</TableHead>
+                          <TableHead className="w-[200px]">关联部件</TableHead>
+                          <TableHead className="w-[90px]">核心参数</TableHead>
+                          <TableHead className="w-[90px]">版本</TableHead>
+                          <TableHead className="w-[90px]">状态</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                      </TableHeader>
+                      <TableBody>
+                        {getRelatedTemplates(selectedModel).map((tpl) => {
+                          const modelParts = splitParts(selectedModel.lru);
+                          return (
+                            <TableRow key={tpl.id}>
+                              <TableCell>
+                                <div className="flex items-center gap-2 font-medium">
+                                  <FileText className="h-4 w-4 text-primary shrink-0" />
+                                  {tpl.name}
+                                </div>
+                                <p className="text-xs text-muted-foreground mt-1">{tpl.description}</p>
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="outline">ATA {tpl.ataChapter}</Badge>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex flex-wrap gap-1">
+                                  {splitParts(tpl.lru).map((part, idx) => (
+                                    <Badge
+                                      key={idx}
+                                      variant="outline"
+                                      className={
+                                        modelParts.includes(part)
+                                          ? "bg-amber-50 text-amber-700 border-amber-200"
+                                          : "bg-muted text-muted-foreground"
+                                      }
+                                    >
+                                      <Wrench className="h-3 w-3 mr-1" />
+                                      {part}
+                                    </Badge>
+                                  ))}
+                                </div>
+                              </TableCell>
+                              <TableCell className="font-mono text-sm">{tpl.coreParameters}</TableCell>
+                              <TableCell className="font-mono text-sm">{tpl.version}</TableCell>
+                              <TableCell>{getStatusBadge(tpl.status)}</TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground">
+                      <FileText className="h-10 w-10 mb-3 opacity-40" />
+                      <p className="text-sm">暂无与该模型章节及部件相关的参数模板</p>
+                    </div>
+                  )}
                 </TabsContent>
               </ScrollArea>
             </Tabs>
