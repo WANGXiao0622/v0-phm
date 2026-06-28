@@ -334,7 +334,7 @@ const faultData: FaultRecord[] = [
   { id: 3, faultCode: "2700-12", cmsMessage: "ELAC 1 FAULT", registration: "B-9012", airline: "成都航空", airlineCode: "UEA", ataChapter: "27", faultDate: "2026-01-14 18:45:00", flightNo: "UEA2234", route: "PEK-SHA", severity: "medium", status: "analyzed", analysisId: "FA-2026-0148" },
   { id: 4, faultCode: "3200-08", cmsMessage: "BRAKE TEMP HI", registration: "B-3456", airline: "南方航空", airlineCode: "CSN", ataChapter: "32", faultDate: "2026-01-14 09:20:00", flightNo: "CZ3345", route: "CAN-CTU", severity: "medium", status: "no_qar" },
   { id: 5, faultCode: "4900-03", cmsMessage: "APU EGT OVLM", registration: "B-7890", airline: "东方航空", airlineCode: "CES", ataChapter: "49", faultDate: "2026-01-13 16:08:00", flightNo: "MU4456", route: "SHA-SZX", severity: "high", status: "analyzed", analysisId: "FA-2026-0142" },
-  { id: 6, faultCode: "7200-15", cmsMessage: "ENG 1 VIB HI", registration: "B-1234", airline: "成都航空", airlineCode: "UEA", ataChapter: "72", faultDate: "2026-01-13 08:30:00", flightNo: "UEA6789", route: "PEK-CAN", severity: "high", status: "pending" },
+  { id: 6, faultCode: "7200-15", cmsMessage: "ENG 1 VIB HI", registration: "B-1234", airline: "成都���空", airlineCode: "UEA", ataChapter: "72", faultDate: "2026-01-13 08:30:00", flightNo: "UEA6789", route: "PEK-CAN", severity: "high", status: "pending" },
   { id: 7, faultCode: "2900-06", cmsMessage: "HYD SYS 1 LO PR", registration: "B-5678", airline: "东方航空", airlineCode: "CES", ataChapter: "29", faultDate: "2026-01-12 22:15:00", flightNo: "MU7890", route: "SHA-PEK", severity: "medium", status: "ignored" },
   { id: 8, faultCode: "2400-09", cmsMessage: "GEN 1 FAULT", registration: "B-9012", airline: "成都航空", airlineCode: "UEA", ataChapter: "24", faultDate: "2026-01-12 14:50:00", flightNo: "UEA8901", route: "CAN-SHA", severity: "low", status: "analyzed", analysisId: "FA-2026-0135" },
   { id: 9, faultCode: "3600-02", cmsMessage: "PRSOV 1 FAULT", registration: "B-3456", airline: "南方航空", airlineCode: "CSN", ataChapter: "36", faultDate: "2026-01-12 10:30:00", flightNo: "CZ9012", route: "CTU-PVG", severity: "medium", status: "pending" },
@@ -381,23 +381,30 @@ interface ParameterConfig {
   ataChapter: string;
 }
 
-// 基本参数配置数据 - 所有航司共享的基础数据
+// 基本参数配置数据 - 所有航司共享的基础数据（来源：工作簿1.xlsx）
 const baseParameterData: ParameterConfig[] = [
-  { id: 1, parameterAssignment: "001", mnemonic: "N1_1", portName: "ENG1_N1", signalType: "BNR", unit: "%", customName: "", customDescription: "", ataChapter: "" },
-  { id: 2, parameterAssignment: "002", mnemonic: "N2_1", portName: "ENG1_N2", signalType: "BNR", unit: "%", customName: "", customDescription: "", ataChapter: "" },
-  { id: 3, parameterAssignment: "003", mnemonic: "EGT_1", portName: "ENG1_EGT", signalType: "BNR", unit: "°C", customName: "", customDescription: "", ataChapter: "" },
-  { id: 4, parameterAssignment: "004", mnemonic: "FF_1", portName: "ENG1_FF", signalType: "BNR", unit: "kg/h", customName: "", customDescription: "", ataChapter: "" },
-  { id: 5, parameterAssignment: "005", mnemonic: "OIP_1", portName: "ENG1_OIL_PRESS", signalType: "BNR", unit: "PSI", customName: "", customDescription: "", ataChapter: "" },
-  { id: 6, parameterAssignment: "006", mnemonic: "OIT_1", portName: "ENG1_OIL_TEMP", signalType: "BNR", unit: "°C", customName: "", customDescription: "", ataChapter: "" },
-  { id: 7, parameterAssignment: "007", mnemonic: "VIB_N1_1", portName: "ENG1_VIB_N1", signalType: "BNR", unit: "mil", customName: "", customDescription: "", ataChapter: "" },
-  { id: 8, parameterAssignment: "008", mnemonic: "VIB_N2_1", portName: "ENG1_VIB_N2", signalType: "BNR", unit: "mil", customName: "", customDescription: "", ataChapter: "" },
-  { id: 9, parameterAssignment: "009", mnemonic: "N1_2", portName: "ENG2_N1", signalType: "BNR", unit: "%", customName: "", customDescription: "", ataChapter: "" },
-  { id: 10, parameterAssignment: "010", mnemonic: "N2_2", portName: "ENG2_N2", signalType: "BNR", unit: "%", customName: "", customDescription: "", ataChapter: "" },
-  { id: 11, parameterAssignment: "011", mnemonic: "EGT_2", portName: "ENG2_EGT", signalType: "BNR", unit: "°C", customName: "", customDescription: "", ataChapter: "" },
-  { id: 12, parameterAssignment: "012", mnemonic: "FF_2", portName: "ENG2_FF", signalType: "BNR", unit: "kg/h", customName: "", customDescription: "", ataChapter: "" },
-  { id: 13, parameterAssignment: "013", mnemonic: "ALT", portName: "ALTITUDE", signalType: "DIS", unit: "ft", customName: "", customDescription: "", ataChapter: "" },
-  { id: 14, parameterAssignment: "014", mnemonic: "IAS", portName: "IND_AIRSPEED", signalType: "DIS", unit: "kts", customName: "", customDescription: "", ataChapter: "" },
-  { id: 15, parameterAssignment: "015", mnemonic: "MACH", portName: "MACH_NUMBER", signalType: "INT", unit: "", customName: "", customDescription: "", ataChapter: "" },
+  { id: 1, parameterAssignment: "WING ANTI-ICE SOURCE FROM RIGHT", mnemonic: "L246B211", portName: "IASC1-B", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 2, parameterAssignment: "WING ANTI-ICE SOURCE FROM LEFT", mnemonic: "L246B221", portName: "IASC1-B", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 3, parameterAssignment: "WING ANTI-ICE ON", mnemonic: "L246B281", portName: "IASC1-B", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 4, parameterAssignment: "ICE DET 2", mnemonic: "L036B26", portName: "LA-DCU-10", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 5, parameterAssignment: "ICE DET 1", mnemonic: "L036B27", portName: "LA-DCU-10", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 6, parameterAssignment: "ICE WARNING", mnemonic: "L003B20", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 7, parameterAssignment: "WAI CONFIG BIT FOR ENG FADEC 2", mnemonic: "L240B253", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 8, parameterAssignment: "WAI CONFIG BIT FOR ENG FADEC 1", mnemonic: "L240B263", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 9, parameterAssignment: "R ENG NAI ON", mnemonic: "L026B23", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 10, parameterAssignment: "WARNING DISC 2-A/ICE OVERHEAT", mnemonic: "L002B25", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 11, parameterAssignment: "STATUS 2-REF_NAI_ON LEFT", mnemonic: "L271B20L", portName: "LA-FADEC-1", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 12, parameterAssignment: "STATUS 2-REF_WAI_ON LEFT", mnemonic: "L271B19L", portName: "LA-FADEC-1", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 13, parameterAssignment: "STATUS 2-REF_NAI_ON RIGHT", mnemonic: "L271B20R", portName: "RA-FADEC-1", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 14, parameterAssignment: "STATUS 2-REF_WAI_ON RIGHT", mnemonic: "L271B19R", portName: "RA-FADEC-1", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 15, parameterAssignment: "Ice Detector 2 Fail", mnemonic: "NAII2LA1", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 16, parameterAssignment: "Ice Detector 1 Fail", mnemonic: "NAII1LA1", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 17, parameterAssignment: "Wing A/I Selected OFF A", mnemonic: "SPXOA", portName: "LA-DCU-9", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 18, parameterAssignment: "Wing A/I Selected OFF B", mnemonic: "SPYOA", portName: "LA-DCU-9", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 19, parameterAssignment: "SW_WAIV_F_CLSD", mnemonic: "SWFC", portName: "IASC1-B", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 20, parameterAssignment: "SW_WAIV_F_OPEN", mnemonic: "SWFO", portName: "IASC1-B", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 21, parameterAssignment: "IASC2B Adj AI Diff Press [ACCAI]", mnemonic: "SWAIFRL2", portName: "LA-DCU-10", signalType: "BNR", unit: "mBar", customName: "", customDescription: "", ataChapter: "" },
+  { id: 22, parameterAssignment: "Anti Ice Pressure", mnemonic: "SWAIPRL2", portName: "LA-DCU-2", signalType: "BNR", unit: "bar", customName: "", customDescription: "", ataChapter: "" },
 ];
 
 // 中国东方航空 ATA-49 参数配置（来源：49章数据.xlsx）
@@ -1515,7 +1522,7 @@ export default function DataManagementPage() {
                 <div className="flex items-center gap-4">
                   <CardTitle className="text-base flex items-center gap-2">
                     <Sliders className="h-4 w-4 text-primary" />
-                    参数配��
+                    参数配置
                   </CardTitle>
                   {/* 版本选择器 */}
                   <div className="flex items-center gap-2">
@@ -2147,7 +2154,7 @@ export default function DataManagementPage() {
                                 className={`justify-start h-8 px-2 ${faultFilters.status === "analyzed" ? "bg-accent" : ""}`}
                                 onClick={() => setFaultFilters(prev => ({ ...prev, status: "analyzed" }))}
                               >
-                                已分析
+                                已分��
                               </Button>
                               <Button
                                 variant="ghost"
