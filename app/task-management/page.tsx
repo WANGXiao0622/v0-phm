@@ -43,7 +43,9 @@ import {
 } from "lucide-react";
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
@@ -318,9 +320,8 @@ export default function TaskManagementPage() {
       if (faultFilters.status !== "all" && fault.status !== faultFilters.status) return false;
       if (faultFilters.wqar !== "all" && String(fault.hasWQAR) !== faultFilters.wqar) return false;
       if (faultFilters.due !== "all") {
-        const overdue = isOverdue(fault.time, fault.status);
-        if (faultFilters.due === "red" && !overdue) return false;
-        if (faultFilters.due === "normal" && overdue) return false;
+        if (faultFilters.due === "overdue" && !isOverdue(fault.time, fault.status)) return false;
+        if (faultFilters.due === "pending" && fault.status !== "pending") return false;
       }
       return true;
     })
@@ -716,18 +717,53 @@ export default function TaskManagementPage() {
                       ]}
                     />
                   </div>
-                  <div className="col-span-2 flex items-center gap-2">
-                    <SortHeader field="dueDate" label="应完成时间" />
-                    <FilterHeader
-                      label="标记"
-                      value={faultFilters.due}
-                      onChange={(v) => setFaultFilter("due", v)}
-                      options={[
-                        { value: "all", label: "全部" },
-                        { value: "red", label: "仅红色(逾期)" },
-                        { value: "normal", label: "仅正常" },
-                      ]}
-                    />
+                  <div className="col-span-2">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          type="button"
+                          className={`flex items-center gap-1 hover:text-foreground transition-colors ${
+                            faultFilters.due !== "all" || faultSort?.field === "dueDate"
+                              ? "text-primary font-medium"
+                              : ""
+                          }`}
+                        >
+                          应完成时间
+                          {faultSort?.field === "dueDate" ? (
+                            faultSort.dir === "asc" ? (
+                              <ArrowUp className="h-3 w-3" />
+                            ) : (
+                              <ArrowDown className="h-3 w-3" />
+                            )
+                          ) : (
+                            <ArrowUpDown className="h-3 w-3 opacity-50" />
+                          )}
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" className="min-w-[150px]">
+                        <DropdownMenuItem onClick={() => setFaultSort({ field: "dueDate", dir: "asc" })}>
+                          <ArrowUp className="h-4 w-4 mr-2" />
+                          升序排序
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setFaultSort({ field: "dueDate", dir: "desc" })}>
+                          <ArrowDown className="h-4 w-4 mr-2" />
+                          降序排序
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuCheckboxItem
+                          checked={faultFilters.due === "overdue"}
+                          onCheckedChange={(c) => setFaultFilter("due", c ? "overdue" : "all")}
+                        >
+                          逾期未完成
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                          checked={faultFilters.due === "pending"}
+                          onCheckedChange={(c) => setFaultFilter("due", c ? "pending" : "all")}
+                        >
+                          待处理
+                        </DropdownMenuCheckboxItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                   <div className="col-span-1">操作</div>
                 </div>
