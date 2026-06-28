@@ -47,6 +47,9 @@ import {
   Cpu,
   History,
   Wrench,
+  BookOpen,
+  Layers,
+  Bookmark,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -232,6 +235,7 @@ const secondaryTabs = [
   { id: "template", name: "模板配置", icon: FileText },
   { id: "metadata", name: "元数据配置", icon: Tags },
   { id: "fault", name: "故障统计", icon: AlertTriangle },
+  { id: "casebase", name: "典型故障案例库", icon: BookOpen },
 ];
 
 // API 数据类型
@@ -256,7 +260,7 @@ const initialApiData: ApiConfig[] = [
   { id: 2, name: "WQAR数据上传API", endpoint: "/api/v1/wqar/upload", method: "POST", status: "active", calls: 8920, lastCall: "2026-05-15 14:28:00", description: "用于上传WQAR原始数据", authType: "API Key", timeout: 60000, retryCount: 2 },
   { id: 3, name: "故障报告查询API", endpoint: "/api/v1/fault-report", method: "GET", status: "active", calls: 5640, lastCall: "2026-06-15 14:25:00", description: "查询故障报告记录", authType: "Bearer Token", timeout: 15000, retryCount: 3 },
   { id: 4, name: "模型预测API", endpoint: "/api/v1/model/predict", method: "POST", status: "inactive", calls: 3200, lastCall: "2026-06-14 18:00:00", description: "调用模型进行故障预测", authType: "Bearer Token", timeout: 45000, retryCount: 1 },
-  { id: 5, name: "数据导出API", endpoint: "/api/v1/export", method: "GET", status: "active", calls: 1890, lastCall: "2024-01-15 12:00:00", description: "导出分��报告和数据", authType: "API Key", timeout: 120000, retryCount: 2 },
+  { id: 5, name: "数据导出API", endpoint: "/api/v1/export", method: "GET", status: "active", calls: 1890, lastCall: "2024-01-15 12:00:00", description: "导出分析报告和数据", authType: "API Key", timeout: 120000, retryCount: 2 },
 ];
 
 // WQAR 数据
@@ -334,13 +338,62 @@ const faultData: FaultRecord[] = [
   { id: 3, faultCode: "2700-12", cmsMessage: "ELAC 1 FAULT", registration: "B-9012", airline: "成都航空", airlineCode: "UEA", ataChapter: "27", faultDate: "2026-01-14 18:45:00", flightNo: "UEA2234", route: "PEK-SHA", severity: "medium", status: "analyzed", analysisId: "FA-2026-0148" },
   { id: 4, faultCode: "3200-08", cmsMessage: "BRAKE TEMP HI", registration: "B-3456", airline: "南方航空", airlineCode: "CSN", ataChapter: "32", faultDate: "2026-01-14 09:20:00", flightNo: "CZ3345", route: "CAN-CTU", severity: "medium", status: "no_qar" },
   { id: 5, faultCode: "4900-03", cmsMessage: "APU EGT OVLM", registration: "B-7890", airline: "东方航空", airlineCode: "CES", ataChapter: "49", faultDate: "2026-01-13 16:08:00", flightNo: "MU4456", route: "SHA-SZX", severity: "high", status: "analyzed", analysisId: "FA-2026-0142" },
-  { id: 6, faultCode: "7200-15", cmsMessage: "ENG 1 VIB HI", registration: "B-1234", airline: "成都航空", airlineCode: "UEA", ataChapter: "72", faultDate: "2026-01-13 08:30:00", flightNo: "UEA6789", route: "PEK-CAN", severity: "high", status: "pending" },
+  { id: 6, faultCode: "7200-15", cmsMessage: "ENG 1 VIB HI", registration: "B-1234", airline: "成都�������空", airlineCode: "UEA", ataChapter: "72", faultDate: "2026-01-13 08:30:00", flightNo: "UEA6789", route: "PEK-CAN", severity: "high", status: "pending" },
   { id: 7, faultCode: "2900-06", cmsMessage: "HYD SYS 1 LO PR", registration: "B-5678", airline: "东方航空", airlineCode: "CES", ataChapter: "29", faultDate: "2026-01-12 22:15:00", flightNo: "MU7890", route: "SHA-PEK", severity: "medium", status: "ignored" },
   { id: 8, faultCode: "2400-09", cmsMessage: "GEN 1 FAULT", registration: "B-9012", airline: "成都航空", airlineCode: "UEA", ataChapter: "24", faultDate: "2026-01-12 14:50:00", flightNo: "UEA8901", route: "CAN-SHA", severity: "low", status: "analyzed", analysisId: "FA-2026-0135" },
   { id: 9, faultCode: "3600-02", cmsMessage: "PRSOV 1 FAULT", registration: "B-3456", airline: "南方航空", airlineCode: "CSN", ataChapter: "36", faultDate: "2026-01-12 10:30:00", flightNo: "CZ9012", route: "CTU-PVG", severity: "medium", status: "pending" },
   { id: 10, faultCode: "2100-08", cmsMessage: "DUCT OVHT", registration: "B-7890", airline: "东方航空", airlineCode: "CES", ataChapter: "21", faultDate: "2026-01-11 15:45:00", flightNo: "MU1234", route: "PEK-CAN", severity: "high", status: "no_qar" },
   { id: 11, faultCode: "3200-03", cmsMessage: "LGCIU 1 FAULT", registration: "B-1234", airline: "成都航空", airlineCode: "UEA", ataChapter: "32", faultDate: "2026-01-11 09:20:00", flightNo: "UEA5678", route: "SHA-PEK", severity: "low", status: "analyzed", analysisId: "FA-2026-0128" },
   { id: 12, faultCode: "4900-07", cmsMessage: "APU FIRE DET", registration: "B-5678", airline: "东方航空", airlineCode: "CES", ataChapter: "49", faultDate: "2026-01-10 18:00:00", flightNo: "MU2345", route: "CAN-PVG", severity: "high", status: "analyzed", analysisId: "FA-2026-0122" },
+];
+
+// 典型故障案例库 - ATA章节及其 LRU/典型故障
+interface CaseChapter {
+  ata: string;
+  name: string;
+  lrus: string[];
+}
+
+const caseChapters: CaseChapter[] = [
+  { ata: "21", name: "空调", lrus: ["冷凝器", "换热器", "压气机"] },
+  { ata: "27", name: "飞控", lrus: ["ELAC", "SEC", "副翼作动器", "扰流板作动器"] },
+  { ata: "29", name: "液压", lrus: ["EDP", "液压渗漏"] },
+  { ata: "32", name: "起落架", lrus: ["BCV", "SCV", "ACC", "前轮转弯", "刹车超温"] },
+  { ata: "34", name: "导航", lrus: ["ADIRU", "GPS", "雷达高度表"] },
+  { ata: "35", name: "氧气", lrus: ["氧气瓶", "旅客氧气面罩", "压力调节器"] },
+  { ata: "36", name: "引气", lrus: ["PRSOV", "HPV"] },
+  { ata: "49", name: "APU", lrus: ["BAV", "SCV"] },
+  { ata: "7X", name: "发动机", lrus: ["发动机振动", "EGT超温", "滑油系统"] },
+];
+
+// 已保存并标记的典型故障案例（关联故障案例分析结果）
+interface TypicalCase {
+  id: string;
+  ata: string;
+  lru: string;
+  title: string;
+  registration: string;
+  airline: string;
+  severity: "high" | "medium" | "low";
+  savedDate: string;
+  occurrences: number;
+  summary: string;
+  analysisId: string;
+}
+
+const typicalCaseData: TypicalCase[] = [
+  { id: "TC-2026-001", ata: "21", lru: "换热器", title: "组件出口温度高导致PACK 1 FAULT", registration: "B-1234", airline: "成都航空", severity: "high", savedDate: "2026-06-16", occurrences: 5, summary: "换热器换热效率下降，组件出口温度持续偏高，触发PACK保护跳开。", analysisId: "FA-2026-0156" },
+  { id: "TC-2026-002", ata: "21", lru: "压气机", title: "ACM压气机轴承磨损振动异常", registration: "B-7890", airline: "东方航空", severity: "medium", savedDate: "2026-05-20", occurrences: 3, summary: "空气循环机压气机端振动趋势上升，伴随轴承温度升高。", analysisId: "FA-2026-0151" },
+  { id: "TC-2026-003", ata: "27", lru: "ELAC", title: "ELAC 1 间歇性故障复位", registration: "B-9012", airline: "成都航空", severity: "medium", savedDate: "2026-05-12", occurrences: 4, summary: "升降副翼计算机供电瞬断导致间歇性故障，地面复测正常。", analysisId: "FA-2026-0148" },
+  { id: "TC-2026-004", ata: "29", lru: "EDP", title: "发动机驱动泵出口压力偏低", registration: "B-5678", airline: "东方航空", severity: "medium", savedDate: "2026-04-28", occurrences: 6, summary: "EDP磨损导致系统1压力在高需求阶段下降，触发低压告警。", analysisId: "FA-2026-0139" },
+  { id: "TC-2026-005", ata: "29", lru: "液压渗漏", title: "绿系统油量缓慢下降", registration: "B-3456", airline: "南方航空", severity: "high", savedDate: "2026-04-15", occurrences: 2, summary: "管路接头渗漏导致绿系统油量逐航段下降，需重点排查接头。", analysisId: "FA-2026-0137" },
+  { id: "TC-2026-006", ata: "32", lru: "刹车超温", title: "落地后多轮刹车温度超限", registration: "B-3456", airline: "南方航空", severity: "medium", savedDate: "2026-04-02", occurrences: 7, summary: "短停落地后刹车温度普遍偏高，与重刹车与冷却时间不足相关。", analysisId: "FA-2026-0131" },
+  { id: "TC-2026-007", ata: "32", lru: "前轮转弯", title: "前轮转弯角度反馈异常", registration: "B-1234", airline: "成都航空", severity: "low", savedDate: "2026-03-25", occurrences: 3, summary: "前轮转弯位置传感器反馈跳变，地面滑行偶发转弯受限。", analysisId: "FA-2026-0128" },
+  { id: "TC-2026-008", ata: "36", lru: "PRSOV", title: "PRSOV 1 关闭响应迟缓", registration: "B-3456", airline: "南方航空", severity: "medium", savedDate: "2026-03-10", occurrences: 5, summary: "压力调节关断活门关闭响应时间偏长，引气压力波动。", analysisId: "FA-2026-0125" },
+  { id: "TC-2026-009", ata: "36", lru: "HPV", title: "高压活门间歇开启异常", registration: "B-5678", airline: "东方航空", severity: "medium", savedDate: "2026-02-28", occurrences: 4, summary: "高压活门在巡航段间歇开启，导致引气源切换频繁。", analysisId: "FA-2026-0119" },
+  { id: "TC-2026-010", ata: "49", lru: "BAV", title: "APU引气活门开度异常", registration: "B-7890", airline: "东方航空", severity: "high", savedDate: "2026-02-14", occurrences: 3, summary: "APU引气活门(BAV)开度反馈异常，导致地面引气供气不稳。", analysisId: "FA-2026-0142" },
+  { id: "TC-2026-011", ata: "49", lru: "SCV", title: "APU喘振控制活门卡滞", registration: "B-5678", airline: "东方航空", severity: "high", savedDate: "2026-01-30", occurrences: 2, summary: "喘振控制活门(SCV)卡滞，APU起动阶段EGT超温。", analysisId: "FA-2026-0122" },
+  { id: "TC-2026-012", ata: "7X", lru: "发动机振动", title: "发动机1巡航振动趋势上升", registration: "B-1234", airline: "成都航空", severity: "high", savedDate: "2026-01-20", occurrences: 4, summary: "发动机1 N1振动值逐航段上升，需关注风扇配平与轴承状态。", analysisId: "FA-2026-0115" },
 ];
 
 // 航司列表
@@ -381,75 +434,82 @@ interface ParameterConfig {
   ataChapter: string;
 }
 
-// 基本参数配置数据 - 所有航司共享的基础数据
+// 基本参数配置数据 - 所有航司共享的基础数据（来源：工作簿1.xlsx）
 const baseParameterData: ParameterConfig[] = [
-  { id: 1, parameterAssignment: "001", mnemonic: "N1_1", portName: "ENG1_N1", signalType: "BNR", unit: "%", customName: "", customDescription: "", ataChapter: "" },
-  { id: 2, parameterAssignment: "002", mnemonic: "N2_1", portName: "ENG1_N2", signalType: "BNR", unit: "%", customName: "", customDescription: "", ataChapter: "" },
-  { id: 3, parameterAssignment: "003", mnemonic: "EGT_1", portName: "ENG1_EGT", signalType: "BNR", unit: "°C", customName: "", customDescription: "", ataChapter: "" },
-  { id: 4, parameterAssignment: "004", mnemonic: "FF_1", portName: "ENG1_FF", signalType: "BNR", unit: "kg/h", customName: "", customDescription: "", ataChapter: "" },
-  { id: 5, parameterAssignment: "005", mnemonic: "OIP_1", portName: "ENG1_OIL_PRESS", signalType: "BNR", unit: "PSI", customName: "", customDescription: "", ataChapter: "" },
-  { id: 6, parameterAssignment: "006", mnemonic: "OIT_1", portName: "ENG1_OIL_TEMP", signalType: "BNR", unit: "°C", customName: "", customDescription: "", ataChapter: "" },
-  { id: 7, parameterAssignment: "007", mnemonic: "VIB_N1_1", portName: "ENG1_VIB_N1", signalType: "BNR", unit: "mil", customName: "", customDescription: "", ataChapter: "" },
-  { id: 8, parameterAssignment: "008", mnemonic: "VIB_N2_1", portName: "ENG1_VIB_N2", signalType: "BNR", unit: "mil", customName: "", customDescription: "", ataChapter: "" },
-  { id: 9, parameterAssignment: "009", mnemonic: "N1_2", portName: "ENG2_N1", signalType: "BNR", unit: "%", customName: "", customDescription: "", ataChapter: "" },
-  { id: 10, parameterAssignment: "010", mnemonic: "N2_2", portName: "ENG2_N2", signalType: "BNR", unit: "%", customName: "", customDescription: "", ataChapter: "" },
-  { id: 11, parameterAssignment: "011", mnemonic: "EGT_2", portName: "ENG2_EGT", signalType: "BNR", unit: "°C", customName: "", customDescription: "", ataChapter: "" },
-  { id: 12, parameterAssignment: "012", mnemonic: "FF_2", portName: "ENG2_FF", signalType: "BNR", unit: "kg/h", customName: "", customDescription: "", ataChapter: "" },
-  { id: 13, parameterAssignment: "013", mnemonic: "ALT", portName: "ALTITUDE", signalType: "DIS", unit: "ft", customName: "", customDescription: "", ataChapter: "" },
-  { id: 14, parameterAssignment: "014", mnemonic: "IAS", portName: "IND_AIRSPEED", signalType: "DIS", unit: "kts", customName: "", customDescription: "", ataChapter: "" },
-  { id: 15, parameterAssignment: "015", mnemonic: "MACH", portName: "MACH_NUMBER", signalType: "INT", unit: "", customName: "", customDescription: "", ataChapter: "" },
+  { id: 1, parameterAssignment: "WING ANTI-ICE SOURCE FROM RIGHT", mnemonic: "L246B211", portName: "IASC1-B", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 2, parameterAssignment: "WING ANTI-ICE SOURCE FROM LEFT", mnemonic: "L246B221", portName: "IASC1-B", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 3, parameterAssignment: "WING ANTI-ICE ON", mnemonic: "L246B281", portName: "IASC1-B", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 4, parameterAssignment: "ICE DET 2", mnemonic: "L036B26", portName: "LA-DCU-10", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 5, parameterAssignment: "ICE DET 1", mnemonic: "L036B27", portName: "LA-DCU-10", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 6, parameterAssignment: "ICE WARNING", mnemonic: "L003B20", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 7, parameterAssignment: "WAI CONFIG BIT FOR ENG FADEC 2", mnemonic: "L240B253", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 8, parameterAssignment: "WAI CONFIG BIT FOR ENG FADEC 1", mnemonic: "L240B263", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 9, parameterAssignment: "R ENG NAI ON", mnemonic: "L026B23", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 10, parameterAssignment: "WARNING DISC 2-A/ICE OVERHEAT", mnemonic: "L002B25", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 11, parameterAssignment: "STATUS 2-REF_NAI_ON LEFT", mnemonic: "L271B20L", portName: "LA-FADEC-1", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 12, parameterAssignment: "STATUS 2-REF_WAI_ON LEFT", mnemonic: "L271B19L", portName: "LA-FADEC-1", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 13, parameterAssignment: "STATUS 2-REF_NAI_ON RIGHT", mnemonic: "L271B20R", portName: "RA-FADEC-1", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 14, parameterAssignment: "STATUS 2-REF_WAI_ON RIGHT", mnemonic: "L271B19R", portName: "RA-FADEC-1", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 15, parameterAssignment: "Ice Detector 2 Fail", mnemonic: "NAII2LA1", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 16, parameterAssignment: "Ice Detector 1 Fail", mnemonic: "NAII1LA1", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 17, parameterAssignment: "Wing A/I Selected OFF A", mnemonic: "SPXOA", portName: "LA-DCU-9", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 18, parameterAssignment: "Wing A/I Selected OFF B", mnemonic: "SPYOA", portName: "LA-DCU-9", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 19, parameterAssignment: "SW_WAIV_F_CLSD", mnemonic: "SWFC", portName: "IASC1-B", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 20, parameterAssignment: "SW_WAIV_F_OPEN", mnemonic: "SWFO", portName: "IASC1-B", signalType: "DIS", unit: "/", customName: "", customDescription: "", ataChapter: "" },
+  { id: 21, parameterAssignment: "IASC2B Adj AI Diff Press [ACCAI]", mnemonic: "SWAIFRL2", portName: "LA-DCU-10", signalType: "BNR", unit: "mBar", customName: "", customDescription: "", ataChapter: "" },
+  { id: 22, parameterAssignment: "Anti Ice Pressure", mnemonic: "SWAIPRL2", portName: "LA-DCU-2", signalType: "BNR", unit: "bar", customName: "", customDescription: "", ataChapter: "" },
 ];
 
 // 中国东方航空 ATA-49 参数配置（来源：49章数据.xlsx）
 const cesAta49Params: ParameterConfig[] = [
-  { id: 1, parameterAssignment: "APU_SERIAL_NUMBER", mnemonic: "APUSERNO", portName: "LA-DCU-1", signalType: "BNR", unit: "/", customName: "APU序列号", customDescription: "", ataChapter: "ATA-49" },
-  { id: 2, parameterAssignment: "APU GEN OFF", mnemonic: "L265B18", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU发电机关闭", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 3, parameterAssignment: "ELECTRICAL SYNOPTIC 3-APU BATT VOLTS WH", mnemonic: "L076B222", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "APU蓄电池电压警告", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 4, parameterAssignment: "ELECTRICAL SYNOPTIC 3-APU DIR BUS POWER", mnemonic: "L076B182", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "APU直接汇流条有电", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 5, parameterAssignment: "APU EGT", mnemonic: "APUEGT", portName: "LA-DCU-1", signalType: "BNR", unit: "℃", customName: "APU排气温度", customDescription: "", ataChapter: "ATA-49" },
-  { id: 6, parameterAssignment: "APU FUEL FLOW", mnemonic: "APUFF", portName: "LA-DCU-1", signalType: "BNR", unit: "lb/h", customName: "APU燃油流量", customDescription: "", ataChapter: "ATA-49" },
-  { id: 7, parameterAssignment: "APU SPEED", mnemonic: "APUSPEED", portName: "LA-DCU-1", signalType: "BNR", unit: "%", customName: "APU转速", customDescription: "", ataChapter: "ATA-49" },
-  { id: 8, parameterAssignment: "APU BLEED AIR FLOW", mnemonic: "APUBLDAF", portName: "LA-DCU-1", signalType: "BNR", unit: "kg/s", customName: "APU引气流量", customDescription: "", ataChapter: "ATA-49" },
-  { id: 9, parameterAssignment: "FUEL SYNOPTIC 1-CLOSED APU FUEL FEED SOV", mnemonic: "L053B20", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "APU燃油切断阀关闭", customDescription: "0 NOT-CLD / 1 CLD", ataChapter: "ATA-49" },
-  { id: 10, parameterAssignment: "FUEL SYNOPTIC 1-OPEN APU FUEL FEED SOV", mnemonic: "L053B19", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "APU燃油切断阀打开", customDescription: "0 NOT-OPN / 1 OPN", ataChapter: "ATA-49" },
-  { id: 11, parameterAssignment: "WARNING DISC 2-APU FIRE", mnemonic: "L002B16", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "APU火警", customDescription: "0 NO-FIRE / 1 FIRE", ataChapter: "ATA-49" },
-  { id: 12, parameterAssignment: "WARNING DISC 2-APU BLEED OVERHEAT", mnemonic: "L002B24", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU引气管路渗漏过热", customDescription: "0 NO-OVHT / 1 OVHT", ataChapter: "ATA-49" },
-  { id: 13, parameterAssignment: "APU MAINTENANCE WORD 1 HIGH BITS", mnemonic: "APUMNT1H", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息1高位", customDescription: "19 Ignitor Plug A Open Fault", ataChapter: "ATA-49" },
-  { id: 14, parameterAssignment: "APU MAINTENANCE WORD 1 LOW BITS", mnemonic: "APUMNT1L", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息1低位", customDescription: "11 Fuel Filter Impending Blockage", ataChapter: "ATA-49" },
-  { id: 15, parameterAssignment: "APU MAINTENANCE WORD 2 HIGH BITS", mnemonic: "APUMNT2H", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息2高位", customDescription: "14 ESC Fault - Shutdown", ataChapter: "ATA-49" },
-  { id: 16, parameterAssignment: "APU MAINTENANCE WORD 2 LOW BITS", mnemonic: "APUMNT2L", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息2低位", customDescription: "11 FADEC Fault - Warning", ataChapter: "ATA-49" },
-  { id: 17, parameterAssignment: "APU MAINTENANCE WORD 3 HIGH BITS", mnemonic: "APUMNT3H", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息3高位", customDescription: "18 Low Oil Pressure", ataChapter: "ATA-49" },
-  { id: 18, parameterAssignment: "APU MAINTENANCE WORD 3 LOW BITS", mnemonic: "APUMNT3L", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息3低位", customDescription: "11 Overspeed", ataChapter: "ATA-49" },
-  { id: 19, parameterAssignment: "APU MAINTENANCE WORD 4 HIGH BITS", mnemonic: "APUMNT4H", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息4高位", customDescription: "22 Door Wrap Around Test Fault", ataChapter: "ATA-49" },
-  { id: 20, parameterAssignment: "APU MAINTENANCE WORD 4 LOW BITS", mnemonic: "APUMNT4L", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息4低位", customDescription: "11 FADEC Power Interrupt", ataChapter: "ATA-49" },
-  { id: 21, parameterAssignment: "APU MAINTENANCE WORD 4 MID BITS", mnemonic: "APUMNT4M", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息4中位", customDescription: "14 APU Master Switch Failed", ataChapter: "ATA-49" },
-  { id: 22, parameterAssignment: "APU GEN OFF [ELTAF]", mnemonic: "AGOL2", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "APU发电机关闭", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 23, parameterAssignment: "APU Status Word I-INLET AIR DOOR FULL OP", mnemonic: "IADFO", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-进气风门全开", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 24, parameterAssignment: "APU SHUTTING DOWN [APHCD]", mnemonic: "ASDA", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-APU正在关车", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 25, parameterAssignment: "APU Status Word I-NBPT ACTIVE", mnemonic: "NBAC", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-不间断供电开启", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 26, parameterAssignment: "APU Status Word I-INLET AIR DOOR FULL CL", mnemonic: "IADFC", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-APU进气风门全关", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 27, parameterAssignment: "TREND REPORT BIT FOR APU START", mnemonic: "TPBFC", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-APU状态趋势报告", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 28, parameterAssignment: "APU TREND REPORT BIT FOR MES", mnemonic: "ATRBFM", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-APU对主发起动趋势报告", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 29, parameterAssignment: "APU EGT Display = Red [APHER]", mnemonic: "AEDR", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字2-EGT显示红色", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 30, parameterAssignment: "APU EGT Display = Amber [APHEY]", mnemonic: "AEDA", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字2-EGT显示琥珀色", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 31, parameterAssignment: "APU Speed Display = Red [APHSR]", mnemonic: "ASDR", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字2-转速显示红色", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 32, parameterAssignment: "APU Status Word II-APU Speed Display = A", mnemonic: "IIASDA", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字2-转速显示琥珀色", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 33, parameterAssignment: "APU OVERLOAD ENVELOPE", mnemonic: "AORE", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-APU过载", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 34, parameterAssignment: "APU Status Word I-INLET AIR DOOR PARTIAL OPEN", mnemonic: "IADPO", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-APU进气风门部分开", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 35, parameterAssignment: "APU Generator Load", mnemonic: "APUGL", portName: "LA-DCU-1", signalType: "BNR", unit: "A", customName: "APU负载", customDescription: "", ataChapter: "ATA-49" },
-  { id: 36, parameterAssignment: "APU OIL TEMPERATURE", mnemonic: "APUOILT", portName: "LA-DCU-1", signalType: "BNR", unit: "℃", customName: "APU滑油温度", customDescription: "", ataChapter: "ATA-49" },
-  { id: 37, parameterAssignment: "APU Status Word II-APU Inlet Door Failed Open", mnemonic: "IIAIDFO", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU进气风门失效在开位", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 38, parameterAssignment: "APU Status Word II-APU Inlet Door Failed Closed", mnemonic: "IIAIDFC", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU进气风门失效在关位", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 39, parameterAssignment: "APU Fuel Supply Low", mnemonic: "AFSL", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU燃油供给不足", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 40, parameterAssignment: "APU INLET DOOR POSITION A", mnemonic: "AIDPA", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU进气风门位置(A)", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 41, parameterAssignment: "APU INLET DOOR POSITION B", mnemonic: "AIDPB", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU进气风门位置（B）", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 42, parameterAssignment: "APU INLET DOOR POSITION C", mnemonic: "AIDPC", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU进气风门位置(C)", customDescription: "0 FALSE / 1 TRUE", ataChapter: "ATA-49" },
-  { id: 43, parameterAssignment: "APU Hour", mnemonic: "APUH", portName: "LA-DCU-1", signalType: "BNR", unit: "hr", customName: "APU总工作时间", customDescription: "", ataChapter: "ATA-49" },
-  { id: 44, parameterAssignment: "APU Start Cycle", mnemonic: "APUSC", portName: "LA-DCU-1", signalType: "BNR", unit: "/", customName: "APU循环次数", customDescription: "", ataChapter: "ATA-49" },
-  { id: 45, parameterAssignment: "APU Hour", mnemonic: "APUH", portName: "LA-DCU-1", signalType: "BNR", unit: "hr", customName: "APU总工作时间", customDescription: "", ataChapter: "ATA-49" },
-  { id: 46, parameterAssignment: "APU Start Cycle", mnemonic: "APUSC", portName: "LA-DCU-1", signalType: "BNR", unit: "/", customName: "APU循环次数", customDescription: "", ataChapter: "ATA-49" },
-  { id: 47, parameterAssignment: "APU bleed servo CMD", mnemonic: "APUBSCMD", portName: "LA-DCU-1", signalType: "BNR", unit: "mA", customName: "APU引气阀控制指令", customDescription: "", ataChapter: "ATA-49" },
-  { id: 48, parameterAssignment: "APU OIL PRESSURE", mnemonic: "APUOILP", portName: "LA-DCU-1", signalType: "BNR", unit: "psi", customName: "APU滑油压力", customDescription: "", ataChapter: "ATA-49" },
+  { id: 1, parameterAssignment: "APU_SERIAL_NUMBER", mnemonic: "APUSERNO", portName: "LA-DCU-1", signalType: "BNR", unit: "/", customName: "APU序列号", customDescription: "", ataChapter: "49" },
+  { id: 2, parameterAssignment: "APU GEN OFF", mnemonic: "L265B18", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU发电机关闭", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 3, parameterAssignment: "ELECTRICAL SYNOPTIC 3-APU BATT VOLTS WH", mnemonic: "L076B222", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "APU蓄电池电压警告", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 4, parameterAssignment: "ELECTRICAL SYNOPTIC 3-APU DIR BUS POWER", mnemonic: "L076B182", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "APU直接汇流条有电", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 5, parameterAssignment: "APU EGT", mnemonic: "APUEGT", portName: "LA-DCU-1", signalType: "BNR", unit: "℃", customName: "APU排气温度", customDescription: "", ataChapter: "49" },
+  { id: 6, parameterAssignment: "APU FUEL FLOW", mnemonic: "APUFF", portName: "LA-DCU-1", signalType: "BNR", unit: "lb/h", customName: "APU燃油流量", customDescription: "", ataChapter: "49" },
+  { id: 7, parameterAssignment: "APU SPEED", mnemonic: "APUSPEED", portName: "LA-DCU-1", signalType: "BNR", unit: "%", customName: "APU转速", customDescription: "", ataChapter: "49" },
+  { id: 8, parameterAssignment: "APU BLEED AIR FLOW", mnemonic: "APUBLDAF", portName: "LA-DCU-1", signalType: "BNR", unit: "kg/s", customName: "APU引气流量", customDescription: "", ataChapter: "49" },
+  { id: 9, parameterAssignment: "FUEL SYNOPTIC 1-CLOSED APU FUEL FEED SOV", mnemonic: "L053B20", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "APU燃油切断阀关闭", customDescription: "0 NOT-CLD / 1 CLD", ataChapter: "49" },
+  { id: 10, parameterAssignment: "FUEL SYNOPTIC 1-OPEN APU FUEL FEED SOV", mnemonic: "L053B19", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "APU燃油切断阀打开", customDescription: "0 NOT-OPN / 1 OPN", ataChapter: "49" },
+  { id: 11, parameterAssignment: "WARNING DISC 2-APU FIRE", mnemonic: "L002B16", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "APU火警", customDescription: "0 NO-FIRE / 1 FIRE", ataChapter: "49" },
+  { id: 12, parameterAssignment: "WARNING DISC 2-APU BLEED OVERHEAT", mnemonic: "L002B24", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU引气管路渗漏过热", customDescription: "0 NO-OVHT / 1 OVHT", ataChapter: "49" },
+  { id: 13, parameterAssignment: "APU MAINTENANCE WORD 1 HIGH BITS", mnemonic: "APUMNT1H", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息1高位", customDescription: "19 Ignitor Plug A Open Fault", ataChapter: "49" },
+  { id: 14, parameterAssignment: "APU MAINTENANCE WORD 1 LOW BITS", mnemonic: "APUMNT1L", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息1低位", customDescription: "11 Fuel Filter Impending Blockage", ataChapter: "49" },
+  { id: 15, parameterAssignment: "APU MAINTENANCE WORD 2 HIGH BITS", mnemonic: "APUMNT2H", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息2高位", customDescription: "14 ESC Fault - Shutdown", ataChapter: "49" },
+  { id: 16, parameterAssignment: "APU MAINTENANCE WORD 2 LOW BITS", mnemonic: "APUMNT2L", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息2低位", customDescription: "11 FADEC Fault - Warning", ataChapter: "49" },
+  { id: 17, parameterAssignment: "APU MAINTENANCE WORD 3 HIGH BITS", mnemonic: "APUMNT3H", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息3高位", customDescription: "18 Low Oil Pressure", ataChapter: "49" },
+  { id: 18, parameterAssignment: "APU MAINTENANCE WORD 3 LOW BITS", mnemonic: "APUMNT3L", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息3低位", customDescription: "11 Overspeed", ataChapter: "49" },
+  { id: 19, parameterAssignment: "APU MAINTENANCE WORD 4 HIGH BITS", mnemonic: "APUMNT4H", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息4高位", customDescription: "22 Door Wrap Around Test Fault", ataChapter: "49" },
+  { id: 20, parameterAssignment: "APU MAINTENANCE WORD 4 LOW BITS", mnemonic: "APUMNT4L", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息4低位", customDescription: "11 FADEC Power Interrupt", ataChapter: "49" },
+  { id: 21, parameterAssignment: "APU MAINTENANCE WORD 4 MID BITS", mnemonic: "APUMNT4M", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU维护信息4中位", customDescription: "14 APU Master Switch Failed", ataChapter: "49" },
+  { id: 22, parameterAssignment: "APU GEN OFF [ELTAF]", mnemonic: "AGOL2", portName: "LA-DCU-2", signalType: "DIS", unit: "/", customName: "APU发电机关闭", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 23, parameterAssignment: "APU Status Word I-INLET AIR DOOR FULL OP", mnemonic: "IADFO", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-进气风门全开", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 24, parameterAssignment: "APU SHUTTING DOWN [APHCD]", mnemonic: "ASDA", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-APU正在关车", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 25, parameterAssignment: "APU Status Word I-NBPT ACTIVE", mnemonic: "NBAC", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-不间断供电开启", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 26, parameterAssignment: "APU Status Word I-INLET AIR DOOR FULL CL", mnemonic: "IADFC", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-APU进气风门全关", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 27, parameterAssignment: "TREND REPORT BIT FOR APU START", mnemonic: "TPBFC", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-APU状态趋势报告", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 28, parameterAssignment: "APU TREND REPORT BIT FOR MES", mnemonic: "ATRBFM", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-APU对主发起动趋势报告", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 29, parameterAssignment: "APU EGT Display = Red [APHER]", mnemonic: "AEDR", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字2-EGT显示红色", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 30, parameterAssignment: "APU EGT Display = Amber [APHEY]", mnemonic: "AEDA", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字2-EGT显示琥珀色", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 31, parameterAssignment: "APU Speed Display = Red [APHSR]", mnemonic: "ASDR", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字2-转速显示红色", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 32, parameterAssignment: "APU Status Word II-APU Speed Display = A", mnemonic: "IIASDA", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字2-转速显示琥珀色", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 33, parameterAssignment: "APU OVERLOAD ENVELOPE", mnemonic: "AORE", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-APU过载", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 34, parameterAssignment: "APU Status Word I-INLET AIR DOOR PARTIAL OPEN", mnemonic: "IADPO", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU状态字1-APU进气风门部分开", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 35, parameterAssignment: "APU Generator Load", mnemonic: "APUGL", portName: "LA-DCU-1", signalType: "BNR", unit: "A", customName: "APU负载", customDescription: "", ataChapter: "49" },
+  { id: 36, parameterAssignment: "APU OIL TEMPERATURE", mnemonic: "APUOILT", portName: "LA-DCU-1", signalType: "BNR", unit: "℃", customName: "APU滑油温度", customDescription: "", ataChapter: "49" },
+  { id: 37, parameterAssignment: "APU Status Word II-APU Inlet Door Failed Open", mnemonic: "IIAIDFO", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU进气风门失效在开位", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 38, parameterAssignment: "APU Status Word II-APU Inlet Door Failed Closed", mnemonic: "IIAIDFC", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU进气风门失效在关位", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 39, parameterAssignment: "APU Fuel Supply Low", mnemonic: "AFSL", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU燃油供给不足", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 40, parameterAssignment: "APU INLET DOOR POSITION A", mnemonic: "AIDPA", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU进气风门位置(A)", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 41, parameterAssignment: "APU INLET DOOR POSITION B", mnemonic: "AIDPB", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU进气风门位置（B）", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 42, parameterAssignment: "APU INLET DOOR POSITION C", mnemonic: "AIDPC", portName: "LA-DCU-1", signalType: "DIS", unit: "/", customName: "APU进气风门位置(C)", customDescription: "0 FALSE / 1 TRUE", ataChapter: "49" },
+  { id: 43, parameterAssignment: "APU Hour", mnemonic: "APUH", portName: "LA-DCU-1", signalType: "BNR", unit: "hr", customName: "APU总工作时间", customDescription: "", ataChapter: "49" },
+  { id: 44, parameterAssignment: "APU Start Cycle", mnemonic: "APUSC", portName: "LA-DCU-1", signalType: "BNR", unit: "/", customName: "APU循环次数", customDescription: "", ataChapter: "49" },
+  { id: 45, parameterAssignment: "APU Hour", mnemonic: "APUH", portName: "LA-DCU-1", signalType: "BNR", unit: "hr", customName: "APU总工作时间", customDescription: "", ataChapter: "49" },
+  { id: 46, parameterAssignment: "APU Start Cycle", mnemonic: "APUSC", portName: "LA-DCU-1", signalType: "BNR", unit: "/", customName: "APU循环次数", customDescription: "", ataChapter: "49" },
+  { id: 47, parameterAssignment: "APU bleed servo CMD", mnemonic: "APUBSCMD", portName: "LA-DCU-1", signalType: "BNR", unit: "mA", customName: "APU引气阀控制指令", customDescription: "", ataChapter: "49" },
+  { id: 48, parameterAssignment: "APU OIL PRESSURE", mnemonic: "APUOILP", portName: "LA-DCU-1", signalType: "BNR", unit: "psi", customName: "APU滑油压力", customDescription: "", ataChapter: "49" },
 ];
 
 // 各航司的自定义配置数据
@@ -535,6 +595,15 @@ export default function DataManagementPage() {
     status: "",
     ata: ""
   });
+
+  // 典型故障案例库筛选状态
+  const [caseAta, setCaseAta] = useState<string>("21");
+  const [caseLru, setCaseLru] = useState<string>("");
+
+  const selectedCaseChapter = caseChapters.find((c) => c.ata === caseAta);
+  const filteredCases = typicalCaseData.filter(
+    (c) => c.ata === caseAta && (caseLru === "" || c.lru === caseLru),
+  );
 
   // API 管理状态
   const [apiList, setApiList] = useState<ApiConfig[]>(initialApiData);
@@ -822,7 +891,7 @@ export default function DataManagementPage() {
     setTemplateDialogOpen(false);
   };
 
-  // 切换参数选择
+  // 切换参数选��
   const toggleParameterSelection = (mnemonic: string) => {
     setTemplateForm(prev => ({
       ...prev,
@@ -1515,7 +1584,7 @@ export default function DataManagementPage() {
                 <div className="flex items-center gap-4">
                   <CardTitle className="text-base flex items-center gap-2">
                     <Sliders className="h-4 w-4 text-primary" />
-                    参数配��
+                    参数配置
                   </CardTitle>
                   {/* 版本选择器 */}
                   <div className="flex items-center gap-2">
@@ -2147,7 +2216,7 @@ export default function DataManagementPage() {
                                 className={`justify-start h-8 px-2 ${faultFilters.status === "analyzed" ? "bg-accent" : ""}`}
                                 onClick={() => setFaultFilters(prev => ({ ...prev, status: "analyzed" }))}
                               >
-                                已分析
+                                已分��
                               </Button>
                               <Button
                                 variant="ghost"
@@ -2229,6 +2298,164 @@ export default function DataManagementPage() {
                     )}
                   </TableBody>
                 </Table>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* 典型故障案例库 */}
+        {activeTab === "casebase" && (
+          <div className="space-y-4">
+            {/* ATA章节筛选 */}
+            <Card className="border border-border">
+              <CardContent className="p-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="flex items-center gap-1.5 text-sm font-medium text-foreground mr-1 shrink-0">
+                    <Layers className="h-4 w-4 text-primary" />
+                    ATA章节
+                  </span>
+                  {caseChapters.map((chapter) => {
+                    const count = typicalCaseData.filter((c) => c.ata === chapter.ata).length;
+                    const isActive = caseAta === chapter.ata;
+                    return (
+                      <Button
+                        key={chapter.ata}
+                        variant={isActive ? "default" : "outline"}
+                        size="sm"
+                        className="gap-1.5"
+                        onClick={() => {
+                          setCaseAta(chapter.ata);
+                          setCaseLru("");
+                        }}
+                      >
+                        <span className="font-mono">{chapter.ata}</span>
+                        {chapter.name}
+                        <Badge
+                          variant="secondary"
+                          className={`ml-1 h-5 min-w-5 px-1 ${isActive ? "bg-primary-foreground/20 text-primary-foreground" : ""}`}
+                        >
+                          {count}
+                        </Badge>
+                      </Button>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* LRU/典型故障筛选 */}
+            <Card className="border border-border">
+              <CardContent className="p-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="flex items-center gap-1.5 text-sm font-medium text-foreground mr-1 shrink-0">
+                    <Wrench className="h-4 w-4 text-primary" />
+                    LRU / 典型故障
+                  </span>
+                  <Button
+                    variant={caseLru === "" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setCaseLru("")}
+                  >
+                    全部
+                  </Button>
+                  {selectedCaseChapter?.lrus.map((lru) => {
+                    const count = typicalCaseData.filter(
+                      (c) => c.ata === caseAta && c.lru === lru,
+                    ).length;
+                    return (
+                      <Button
+                        key={lru}
+                        variant={caseLru === lru ? "default" : "outline"}
+                        size="sm"
+                        className="gap-1.5"
+                        onClick={() => setCaseLru(lru)}
+                      >
+                        {lru}
+                        {count > 0 && (
+                          <Badge
+                            variant="secondary"
+                            className={`ml-1 h-5 min-w-5 px-1 ${caseLru === lru ? "bg-primary-foreground/20 text-primary-foreground" : ""}`}
+                          >
+                            {count}
+                          </Badge>
+                        )}
+                      </Button>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 案例列表 */}
+            <Card className="border border-border">
+              <CardHeader className="border-b border-border py-3 px-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Bookmark className="h-4 w-4 text-primary" />
+                    已标记典型案例
+                    <span className="text-sm font-normal text-muted-foreground">
+                      共 {filteredCases.length} 个
+                    </span>
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-4">
+                {filteredCases.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground">
+                    <BookOpen className="h-10 w-10 mb-3 opacity-40" />
+                    <p className="text-sm">该 LRU / 典型故障下暂无已标记的典型案例</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {filteredCases.map((c) => (
+                      <div
+                        key={c.id}
+                        className="border border-border rounded-lg p-4 hover:border-primary/50 hover:shadow-sm transition-all flex flex-col gap-3"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <Badge variant="outline" className="bg-purple-50 text-purple-600 font-mono">
+                              {c.ata}
+                            </Badge>
+                            <Badge variant="outline" className="bg-amber-50 text-amber-700">
+                              <Wrench className="h-3 w-3 mr-1" />
+                              {c.lru}
+                            </Badge>
+                            {getSeverityBadge(c.severity)}
+                          </div>
+                          <span className="font-mono text-xs text-muted-foreground shrink-0">{c.id}</span>
+                        </div>
+                        <h4 className="font-medium text-foreground text-pretty leading-relaxed">{c.title}</h4>
+                        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">{c.summary}</p>
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <Database className="h-3 w-3" />
+                            {c.registration} · {c.airline}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <History className="h-3 w-3" />
+                            发生 {c.occurrences} 次
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            {c.savedDate}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between border-t border-border pt-3 mt-auto">
+                          <span className="text-xs text-muted-foreground">
+                            关联分析：<span className="font-mono text-foreground">{c.analysisId}</span>
+                          </span>
+                          <Link href={`/task-management?analysisId=${c.analysisId}`}>
+                            <Button variant="outline" size="sm" className="gap-1 h-7">
+                              <ExternalLink className="h-3.5 w-3.5" />
+                              查看分析结果
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>

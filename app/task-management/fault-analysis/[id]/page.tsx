@@ -156,13 +156,13 @@ const currentATA = "72";
 
 // 模拟故障关联列表数据（参考故障统计列表结构）
 const relatedFaults = [
-  { 
-    id: "FA-2024-0156", 
-    cmsMessage: "APU BLEED SERVO VALVE", 
-    registration: "B-104X", 
-    ataChapter: "49", 
-    faultDate: "2026-04-12 14:30:00", 
-    route: "ZSSS-ZGSZ", 
+  {
+    id: "FA-2024-0156",
+    cmsMessage: "APU BLEED SERVO VALVE",
+    registration: "B-104X",
+    ataChapter: "49",
+    faultDate: "2026-04-12 14:30:00",
+    route: "ZSSS-ZGSZ",
     status: "analyzed" as const,
     // 故障基本信息
     basicInfo: {
@@ -181,13 +181,13 @@ const relatedFaults = [
       analyzeDate: "2026-04-13 16:20:00"
     }
   },
-  { 
-    id: "FA-2024-0148", 
-    cmsMessage: "APU BLEED SERVO VALVE", 
-    registration: "B-104X", 
-    ataChapter: "49", 
-    faultDate: "2026-01-10 09:15:00", 
-    route: "ZSSS-ZGSZ", 
+  {
+    id: "FA-2024-0148",
+    cmsMessage: "APU BLEED SERVO VALVE",
+    registration: "B-104X",
+    ataChapter: "49",
+    faultDate: "2026-01-10 09:15:00",
+    route: "ZSSS-ZGSZ",
     status: "analyzed" as const,
     basicInfo: {
       partNumber: "11CB67",
@@ -204,13 +204,13 @@ const relatedFaults = [
       analyzeDate: "2026-01-11 10:30:00"
     }
   },
-  { 
-    id: "FA-2024-0142", 
-    cmsMessage: "APU BLEED SERVO VALVE", 
-    registration: "B-104X", 
-    ataChapter: "49", 
-    faultDate: "2026-01-05 16:45:00", 
-    route: "ZSSS-ZGSZ", 
+  {
+    id: "FA-2024-0142",
+    cmsMessage: "APU BLEED SERVO VALVE",
+    registration: "B-104X",
+    ataChapter: "49",
+    faultDate: "2026-01-05 16:45:00",
+    route: "ZSSS-ZGSZ",
     status: "pending" as const,
     basicInfo: {
       partNumber: "11CB67",
@@ -221,13 +221,13 @@ const relatedFaults = [
     },
     analysisResult: null
   },
-  { 
-    id: "FA-2023-0098", 
-    cmsMessage: "APU BLEED SERVO VALVE", 
-    registration: "B-104X", 
-    ataChapter: "49", 
-    faultDate: "2025-12-28 11:20:00", 
-    route: "ZSSS-ZGSZ", 
+  {
+    id: "FA-2023-0098",
+    cmsMessage: "APU BLEED SERVO VALVE",
+    registration: "B-104X",
+    ataChapter: "49",
+    faultDate: "2025-12-28 11:20:00",
+    route: "ZSSS-ZGSZ",
     status: "analyzed" as const,
     basicInfo: {
       partNumber: "11CB65",
@@ -244,13 +244,13 @@ const relatedFaults = [
       analyzeDate: "2025-12-29 14:00:00"
     }
   },
-  { 
-    id: "FA-2023-0092", 
-    cmsMessage: "APU BLEED SERVO VALVE", 
-    registration: "B-104X", 
-    ataChapter: "49", 
-    faultDate: "2025-12-20 08:30:00", 
-    route: "ZSSS-ZGSZ", 
+  {
+    id: "FA-2023-0092",
+    cmsMessage: "APU BLEED SERVO VALVE",
+    registration: "B-104X",
+    ataChapter: "49",
+    faultDate: "2025-12-20 08:30:00",
+    route: "ZSSS-ZGSZ",
     status: "analyzed" as const,
     basicInfo: {
       partNumber: "11CB65",
@@ -267,13 +267,13 @@ const relatedFaults = [
       analyzeDate: "2025-12-21 11:00:00"
     }
   },
-  { 
-    id: "FA-2023-0085", 
-    cmsMessage: "APU BLEED SERVO VALVE", 
-    registration: "B-104X", 
-    ataChapter: "49", 
-    faultDate: "2025-12-15 15:10:00", 
-    route: "ZSSS-ZGSZ", 
+  {
+    id: "FA-2023-0085",
+    cmsMessage: "APU BLEED SERVO VALVE",
+    registration: "B-104X",
+    ataChapter: "49",
+    faultDate: "2025-12-15 15:10:00",
+    route: "ZSSS-ZGSZ",
     status: "analyzed" as const,
     basicInfo: {
       partNumber: "11CB65",
@@ -305,15 +305,15 @@ export default function FaultAnalysisPage() {
   const [healthIndexData, setHealthIndexData] = useState<ReturnType<typeof generateHealthIndexData>>([]);
   const [anomalyData, setAnomalyData] = useState<ReturnType<typeof generateAnomalyData>>([]);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
-  
+
   // 航段筛选相关状态
   const [showSegmentFilter, setShowSegmentFilter] = useState(false);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState(2); // 当前航段索引（故障发生航段）
   const [loadedSegments, setLoadedSegments] = useState<number[]>([]); // 已加载的航段索引列表
-  
+
   // 关联故障展开状态
   const [isRelatedFaultsExpanded, setIsRelatedFaultsExpanded] = useState(false);
-  
+
   // 关联故障详情弹窗状态
   const [selectedRelatedFault, setSelectedRelatedFault] = useState<typeof relatedFaults[number] | null>(null);
   const [relatedFaultDialogOpen, setRelatedFaultDialogOpen] = useState(false);
@@ -479,335 +479,363 @@ export default function FaultAnalysisPage() {
         </div>
 
         <div className="flex flex-col gap-4">
-        {/* 第一部分：故障基本信息（紧凑版） */}
-        <Card className="bg-card border-border shadow-sm">
-          <CardHeader className="border-b border-border py-2 px-4">
-            <CardTitle className="flex items-center justify-between text-foreground text-base">
-              <span className="flex items-center gap-2">
-                <AlertCircle className="h-4 w-4 text-primary" />
-                故障基本信息
-              </span>
-              {isBasicInfoEditing ? (
-                <div className="flex items-center gap-1.5">
+          {/* 第一部分：故障基本信息（紧凑版） */}
+          <Card className="bg-card border-border shadow-sm">
+            <CardHeader className="border-b border-border py-2 px-4">
+              <CardTitle className="flex items-center justify-between text-foreground text-base">
+                <span className="flex items-center gap-2">
+                  <AlertCircle className="h-4 w-4 text-primary" />
+                  故障基本信息
+                </span>
+                {isBasicInfoEditing ? (
+                  <div className="flex items-center gap-1.5">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-7 px-2 text-muted-foreground hover:text-foreground"
+                      onClick={handleBasicInfoCancel}
+                    >
+                      <X className="h-3.5 w-3.5 mr-1" />
+                      取消
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="h-7 px-3 bg-primary text-primary-foreground"
+                      onClick={handleBasicInfoSave}
+                    >
+                      <Check className="h-3.5 w-3.5 mr-1" />
+                      保存
+                    </Button>
+                  </div>
+                ) : (
                   <Button
                     size="sm"
                     variant="ghost"
                     className="h-7 px-2 text-muted-foreground hover:text-foreground"
-                    onClick={handleBasicInfoCancel}
+                    onClick={handleBasicInfoEdit}
                   >
-                    <X className="h-3.5 w-3.5 mr-1" />
-                    取消
+                    <Pencil className="h-3.5 w-3.5 mr-1" />
+                    编辑
                   </Button>
-                  <Button
-                    size="sm"
-                    className="h-7 px-3 bg-primary text-primary-foreground"
-                    onClick={handleBasicInfoSave}
-                  >
-                    <Check className="h-3.5 w-3.5 mr-1" />
-                    保存
-                  </Button>
-                </div>
-              ) : (
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-7 px-2 text-muted-foreground hover:text-foreground"
-                  onClick={handleBasicInfoEdit}
-                >
-                  <Pencil className="h-3.5 w-3.5 mr-1" />
-                  编辑
-                </Button>
-              )}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-3">
-            {/* 第一排：ATA章节、注册号、日期、起降机场、部件、件号 */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-sm">
-              {(
-                [
-                  { key: "ataChapter", label: "ATA章节" },
-                  { key: "registration", label: "注册号" },
-                  { key: "faultDate", label: "日期" },
-                  { key: "route", label: "起降机场" },
-                  { key: "component", label: "部件" },
-                  { key: "partNumber", label: "件号" },
-                ] as { key: keyof typeof basicInfoForm; label: string }[]
-              ).map(({ key, label }) => {
-                const isChanged = basicInfoForm[key] !== originalBasicInfoForm[key];
-                const showHighlight = !isBasicInfoEditing && isChanged;
-                return (
-                  <div key={key}>
-                    <Label className="text-muted-foreground text-xs">{label}</Label>
-                    <Input
-                      value={basicInfoForm[key]}
-                      readOnly={!isBasicInfoEditing}
-                      onChange={(e) =>
-                        setBasicInfoForm((prev) => ({ ...prev, [key]: e.target.value }))
-                      }
-                      className="h-8 mt-1 border-border"
-                      style={
-                        showHighlight
-                          ? { color: "#ea580c", backgroundColor: "#fefce8", fontWeight: 500 }
-                          : isBasicInfoEditing
-                          ? { cursor: "text" }
-                          : { cursor: "default" }
-                      }
-                    />
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* 第二排：CMS信息、EICAS信息 */}
-            <div className="grid grid-cols-2 gap-3 text-sm mt-3">
-              {(
-                [
-                  { key: "cmsMessage", label: "CMS信息" },
-                  { key: "eicas", label: "EICAS信息" },
-                ] as { key: keyof typeof basicInfoForm; label: string }[]
-              ).map(({ key, label }) => {
-                const isChanged = basicInfoForm[key] !== originalBasicInfoForm[key];
-                const showHighlight = !isBasicInfoEditing && isChanged;
-                return (
-                  <div key={key}>
-                    <Label className="text-muted-foreground text-xs">{label}</Label>
-                    <Input
-                      value={basicInfoForm[key]}
-                      readOnly={!isBasicInfoEditing}
-                      onChange={(e) =>
-                        setBasicInfoForm((prev) => ({ ...prev, [key]: e.target.value }))
-                      }
-                      className="h-8 mt-1 border-border"
-                      style={
-                        showHighlight
-                          ? { color: "#ea580c", backgroundColor: "#fefce8", fontWeight: 500 }
-                          : isBasicInfoEditing
-                          ? { cursor: "text" }
-                          : { cursor: "default" }
-                      }
-                    />
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* 可折叠的故障描述 */}
-            <div className="mt-3">
-              <button
-                onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-                className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <span className="text-xs">故障描述</span>
-                {isDescriptionExpanded ? (
-                  <ChevronUp className="h-3 w-3" />
-                ) : (
-                  <ChevronDown className="h-3 w-3" />
                 )}
-              </button>
-              {isDescriptionExpanded && (
-                <div className="mt-2 space-y-2">
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Clock className="h-3 w-3" />
-                    <span>报送时间: 2024-01-15 14:32:00</span>
-                  </div>
-                  {(() => {
-                    const descChanged = basicInfoForm.description !== originalBasicInfoForm.description;
-                    const showHighlight = !isBasicInfoEditing && descChanged;
-                    return (
-                      <Textarea
-                        value={basicInfoForm.description}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-3">
+              {/* 第一排：ATA章节、注册号、日期、起降机场、部件、件号 */}
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-sm">
+                {(
+                  [
+                    { key: "ataChapter", label: "ATA章节" },
+                    { key: "registration", label: "注册号" },
+                    { key: "faultDate", label: "日期" },
+                    { key: "route", label: "起降机场" },
+                    { key: "component", label: "部件" },
+                    { key: "partNumber", label: "件号" },
+                  ] as { key: keyof typeof basicInfoForm; label: string }[]
+                ).map(({ key, label }) => {
+                  const isChanged = basicInfoForm[key] !== originalBasicInfoForm[key];
+                  const showHighlight = !isBasicInfoEditing && isChanged;
+                  return (
+                    <div key={key}>
+                      <Label className="text-muted-foreground text-xs">{label}</Label>
+                      <Input
+                        value={basicInfoForm[key]}
                         readOnly={!isBasicInfoEditing}
                         onChange={(e) =>
-                          setBasicInfoForm((prev) => ({ ...prev, description: e.target.value }))
+                          setBasicInfoForm((prev) => ({ ...prev, [key]: e.target.value }))
                         }
-                        className="mt-1 border-border text-sm min-h-[50px]"
+                        className="h-8 mt-1 border-border"
                         style={
                           showHighlight
-                            ? { color: "#ea580c", backgroundColor: "#fefce8" }
-                            : {}
+                            ? { color: "#ea580c", backgroundColor: "#fefce8", fontWeight: 500 }
+                            : isBasicInfoEditing
+                              ? { cursor: "text" }
+                              : { cursor: "default" }
                         }
                       />
-                    );
-                  })()}
-                  <div>
-                    <Label className="text-muted-foreground text-xs">���增信息</Label>
-                    {isBasicInfoEditing ? (
-                      <Textarea
-                        value={basicInfoForm.newInfo}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* 第二排：CMS信息、EICAS信息 */}
+              <div className="grid grid-cols-2 gap-3 text-sm mt-3">
+                {(
+                  [
+                    { key: "cmsMessage", label: "CMS信息" },
+                    { key: "eicas", label: "EICAS信息" },
+                  ] as { key: keyof typeof basicInfoForm; label: string }[]
+                ).map(({ key, label }) => {
+                  const isChanged = basicInfoForm[key] !== originalBasicInfoForm[key];
+                  const showHighlight = !isBasicInfoEditing && isChanged;
+                  return (
+                    <div key={key}>
+                      <Label className="text-muted-foreground text-xs">{label}</Label>
+                      <Input
+                        value={basicInfoForm[key]}
+                        readOnly={!isBasicInfoEditing}
                         onChange={(e) =>
-                          setBasicInfoForm((prev) => ({ ...prev, newInfo: e.target.value }))
+                          setBasicInfoForm((prev) => ({ ...prev, [key]: e.target.value }))
                         }
-                        placeholder="请输入新增信息..."
-                        className="mt-1 bg-background border-border text-foreground text-sm min-h-[50px]"
+                        className="h-8 mt-1 border-border"
+                        style={
+                          showHighlight
+                            ? { color: "#ea580c", backgroundColor: "#fefce8", fontWeight: 500 }
+                            : isBasicInfoEditing
+                              ? { cursor: "text" }
+                              : { cursor: "default" }
+                        }
                       />
-                    ) : (
-                      basicInfoForm.newInfo && (
-                        <div className="mt-1 p-2 bg-orange-50 border border-orange-200 rounded text-sm">
-                          <span className="text-orange-700 font-medium">新增信息：</span>
-                          <span className="text-orange-500">{basicInfoForm.newInfo}</span>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+                    </div>
+                  );
+                })}
+              </div>
 
-        {/* 第二部分：模板参数分析 */}
-        <Card className="bg-card border-border shadow-sm">
-          <CardHeader className="border-b border-border py-2 px-4">
-            <CardTitle className="flex items-center gap-2 text-foreground text-base">
-              <FileText className="h-4 w-4 text-primary" />
-              模板参数分析
-              {recommendedTemplateId && (
-                <Badge variant="outline" className="ml-2 bg-emerald-50 text-emerald-700 border-emerald-200 text-xs">
-                  根据ATA章节推荐
-                </Badge>
-              )}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-3 space-y-3">
-            <div className="flex flex-wrap gap-3">
-              {templates.map((template) => (
-                <Button
-                  key={template.id}
-                  variant="outline"
-                  onClick={() => handleTemplateSelect(template.id)}
-                  className={`min-w-[140px] ${getTemplateButtonStyle(template.id)}`}
+              {/* 可折叠的故障描述 */}
+              <div className="mt-3">
+                <button
+                  onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+                  className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  {template.name}
-                  {recommendedTemplateId === template.id && selectedTemplate !== template.id && (
-                    <span className="ml-1 text-xs">(推荐)</span>
+                  <span className="text-xs">故障描述</span>
+                  {isDescriptionExpanded ? (
+                    <ChevronUp className="h-3 w-3" />
+                  ) : (
+                    <ChevronDown className="h-3 w-3" />
                   )}
-                </Button>
-              ))}
-            </div>
-
-            {selectedTemplate && (
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="text-muted-foreground">已加载参数:</span>
-                  <span className="text-foreground">
-                    {templates.find(t => t.id === selectedTemplate)?.params.join(", ")}
-                  </span>
-                </div>
-
-                {/* 航段筛选模块 */}
-                {showSegmentFilter && (
-                  <div className="flex items-center gap-3 p-3 bg-secondary/30 rounded-lg border border-border">
-                    <div className="flex items-center gap-2">
-                      <Plane className="h-4 w-4 text-primary" />
-                      <span className="text-sm font-medium">航段筛选</span>
+                </button>
+                {isDescriptionExpanded && (
+                  <div className="mt-2 space-y-2">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <Clock className="h-3 w-3" />
+                      <span>报送时间: 2026-06-15 14:32:00</span>
                     </div>
-                    
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={loadPreviousSegment}
-                        disabled={currentSegmentIndex === 0 || isLoadingTemplate}
-                        className="h-8"
-                      >
-                        <ChevronLeft className="h-4 w-4 mr-1" />
-                        向后
-                      </Button>
-                      
-                      <div className="px-4 py-2 bg-background border rounded-md min-w-[280px] text-center">
-                        <div className="text-sm font-medium">
-                          {flightSegments[currentSegmentIndex].startTime}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {flightSegments[currentSegmentIndex].departure} - {flightSegments[currentSegmentIndex].arrival}
-                        </div>
-                      </div>
-                      
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={loadNextSegment}
-                        disabled={currentSegmentIndex === flightSegments.length - 1 || isLoadingTemplate}
-                        className="h-8"
-                      >
-                        向前
-                        <ChevronRight className="h-4 w-4 ml-1" />
-                      </Button>
-                    </div>
-
-                    <div className="ml-auto flex items-center gap-2 text-xs">
-                      <span className="text-muted-foreground whitespace-nowrap">已加载航段:</span>
-                      <div className="flex flex-wrap gap-1">
-                        {loadedSegments.map((idx) => (
-                          <Badge 
-                            key={idx} 
-                            variant={idx === currentSegmentIndex ? "default" : "outline"}
-                            className="text-xs cursor-pointer font-mono"
-                            onClick={() => {
-                              setCurrentSegmentIndex(idx);
-                              setIsLoadingTemplate(true);
-                              setTimeout(() => {
-                                setTemplateChartData(generateChartData(idx));
-                                setEgtChartData(generateEGTChartData(idx));
-                                setTrendChartData(generateTrendChartData(idx));
-                                setIsLoadingTemplate(false);
-                              }, 500);
-                            }}
-                          >
-                            {flightSegments[idx].filename}
-                          </Badge>
-                        ))}
-                      </div>
+                    {(() => {
+                      const descChanged = basicInfoForm.description !== originalBasicInfoForm.description;
+                      const showHighlight = !isBasicInfoEditing && descChanged;
+                      return (
+                        <Textarea
+                          value={basicInfoForm.description}
+                          readOnly={!isBasicInfoEditing}
+                          onChange={(e) =>
+                            setBasicInfoForm((prev) => ({ ...prev, description: e.target.value }))
+                          }
+                          className="mt-1 border-border text-sm min-h-[50px]"
+                          style={
+                            showHighlight
+                              ? { color: "#ea580c", backgroundColor: "#fefce8" }
+                              : {}
+                          }
+                        />
+                      );
+                    })()}
+                    <div>
+                      <Label className="text-muted-foreground text-xs">新增信息</Label>
+                      {isBasicInfoEditing ? (
+                        <Textarea
+                          value={basicInfoForm.newInfo}
+                          onChange={(e) =>
+                            setBasicInfoForm((prev) => ({ ...prev, newInfo: e.target.value }))
+                          }
+                          placeholder="请输入新增信息..."
+                          className="mt-1 bg-background border-border text-foreground text-sm min-h-[50px]"
+                        />
+                      ) : (
+                        basicInfoForm.newInfo && (
+                          <div className="mt-1 p-2 bg-orange-50 border border-orange-200 rounded text-sm">
+                            <span className="text-orange-700 font-medium">新增信息：</span>
+                            <span className="text-orange-500">{basicInfoForm.newInfo}</span>
+                          </div>
+                        )
+                      )}
                     </div>
                   </div>
                 )}
+              </div>
+            </CardContent>
+          </Card>
 
-                {isLoadingTemplate ? (
-                  <div className="flex items-center justify-center h-[200px] bg-secondary/50 rounded-lg">
-                    <RefreshCw className="h-6 w-6 animate-spin text-primary" />
-                    <span className="ml-2 text-muted-foreground text-sm">加载参数数据中...</span>
+          {/* 第二部分：航段数据分析 */}
+          <Card className="bg-card border-border shadow-sm">
+            <CardHeader className="border-b border-border py-2 px-4">
+              <CardTitle className="flex items-center gap-2 text-foreground text-base">
+                <FileText className="h-4 w-4 text-primary" />
+                航段数据分析
+                {recommendedTemplateId && (
+                  <Badge variant="outline" className="ml-2 bg-emerald-50 text-emerald-700 border-emerald-200 text-xs">
+                    根据ATA章节推荐
+                  </Badge>
+                )}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-3 space-y-3">
+              <div className="flex flex-wrap gap-3">
+                {templates.map((template) => (
+                  <Button
+                    key={template.id}
+                    variant="outline"
+                    onClick={() => handleTemplateSelect(template.id)}
+                    className={`min-w-[140px] ${getTemplateButtonStyle(template.id)}`}
+                  >
+                    {template.name}
+                    {recommendedTemplateId === template.id && selectedTemplate !== template.id && (
+                      <span className="ml-1 text-xs">(推荐)</span>
+                    )}
+                  </Button>
+                ))}
+              </div>
+
+              {selectedTemplate && (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-muted-foreground">已加载参数:</span>
+                    <span className="text-foreground">
+                      {templates.find(t => t.id === selectedTemplate)?.params.join(", ")}
+                    </span>
                   </div>
-                ) : templateChartData.length > 0 ? (
-                  <div className="space-y-3">
-                    {/* 第一排：两张并排图表 */}
-                    <div className="grid grid-cols-2 gap-3">
-                      {/* 图表1: N1/N2转速 */}
-                      <div className="bg-secondary/30 rounded-lg p-3 border border-border">
-                        <div className="text-sm font-medium mb-2 flex items-center gap-2">
-                          <span className="h-2 w-2 rounded-full bg-blue-500"></span>
-                          N1/N2 转速趋势
-                        </div>
-                        <ResponsiveContainer width="100%" height={180}>
-                          <LineChart data={templateChartData}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                            <XAxis dataKey="time" stroke="#6b7280" fontSize={10} />
-                            <YAxis stroke="#6b7280" fontSize={10} />
-                            <Tooltip
-                              contentStyle={{
-                                backgroundColor: "#fff",
-                                border: "1px solid #e5e7eb",
-                                borderRadius: "6px",
-                                fontSize: "11px",
-                              }}
-                            />
-                            <Legend wrapperStyle={{ fontSize: "11px" }} />
-                            <Line type="monotone" dataKey="N1" stroke="#3b82f6" strokeWidth={2} dot={false} name="N1%" />
-                            <Line type="monotone" dataKey="N2" stroke="#10b981" strokeWidth={2} dot={false} name="N2%" />
-                          </LineChart>
-                        </ResponsiveContainer>
+
+                  {/* 航段筛选模块 */}
+                  {showSegmentFilter && (
+                    <div className="flex items-center gap-3 p-3 bg-secondary/30 rounded-lg border border-border">
+                      <div className="flex items-center gap-2">
+                        <Plane className="h-4 w-4 text-primary" />
+                        <span className="text-sm font-medium">航段筛选</span>
                       </div>
 
-                      {/* 图表2: EGT温度 */}
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={loadPreviousSegment}
+                          disabled={currentSegmentIndex === 0 || isLoadingTemplate}
+                          className="h-8"
+                        >
+                          <ChevronLeft className="h-4 w-4 mr-1" />
+                          向后
+                        </Button>
+
+                        <div className="px-4 py-2 bg-background border rounded-md min-w-[280px] text-center">
+                          <div className="text-sm font-medium">
+                            {flightSegments[currentSegmentIndex].startTime}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {flightSegments[currentSegmentIndex].departure} - {flightSegments[currentSegmentIndex].arrival}
+                          </div>
+                        </div>
+
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={loadNextSegment}
+                          disabled={currentSegmentIndex === flightSegments.length - 1 || isLoadingTemplate}
+                          className="h-8"
+                        >
+                          向前
+                          <ChevronRight className="h-4 w-4 ml-1" />
+                        </Button>
+                      </div>
+
+                      <div className="ml-auto flex items-center gap-2 text-xs">
+                        <span className="text-muted-foreground whitespace-nowrap">已加载航段:</span>
+                        <div className="flex flex-wrap gap-1">
+                          {loadedSegments.map((idx) => (
+                            <Badge
+                              key={idx}
+                              variant={idx === currentSegmentIndex ? "default" : "outline"}
+                              className="text-xs cursor-pointer font-mono"
+                              onClick={() => {
+                                setCurrentSegmentIndex(idx);
+                                setIsLoadingTemplate(true);
+                                setTimeout(() => {
+                                  setTemplateChartData(generateChartData(idx));
+                                  setEgtChartData(generateEGTChartData(idx));
+                                  setTrendChartData(generateTrendChartData(idx));
+                                  setIsLoadingTemplate(false);
+                                }, 500);
+                              }}
+                            >
+                              {flightSegments[idx].filename}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {isLoadingTemplate ? (
+                    <div className="flex items-center justify-center h-[200px] bg-secondary/50 rounded-lg">
+                      <RefreshCw className="h-6 w-6 animate-spin text-primary" />
+                      <span className="ml-2 text-muted-foreground text-sm">加载参数数据中...</span>
+                    </div>
+                  ) : templateChartData.length > 0 ? (
+                    <div className="space-y-3">
+                      {/* 第一排：两张并排图表 */}
+                      <div className="grid grid-cols-2 gap-3">
+                        {/* 图表1: N1/N2转速 */}
+                        <div className="bg-secondary/30 rounded-lg p-3 border border-border">
+                          <div className="text-sm font-medium mb-2 flex items-center gap-2">
+                            <span className="h-2 w-2 rounded-full bg-blue-500"></span>
+                            N1/N2 转速趋势
+                          </div>
+                          <ResponsiveContainer width="100%" height={180}>
+                            <LineChart data={templateChartData}>
+                              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                              <XAxis dataKey="time" stroke="#6b7280" fontSize={10} />
+                              <YAxis stroke="#6b7280" fontSize={10} />
+                              <Tooltip
+                                contentStyle={{
+                                  backgroundColor: "#fff",
+                                  border: "1px solid #e5e7eb",
+                                  borderRadius: "6px",
+                                  fontSize: "11px",
+                                }}
+                              />
+                              <Legend wrapperStyle={{ fontSize: "11px" }} />
+                              <Line type="monotone" dataKey="N1" stroke="#3b82f6" strokeWidth={2} dot={false} name="N1%" />
+                              <Line type="monotone" dataKey="N2" stroke="#10b981" strokeWidth={2} dot={false} name="N2%" />
+                            </LineChart>
+                          </ResponsiveContainer>
+                        </div>
+
+                        {/* 图表2: EGT温度 */}
+                        <div className="bg-secondary/30 rounded-lg p-3 border border-border">
+                          <div className="text-sm font-medium mb-2 flex items-center gap-2">
+                            <span className="h-2 w-2 rounded-full bg-orange-500"></span>
+                            EGT 排气温度
+                          </div>
+                          <ResponsiveContainer width="100%" height={180}>
+                            <AreaChart data={egtChartData}>
+                              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                              <XAxis dataKey="time" stroke="#6b7280" fontSize={10} />
+                              <YAxis stroke="#6b7280" fontSize={10} />
+                              <Tooltip
+                                contentStyle={{
+                                  backgroundColor: "#fff",
+                                  border: "1px solid #e5e7eb",
+                                  borderRadius: "6px",
+                                  fontSize: "11px",
+                                }}
+                              />
+                              <Legend wrapperStyle={{ fontSize: "11px" }} />
+                              <Area type="monotone" dataKey="EGT1" stroke="#f97316" fill="#f97316" fillOpacity={0.2} name="EGT1" />
+                              <Area type="monotone" dataKey="EGT2" stroke="#ea580c" fill="#ea580c" fillOpacity={0.2} name="EGT2" />
+                              <Line type="monotone" dataKey="limit" stroke="#ef4444" strokeDasharray="5 5" name="限制值" dot={false} />
+                            </AreaChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </div>
+
+                      {/* 第二排：一张图表 */}
                       <div className="bg-secondary/30 rounded-lg p-3 border border-border">
                         <div className="text-sm font-medium mb-2 flex items-center gap-2">
-                          <span className="h-2 w-2 rounded-full bg-orange-500"></span>
-                          EGT 排气温度
+                          <span className="h-2 w-2 rounded-full bg-purple-500"></span>
+                          性��指标
                         </div>
                         <ResponsiveContainer width="100%" height={180}>
-                          <AreaChart data={egtChartData}>
+                          <AreaChart data={trendChartData}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                             <XAxis dataKey="time" stroke="#6b7280" fontSize={10} />
-                            <YAxis stroke="#6b7280" fontSize={10} />
+                            <YAxis stroke="#6b7280" fontSize={10} domain={[60, 100]} />
                             <Tooltip
                               contentStyle={{
                                 backgroundColor: "#fff",
@@ -817,25 +845,127 @@ export default function FaultAnalysisPage() {
                               }}
                             />
                             <Legend wrapperStyle={{ fontSize: "11px" }} />
-                            <Area type="monotone" dataKey="EGT1" stroke="#f97316" fill="#f97316" fillOpacity={0.2} name="EGT1" />
-                            <Area type="monotone" dataKey="EGT2" stroke="#ea580c" fill="#ea580c" fillOpacity={0.2} name="EGT2" />
-                            <Line type="monotone" dataKey="limit" stroke="#ef4444" strokeDasharray="5 5" name="限制值" dot={false} />
+                            <Area type="monotone" dataKey="performance" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.2} name="性能指数" />
+                            <Line type="monotone" dataKey="baseline" stroke="#22c55e" strokeDasharray="5 5" name="基线" dot={false} />
+                            <Line type="monotone" dataKey="trend" stroke="#ef4444" strokeWidth={2} name="趋势线" dot={false} />
                           </AreaChart>
                         </ResponsiveContainer>
                       </div>
                     </div>
+                  ) : null}
+                </div>
+              )}
 
-                    {/* 第二排：一张图表 */}
+              {!selectedTemplate && (
+                <div className="flex flex-col items-center justify-center py-6 text-muted-foreground bg-secondary/30 rounded-lg">
+                  <FileText className="h-6 w-6 mb-2 opacity-50" />
+                  <p className="text-sm">请选择一个分析模板</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* 第三部分：模型分析 */}
+          <Card className="bg-card border-border shadow-sm">
+            <CardHeader className="border-b border-border py-2 px-4">
+              <CardTitle className="flex items-center gap-2 text-foreground text-base">
+                <Cpu className="h-4 w-4 text-primary" />
+                模型分析
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-3 space-y-3">
+              <div className="flex flex-wrap items-center gap-3">
+                {models.map((model) => (
+                  <Button
+                    key={model.id}
+                    variant={selectedModel === model.id ? "default" : "outline"}
+                    onClick={() => setSelectedModel(model.id)}
+                    size="sm"
+                  >
+                    {model.name}
+                  </Button>
+                ))}
+
+                <div className="flex items-center gap-2 ml-auto">
+                  <span className="text-sm text-muted-foreground">时间:</span>
+                  <div className="flex gap-1">
+                    {["1h", "6h", "24h", "7d", "自定义"].map((range) => (
+                      <Button
+                        key={range}
+                        variant={modelTimeRange === range ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => {
+                          if (range === "自定义") {
+                            // 切换自定义时间选择器的显示状态
+                            setModelTimeRange(modelTimeRange === "自定义" ? "24h" : "自定义");
+                          } else {
+                            setModelTimeRange(range);
+                          }
+                        }}
+                        className="px-2"
+                      >
+                        {range}
+                      </Button>
+                    ))}
+                  </div>
+
+                  {modelTimeRange === "自定义" && (
+                    <div className="flex items-center gap-2">
+                      <Input
+                        type="datetime-local"
+                        className="h-8 w-[160px] text-xs"
+                        placeholder="开始时间"
+                      />
+                      <span className="text-muted-foreground text-sm">至</span>
+                      <Input
+                        type="datetime-local"
+                        className="h-8 w-[160px] text-xs"
+                        placeholder="结束时间"
+                      />
+                    </div>
+                  )}
+
+                  <Button
+                    onClick={handleModelLoad}
+                    disabled={!selectedModel || isLoadingModel}
+                    size="sm"
+                    className="ml-2"
+                  >
+                    {isLoadingModel ? (
+                      <>
+                        <RefreshCw className="mr-1 h-3 w-3 animate-spin" />
+                        加载中
+                      </>
+                    ) : (
+                      <>
+                        <Play className="mr-1 h-3 w-3" />
+                        模型加载
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+
+              {isLoadingModel ? (
+                <div className="flex items-center justify-center h-[200px] bg-secondary/50 rounded-lg">
+                  <RefreshCw className="h-6 w-6 animate-spin text-primary" />
+                  <span className="ml-2 text-muted-foreground text-sm">模型分析中...</span>
+                </div>
+              ) : modelChartData.length > 0 ? (
+                <div className="space-y-3">
+                  {/* 第一排：两张并排图表 */}
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* 图表1 */}
                     <div className="bg-secondary/30 rounded-lg p-3 border border-border">
                       <div className="text-sm font-medium mb-2 flex items-center gap-2">
-                        <span className="h-2 w-2 rounded-full bg-purple-500"></span>
-                        性��指标
+                        <span className="h-2 w-2 rounded-full bg-blue-500"></span>
+                        xxx
                       </div>
                       <ResponsiveContainer width="100%" height={180}>
-                        <AreaChart data={trendChartData}>
+                        <AreaChart data={modelChartData}>
                           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                           <XAxis dataKey="time" stroke="#6b7280" fontSize={10} />
-                          <YAxis stroke="#6b7280" fontSize={10} domain={[60, 100]} />
+                          <YAxis stroke="#6b7280" fontSize={10} />
                           <Tooltip
                             contentStyle={{
                               backgroundColor: "#fff",
@@ -845,127 +975,52 @@ export default function FaultAnalysisPage() {
                             }}
                           />
                           <Legend wrapperStyle={{ fontSize: "11px" }} />
-                          <Area type="monotone" dataKey="performance" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.2} name="性能指数" />
-                          <Line type="monotone" dataKey="baseline" stroke="#22c55e" strokeDasharray="5 5" name="基线" dot={false} />
-                          <Line type="monotone" dataKey="trend" stroke="#ef4444" strokeWidth={2} name="趋势线" dot={false} />
+                          <Area type="monotone" dataKey="actual" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.2} name="实际值" />
+                          <Area type="monotone" dataKey="predicted" stroke="#10b981" fill="#10b981" fillOpacity={0.2} name="预测值" />
+                          <Line type="monotone" dataKey="threshold" stroke="#ef4444" strokeDasharray="5 5" name="阈值" dot={false} />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+
+                    {/* 图表2 */}
+                    <div className="bg-secondary/30 rounded-lg p-3 border border-border">
+                      <div className="text-sm font-medium mb-2 flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
+                        xxx
+                      </div>
+                      <ResponsiveContainer width="100%" height={180}>
+                        <AreaChart data={healthIndexData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                          <XAxis dataKey="time" stroke="#6b7280" fontSize={10} />
+                          <YAxis stroke="#6b7280" fontSize={10} domain={[50, 100]} />
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: "#fff",
+                              border: "1px solid #e5e7eb",
+                              borderRadius: "6px",
+                              fontSize: "11px",
+                            }}
+                          />
+                          <Legend wrapperStyle={{ fontSize: "11px" }} />
+                          <Area type="monotone" dataKey="healthIndex" stroke="#10b981" fill="#10b981" fillOpacity={0.3} name="健康指数" />
+                          <Line type="monotone" dataKey="warning" stroke="#f59e0b" strokeDasharray="5 5" name="警告线" dot={false} />
+                          <Line type="monotone" dataKey="critical" stroke="#ef4444" strokeDasharray="5 5" name="临界线" dot={false} />
                         </AreaChart>
                       </ResponsiveContainer>
                     </div>
                   </div>
-                ) : null}
-              </div>
-            )}
 
-            {!selectedTemplate && (
-              <div className="flex flex-col items-center justify-center py-6 text-muted-foreground bg-secondary/30 rounded-lg">
-                <FileText className="h-6 w-6 mb-2 opacity-50" />
-                <p className="text-sm">请选择一个分析模板</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* 第三部分：模型分析 */}
-        <Card className="bg-card border-border shadow-sm">
-          <CardHeader className="border-b border-border py-2 px-4">
-            <CardTitle className="flex items-center gap-2 text-foreground text-base">
-              <Cpu className="h-4 w-4 text-primary" />
-              模型分析
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-3 space-y-3">
-            <div className="flex flex-wrap items-center gap-3">
-              {models.map((model) => (
-                <Button
-                  key={model.id}
-                  variant={selectedModel === model.id ? "default" : "outline"}
-                  onClick={() => setSelectedModel(model.id)}
-                  size="sm"
-                >
-                  {model.name}
-                </Button>
-              ))}
-
-              <div className="flex items-center gap-2 ml-auto">
-                <span className="text-sm text-muted-foreground">时间:</span>
-                <div className="flex gap-1">
-                  {["1h", "6h", "24h", "7d", "自定义"].map((range) => (
-                    <Button
-                      key={range}
-                      variant={modelTimeRange === range ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => {
-                        if (range === "自定义") {
-                          // 切换自定义时间选择器的显示状态
-                          setModelTimeRange(modelTimeRange === "自定义" ? "24h" : "自定义");
-                        } else {
-                          setModelTimeRange(range);
-                        }
-                      }}
-                      className="px-2"
-                    >
-                      {range}
-                    </Button>
-                  ))}
-                </div>
-
-                {modelTimeRange === "自定义" && (
-                  <div className="flex items-center gap-2">
-                    <Input
-                      type="datetime-local"
-                      className="h-8 w-[160px] text-xs"
-                      placeholder="开始时间"
-                    />
-                    <span className="text-muted-foreground text-sm">至</span>
-                    <Input
-                      type="datetime-local"
-                      className="h-8 w-[160px] text-xs"
-                      placeholder="结束时间"
-                    />
-                  </div>
-                )}
-
-                <Button
-                  onClick={handleModelLoad}
-                  disabled={!selectedModel || isLoadingModel}
-                  size="sm"
-                  className="ml-2"
-                >
-                  {isLoadingModel ? (
-                    <>
-                      <RefreshCw className="mr-1 h-3 w-3 animate-spin" />
-                      加载中
-                    </>
-                  ) : (
-                    <>
-                      <Play className="mr-1 h-3 w-3" />
-                      模型加载
-                    </>
-                  )}
-                </Button>
-              </div>
-            </div>
-
-            {isLoadingModel ? (
-              <div className="flex items-center justify-center h-[200px] bg-secondary/50 rounded-lg">
-                <RefreshCw className="h-6 w-6 animate-spin text-primary" />
-                <span className="ml-2 text-muted-foreground text-sm">模型分析中...</span>
-              </div>
-            ) : modelChartData.length > 0 ? (
-              <div className="space-y-3">
-                {/* 第一排：两张并排图表 */}
-                <div className="grid grid-cols-2 gap-3">
-                  {/* 图表1 */}
+                  {/* 第二排：一张图表 */}
                   <div className="bg-secondary/30 rounded-lg p-3 border border-border">
                     <div className="text-sm font-medium mb-2 flex items-center gap-2">
-                      <span className="h-2 w-2 rounded-full bg-blue-500"></span>
+                      <span className="h-2 w-2 rounded-full bg-purple-500"></span>
                       xxx
                     </div>
                     <ResponsiveContainer width="100%" height={180}>
-                      <AreaChart data={modelChartData}>
+                      <AreaChart data={anomalyData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                         <XAxis dataKey="time" stroke="#6b7280" fontSize={10} />
-                        <YAxis stroke="#6b7280" fontSize={10} />
+                        <YAxis stroke="#6b7280" fontSize={10} domain={[0, 100]} />
                         <Tooltip
                           contentStyle={{
                             backgroundColor: "#fff",
@@ -975,218 +1030,163 @@ export default function FaultAnalysisPage() {
                           }}
                         />
                         <Legend wrapperStyle={{ fontSize: "11px" }} />
-                        <Area type="monotone" dataKey="actual" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.2} name="实际值" />
-                        <Area type="monotone" dataKey="predicted" stroke="#10b981" fill="#10b981" fillOpacity={0.2} name="预测值" />
-                        <Line type="monotone" dataKey="threshold" stroke="#ef4444" strokeDasharray="5 5" name="阈值" dot={false} />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-
-                  {/* 图表2 */}
-                  <div className="bg-secondary/30 rounded-lg p-3 border border-border">
-                    <div className="text-sm font-medium mb-2 flex items-center gap-2">
-                      <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
-                      xxx
-                    </div>
-                    <ResponsiveContainer width="100%" height={180}>
-                      <AreaChart data={healthIndexData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                        <XAxis dataKey="time" stroke="#6b7280" fontSize={10} />
-                        <YAxis stroke="#6b7280" fontSize={10} domain={[50, 100]} />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "#fff",
-                            border: "1px solid #e5e7eb",
-                            borderRadius: "6px",
-                            fontSize: "11px",
-                          }}
-                        />
-                        <Legend wrapperStyle={{ fontSize: "11px" }} />
-                        <Area type="monotone" dataKey="healthIndex" stroke="#10b981" fill="#10b981" fillOpacity={0.3} name="健康指数" />
-                        <Line type="monotone" dataKey="warning" stroke="#f59e0b" strokeDasharray="5 5" name="警告线" dot={false} />
-                        <Line type="monotone" dataKey="critical" stroke="#ef4444" strokeDasharray="5 5" name="临界线" dot={false} />
+                        <Area type="monotone" dataKey="score" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.3} name="异常得分" />
+                        <Line type="monotone" dataKey="anomalyThreshold" stroke="#ef4444" strokeDasharray="5 5" name="异常阈值" dot={false} />
                       </AreaChart>
                     </ResponsiveContainer>
                   </div>
                 </div>
-
-                {/* 第二排：一张图表 */}
-                <div className="bg-secondary/30 rounded-lg p-3 border border-border">
-                  <div className="text-sm font-medium mb-2 flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-purple-500"></span>
-                    xxx
-                  </div>
-                  <ResponsiveContainer width="100%" height={180}>
-                    <AreaChart data={anomalyData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                      <XAxis dataKey="time" stroke="#6b7280" fontSize={10} />
-                      <YAxis stroke="#6b7280" fontSize={10} domain={[0, 100]} />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: "#fff",
-                          border: "1px solid #e5e7eb",
-                          borderRadius: "6px",
-                          fontSize: "11px",
-                        }}
-                      />
-                      <Legend wrapperStyle={{ fontSize: "11px" }} />
-                      <Area type="monotone" dataKey="score" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.3} name="异常得分" />
-                      <Line type="monotone" dataKey="anomalyThreshold" stroke="#ef4444" strokeDasharray="5 5" name="异常阈值" dot={false} />
-                    </AreaChart>
-                  </ResponsiveContainer>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-6 text-muted-foreground bg-secondary/30 rounded-lg">
+                  <Cpu className="h-6 w-6 mb-2 opacity-50" />
+                  <p className="text-sm">选择模型和时间后，点击「模型加载」</p>
                 </div>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-6 text-muted-foreground bg-secondary/30 rounded-lg">
-                <Cpu className="h-6 w-6 mb-2 opacity-50" />
-                <p className="text-sm">选择模型和时间后，点击「模型加载」</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* 第四部分：关联故障分析 */}
-        <Card className="bg-card border-border shadow-sm">
-          <CardHeader className="border-b border-border py-2 px-4">
-            <CardTitle className="flex items-center gap-2 text-foreground text-base">
-              <Link2 className="h-4 w-4 text-primary" />
-              关联故障分析
-              <Badge variant="outline" className="ml-2 text-xs">
-                基于 APU BLEED SERVO VALVE & B-104X 匹配
-              </Badge>
-              <Badge className="ml-1 bg-blue-100 text-blue-700 border-blue-200 text-xs">
-                {relatedFaults.length} 条相关记录
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-3">
-            <div className="space-y-2">
-              {relatedFaults.slice(0, 3).map((fault) => (
-                <div
-                  key={fault.id}
-                  className={`flex items-center justify-between p-2 bg-secondary/30 rounded-lg border border-border hover:bg-secondary/50 transition-colors ${fault.status === "analyzed" ? "cursor-pointer" : ""}`}
-                  onClick={() => {
-                    if (fault.status === "analyzed") {
-                      setSelectedRelatedFault(fault);
-                      setRelatedFaultDialogOpen(true);
-                    }
-                  }}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm">{fault.cmsMessage}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span>{fault.faultDate.split(" ")[0]}</span>
-                    <Badge variant="outline" className="text-xs">{fault.route}</Badge>
-                    <Badge
-                      variant="outline"
-                      className={fault.status === "analyzed" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}
-                    >
-                      {fault.status === "analyzed" ? "已分析" : "待分析"}
-                    </Badge>
-                    {fault.status === "analyzed" && (
-                      <Eye className="h-3.5 w-3.5 text-muted-foreground" />
-                    )}
-                  </div>
-                </div>
-              ))}
-
-              {relatedFaults.length > 3 && (
-                <>
-                  {isRelatedFaultsExpanded && (
-                    <div className="space-y-2">
-                      {relatedFaults.slice(3).map((fault) => (
-                        <div
-                          key={fault.id}
-                          className={`flex items-center justify-between p-2 bg-secondary/30 rounded-lg border border-border hover:bg-secondary/50 transition-colors ${fault.status === "analyzed" ? "cursor-pointer" : ""}`}
-                          onClick={() => {
-                            if (fault.status === "analyzed") {
-                              setSelectedRelatedFault(fault);
-                              setRelatedFaultDialogOpen(true);
-                            }
-                          }}
-                        >
-                          <div className="flex items-center gap-3">
-                            <span className="text-sm">{fault.cmsMessage}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <span>{fault.faultDate.split(" ")[0]}</span>
-                            <Badge variant="outline" className="text-xs">{fault.route}</Badge>
-                            <Badge
-                              variant="outline"
-                              className={fault.status === "analyzed" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}
-                            >
-                              {fault.status === "analyzed" ? "已分析" : "待分析"}
-                            </Badge>
-                            {fault.status === "analyzed" && (
-                              <Eye className="h-3.5 w-3.5 text-muted-foreground" />
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <button
-                    onClick={() => setIsRelatedFaultsExpanded(!isRelatedFaultsExpanded)}
-                    className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 transition-colors w-full justify-center py-2"
-                  >
-                    {isRelatedFaultsExpanded ? (
-                      <>
-                        <ChevronUp className="h-4 w-4" />
-                        收起更多记录
-                      </>
-                    ) : (
-                      <>
-                        <ChevronDown className="h-4 w-4" />
-                        展开更多 {relatedFaults.length - 3} 条记录
-                      </>
-                    )}
-                  </button>
-                </>
               )}
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        {/* 第五部分：分析结果 */}
-        <Card className="bg-card border-border shadow-sm">
-          <CardHeader className="border-b border-border py-2 px-4">
-            <CardTitle className="flex items-center gap-2 text-foreground text-base">
-              <BarChart3 className="h-4 w-4 text-primary" />
-              分析结果
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-3 space-y-3">
-            <div className="space-y-1.5">
-              <Textarea
-                value={analysisResultForm.faultSegmentDescription}
-                onChange={(e) =>
-                  setAnalysisResultForm((prev) => ({
-                    ...prev,
-                    faultSegmentDescription: e.target.value,
-                  }))
-                }
-                placeholder={"请填写分析结果，建议包含以下内容：\n1. 故障航段描述\n2. 数据分析\n3. 前序航段异常\n4. 模型分析\n5. LRU拆换信息\n6. 结论"}
-                className="bg-input border-border text-foreground text-sm min-h-[220px] resize-y"
-              />
-            </div>
+          {/* 第四部分：关联故障分析 */}
+          <Card className="bg-card border-border shadow-sm">
+            <CardHeader className="border-b border-border py-2 px-4">
+              <CardTitle className="flex items-center gap-2 text-foreground text-base">
+                <Link2 className="h-4 w-4 text-primary" />
+                关联故障分析
+                <Badge variant="outline" className="ml-2 text-xs">
+                  基于 APU BLEED SERVO VALVE & B-104X 匹配
+                </Badge>
+                <Badge className="ml-1 bg-blue-100 text-blue-700 border-blue-200 text-xs">
+                  {relatedFaults.length} 条相关记录
+                </Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-3">
+              <div className="space-y-2">
+                {relatedFaults.slice(0, 3).map((fault) => (
+                  <div
+                    key={fault.id}
+                    className={`flex items-center justify-between p-2 bg-secondary/30 rounded-lg border border-border hover:bg-secondary/50 transition-colors ${fault.status === "analyzed" ? "cursor-pointer" : ""}`}
+                    onClick={() => {
+                      if (fault.status === "analyzed") {
+                        setSelectedRelatedFault(fault);
+                        setRelatedFaultDialogOpen(true);
+                      }
+                    }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm">{fault.cmsMessage}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <span>{fault.faultDate.split(" ")[0]}</span>
+                      <Badge variant="outline" className="text-xs">{fault.route}</Badge>
+                      <Badge
+                        variant="outline"
+                        className={fault.status === "analyzed" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}
+                      >
+                        {fault.status === "analyzed" ? "已分析" : "待分析"}
+                      </Badge>
+                      {fault.status === "analyzed" && (
+                        <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+                      )}
+                    </div>
+                  </div>
+                ))}
 
-            <div className="flex justify-end gap-3 pt-1">
-              <Button variant="outline" size="sm">
-                <Save className="mr-1 h-3 w-3" />
-                暂存
-              </Button>
-              <Button variant="outline" size="sm">
-                <Users className="mr-1 h-3 w-3" />
-                转派
-              </Button>
-              <Button size="sm">
-                <Send className="mr-1 h-3 w-3" />
-                提交
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+                {relatedFaults.length > 3 && (
+                  <>
+                    {isRelatedFaultsExpanded && (
+                      <div className="space-y-2">
+                        {relatedFaults.slice(3).map((fault) => (
+                          <div
+                            key={fault.id}
+                            className={`flex items-center justify-between p-2 bg-secondary/30 rounded-lg border border-border hover:bg-secondary/50 transition-colors ${fault.status === "analyzed" ? "cursor-pointer" : ""}`}
+                            onClick={() => {
+                              if (fault.status === "analyzed") {
+                                setSelectedRelatedFault(fault);
+                                setRelatedFaultDialogOpen(true);
+                              }
+                            }}
+                          >
+                            <div className="flex items-center gap-3">
+                              <span className="text-sm">{fault.cmsMessage}</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                              <span>{fault.faultDate.split(" ")[0]}</span>
+                              <Badge variant="outline" className="text-xs">{fault.route}</Badge>
+                              <Badge
+                                variant="outline"
+                                className={fault.status === "analyzed" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}
+                              >
+                                {fault.status === "analyzed" ? "已分析" : "待分析"}
+                              </Badge>
+                              {fault.status === "analyzed" && (
+                                <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <button
+                      onClick={() => setIsRelatedFaultsExpanded(!isRelatedFaultsExpanded)}
+                      className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 transition-colors w-full justify-center py-2"
+                    >
+                      {isRelatedFaultsExpanded ? (
+                        <>
+                          <ChevronUp className="h-4 w-4" />
+                          收起更多记录
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="h-4 w-4" />
+                          展开更多 {relatedFaults.length - 3} 条记录
+                        </>
+                      )}
+                    </button>
+                  </>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* 第五部分：分析结果 */}
+          <Card className="bg-card border-border shadow-sm">
+            <CardHeader className="border-b border-border py-2 px-4">
+              <CardTitle className="flex items-center gap-2 text-foreground text-base">
+                <BarChart3 className="h-4 w-4 text-primary" />
+                分析结果
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-3 space-y-3">
+              <div className="space-y-1.5">
+                <Textarea
+                  value={analysisResultForm.faultSegmentDescription}
+                  onChange={(e) =>
+                    setAnalysisResultForm((prev) => ({
+                      ...prev,
+                      faultSegmentDescription: e.target.value,
+                    }))
+                  }
+                  placeholder={"请填写分析结果，建议包含以下内容：\n1. 故障航段描述\n2. 数据分析\n3. 前序航段异常\n4. 模型分析\n5. LRU拆换信息\n6. 结论"}
+                  className="bg-input border-border text-foreground text-sm min-h-[220px] resize-y"
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 pt-1">
+                <Button variant="outline" size="sm">
+                  <Save className="mr-1 h-3 w-3" />
+                  暂存
+                </Button>
+                <Button variant="outline" size="sm">
+                  <Users className="mr-1 h-3 w-3" />
+                  转派
+                </Button>
+                <Button size="sm">
+                  <Send className="mr-1 h-3 w-3" />
+                  提交
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </main>
 
@@ -1202,7 +1202,7 @@ export default function FaultAnalysisPage() {
               {selectedRelatedFault?.cmsMessage} | {selectedRelatedFault?.faultDate}
             </DialogDescription>
           </DialogHeader>
-          
+
           <ScrollArea className="flex-1 px-1">
             {selectedRelatedFault && (
               <div className="space-y-4 py-4">
@@ -1222,7 +1222,7 @@ export default function FaultAnalysisPage() {
                       <div className="mt-1 px-3 py-1.5 bg-secondary/50 rounded border text-sm">{selectedRelatedFault.registration}</div>
                     </div>
                     <div>
-                      <Label className="text-muted-foreground text-xs">日期</Label>
+                      <Label className="text-muted-foreground text-xs">日���</Label>
                       <div className="mt-1 px-3 py-1.5 bg-secondary/50 rounded border text-sm">{selectedRelatedFault.faultDate.split(" ")[0]}</div>
                     </div>
                     <div>

@@ -37,16 +37,31 @@ import {
   Users,
   Database,
   Plus,
+  ArrowUp,
+  ArrowDown,
+  ArrowUpDown,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 
 // 故障分析列表数据
 const faultList = [
   {
     id: "F2024001",
-    time: "2026-01-15 14:32",
-    ata: "72-31",
-    registration: "B-1234",
+    time: "2026-06-15 14:32",
+    model: "C909",
+    ata: "72",
+    registration: "B-104X",
     location: "北京首都机场",
     description: "监控发现APU EGT温度高",
     status: "completed",
@@ -54,9 +69,10 @@ const faultList = [
   },
   {
     id: "F2024002",
-    time: "2026-01-14 09:15",
-    ata: "29-11",
-    registration: "B-5678",
+    time: "2026-06-14 09:15",
+    model: "C909",
+    ata: "29",
+    registration: "B-620D",
     location: "上海浦东机场",
     description: "航后检查有APU引气阀故障",
     status: "processing",
@@ -64,9 +80,10 @@ const faultList = [
   },
   {
     id: "F2024003",
-    time: "2026-01-13 16:45",
-    ata: "24-22",
-    registration: "B-9012",
+    time: "2026-06-20 16:45",
+    model: "C919",
+    ata: "24",
+    registration: "B-919A",
     location: "广州白云机场",
     description: "短停落地后有刹车降级信息",
     status: "pending",
@@ -74,9 +91,10 @@ const faultList = [
   },
   {
     id: "F2024004",
-    time: "2026-01-12 11:20",
-    ata: "73-21",
-    registration: "B-3456",
+    time: "2026-06-12 11:20",
+    model: "C909",
+    ata: "73",
+    registration: "B-104X",
     location: "深圳宝安机场",
     description: "落地滑跑阶段出现刹车不派遣",
     status: "transferred",
@@ -84,9 +102,10 @@ const faultList = [
   },
   {
     id: "F2024005",
-    time: "2026-01-11 08:55",
-    ata: "72-50",
-    registration: "B-7890",
+    time: "2026-06-11 08:55",
+    model: "C909",
+    ata: "72",
+    registration: "B-653Q",
     location: "成都双流机场",
     description: "双发启动后出现发动机引气故障",
     status: "processing",
@@ -100,35 +119,35 @@ const modelTaskList = [
     id: "M2024001",
     source: "C919",
     taskName: "完成PRSOV故障诊断模型航线故障统计与参数确认",
-    deadline: "2026-02-15",
+    deadline: "2026-06-15",
     status: "processing",
   },
   {
     id: "M2024002",
     source: "C909",
     taskName: "完成HPV故障诊断模型原理与模型可行性分析",
-    deadline: "2026-02-20",
+    deadline: "2026-06-20",
     status: "pending",
   },
   {
     id: "M2024003",
     source: "运行支持",
     taskName: "完成HPV故障诊断模型开发与部署",
-    deadline: "2026-01-30",
+    deadline: "2026-06-30",
     status: "completed",
   },
   {
     id: "M2024004",
     source: "创新平台",
     taskName: "完成C919健康管理模型验证流程梳理",
-    deadline: "2026-03-01",
+    deadline: "2026-06-01",
     status: "processing",
   },
   {
     id: "M2024005",
     source: "其它",
     taskName: "完成C919健康管理模型验证评审要求",
-    deadline: "2026-02-10",
+    deadline: "2026-06-10",
     status: "pending",
   },
 ];
@@ -137,28 +156,28 @@ const modelTaskList = [
 const otherTaskList = [
   {
     id: "O2024001",
-    time: "2026-01-16",
+    time: "2026-06-16",
     description: "完成本月模型开发进展汇报ppt",
     delivery: "PPT报告",
     status: "processing",
   },
   {
     id: "O2024002",
-    time: "2026-01-18",
+    time: "2026-06-18",
     description: "完成健康管理与性能监控平台需求分析报告",
     delivery: "Word文档",
     status: "pending",
   },
   {
     id: "O2024003",
-    time: "2026-01-10",
+    time: "2026-06-10",
     description: "完成健康管理与性能监控平台技术报告",
     delivery: "Word文档",
     status: "completed",
   },
   {
     id: "O2024004",
-    time: "2026-01-20",
+    time: "2026-06-20",
     description: "完成健康管理与性能监控平台原型开发",
     delivery: "系统原型",
     status: "pending",
@@ -234,7 +253,7 @@ const getSourceBadge = (source: string) => {
 export default function TaskManagementPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"fault" | "model" | "other">("fault");
-  
+
   // 新增型号任务对话框状态
   const [modelDialogOpen, setModelDialogOpen] = useState(false);
   const [newModelTask, setNewModelTask] = useState({
@@ -251,13 +270,68 @@ export default function TaskManagementPage() {
     delivery: "",
   });
 
-  const filteredFaults = faultList.filter(
-    (fault) =>
-      fault.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      fault.ata.includes(searchTerm) ||
-      fault.registration.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      fault.description.includes(searchTerm)
-  );
+  // 故障列表排序与筛选状态
+  const [faultSort, setFaultSort] = useState<{
+    field: "time" | "dueDate";
+    dir: "asc" | "desc";
+  } | null>(null);
+  const [faultFilters, setFaultFilters] = useState({
+    model: "all",
+    ata: "all",
+    registration: "all",
+    location: "all",
+    status: "all",
+    wqar: "all",
+    due: "all", // all | red | normal
+  });
+
+  // 各列可选筛选值
+  const faultColumnOptions = {
+    model: Array.from(new Set(faultList.map((f) => f.model))),
+    ata: Array.from(new Set(faultList.map((f) => f.ata))),
+    registration: Array.from(new Set(faultList.map((f) => f.registration))),
+    location: Array.from(new Set(faultList.map((f) => f.location))),
+  };
+
+  const setFaultFilter = (key: keyof typeof faultFilters, value: string) =>
+    setFaultFilters((prev) => ({ ...prev, [key]: value }));
+
+  const toggleFaultSort = (field: "time" | "dueDate") =>
+    setFaultSort((prev) =>
+      prev?.field === field
+        ? { field, dir: prev.dir === "asc" ? "desc" : "asc" }
+        : { field, dir: "asc" }
+    );
+
+  const filteredFaults = faultList
+    .filter(
+      (fault) =>
+        fault.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        fault.ata.includes(searchTerm) ||
+        fault.registration.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        fault.description.includes(searchTerm)
+    )
+    .filter((fault) => {
+      if (faultFilters.model !== "all" && fault.model !== faultFilters.model) return false;
+      if (faultFilters.ata !== "all" && fault.ata !== faultFilters.ata) return false;
+      if (faultFilters.registration !== "all" && fault.registration !== faultFilters.registration)
+        return false;
+      if (faultFilters.location !== "all" && fault.location !== faultFilters.location) return false;
+      if (faultFilters.status !== "all" && fault.status !== faultFilters.status) return false;
+      if (faultFilters.wqar !== "all" && String(fault.hasWQAR) !== faultFilters.wqar) return false;
+      if (faultFilters.due !== "all") {
+        if (faultFilters.due === "overdue" && !isOverdue(fault.time, fault.status)) return false;
+        if (faultFilters.due === "pending" && fault.status !== "pending") return false;
+      }
+      return true;
+    })
+    .sort((a, b) => {
+      if (!faultSort) return 0;
+      const av = faultSort.field === "time" ? a.time : getDueDate(a.time);
+      const bv = faultSort.field === "time" ? b.time : getDueDate(b.time);
+      const cmp = av.localeCompare(bv);
+      return faultSort.dir === "asc" ? cmp : -cmp;
+    });
 
   const filteredModelTasks = modelTaskList.filter(
     (task) =>
@@ -286,10 +360,77 @@ export default function TaskManagementPage() {
     setNewOtherTask({ time: "", description: "", delivery: "" });
   };
 
+  // 故障列表自定义网格（14列），为新增的机型列腾出空间
+  const faultGridClass = "grid grid-cols-[repeat(14,minmax(0,1fr))] gap-2";
+
+  // 可排序表头
+  const SortHeader = ({
+    field,
+    label,
+  }: {
+    field: "time" | "dueDate";
+    label: string;
+  }) => (
+    <button
+      type="button"
+      onClick={() => toggleFaultSort(field)}
+      className="flex items-center gap-1 hover:text-foreground transition-colors"
+    >
+      {label}
+      {faultSort?.field === field ? (
+        faultSort.dir === "asc" ? (
+          <ArrowUp className="h-3 w-3" />
+        ) : (
+          <ArrowDown className="h-3 w-3" />
+        )
+      ) : (
+        <ArrowUpDown className="h-3 w-3 opacity-50" />
+      )}
+    </button>
+  );
+
+  // 可筛选表头
+  const FilterHeader = ({
+    label,
+    value,
+    onChange,
+    options,
+  }: {
+    label: string;
+    value: string;
+    onChange: (v: string) => void;
+    options: { value: string; label: string }[];
+  }) => (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          type="button"
+          className={`flex items-center gap-1 hover:text-foreground transition-colors ${
+            value !== "all" ? "text-primary font-medium" : ""
+          }`}
+        >
+          {label}
+          <Filter className="h-3 w-3" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="min-w-[140px]">
+        <DropdownMenuLabel>按{label}筛选</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuRadioGroup value={value} onValueChange={onChange}>
+          {options.map((o) => (
+            <DropdownMenuRadioItem key={o.value} value={o.value}>
+              {o.label}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+
   return (
     <AppShell>
       <header className="border-b border-border bg-card">
-        <div className="max-w-6xl mx-auto px-6 py-4">
+        <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center gap-2">
             <ClipboardList className="h-5 w-5 text-primary" />
             <h1 className="text-lg font-semibold text-foreground">任务管理</h1>
@@ -298,7 +439,7 @@ export default function TaskManagementPage() {
       </header>
 
       {/* 主内容区 */}
-      <main className="max-w-6xl mx-auto px-6 py-6">
+      <main className="max-w-7xl mx-auto px-6 py-6">
         {/* 分类标签 */}
         <div className="flex items-center gap-2 mb-4">
           <Button
@@ -436,7 +577,7 @@ export default function TaskManagementPage() {
                       <DialogHeader>
                         <DialogTitle>新增其它任务</DialogTitle>
                         <DialogDescription>
-                          填写任务信息，创建临时安排的科室内部任务
+                          填写任务信息，创建临时安���的科室内部任务
                         </DialogDescription>
                       </DialogHeader>
                       <div className="grid gap-4 py-4">
@@ -501,27 +642,146 @@ export default function TaskManagementPage() {
             {/* 故障分析列表 */}
             {activeTab === "fault" && (
               <>
-                <div className="grid grid-cols-12 gap-2 px-4 py-2 bg-secondary/50 text-xs text-muted-foreground border-b border-border">
-                  <div className="col-span-2">故障时间</div>
-                  <div className="col-span-1">ATA章节</div>
-                  <div className="col-span-1">注册号</div>
-                  <div className="col-span-1">地点</div>
-                  <div className="col-span-2">故障描述</div>
-                  <div className="col-span-1">状态</div>
-                  <div className="col-span-1">WQAR数据</div>
-                  <div className="col-span-2">应完成时间</div>
+                <div className={`${faultGridClass} px-4 py-2 bg-secondary/50 text-xs text-muted-foreground border-b border-border`}>
+                  <div className="col-span-2">
+                    <SortHeader field="time" label="故障时间" />
+                  </div>
+                  <div className="col-span-1">
+                    <FilterHeader
+                      label="机型"
+                      value={faultFilters.model}
+                      onChange={(v) => setFaultFilter("model", v)}
+                      options={[
+                        { value: "all", label: "全部" },
+                        ...faultColumnOptions.model.map((m) => ({ value: m, label: m })),
+                      ]}
+                    />
+                  </div>
+                  <div className="col-span-1">
+                    <FilterHeader
+                      label="ATA章节"
+                      value={faultFilters.ata}
+                      onChange={(v) => setFaultFilter("ata", v)}
+                      options={[
+                        { value: "all", label: "全部" },
+                        ...faultColumnOptions.ata.map((a) => ({ value: a, label: a })),
+                      ]}
+                    />
+                  </div>
+                  <div className="col-span-1">
+                    <FilterHeader
+                      label="注册号"
+                      value={faultFilters.registration}
+                      onChange={(v) => setFaultFilter("registration", v)}
+                      options={[
+                        { value: "all", label: "全部" },
+                        ...faultColumnOptions.registration.map((r) => ({ value: r, label: r })),
+                      ]}
+                    />
+                  </div>
+                  <div className="col-span-1">
+                    <FilterHeader
+                      label="地点"
+                      value={faultFilters.location}
+                      onChange={(v) => setFaultFilter("location", v)}
+                      options={[
+                        { value: "all", label: "全部" },
+                        ...faultColumnOptions.location.map((l) => ({ value: l, label: l })),
+                      ]}
+                    />
+                  </div>
+                  <div className="col-span-3">故障描述</div>
+                  <div className="col-span-1">
+                    <FilterHeader
+                      label="状态"
+                      value={faultFilters.status}
+                      onChange={(v) => setFaultFilter("status", v)}
+                      options={[
+                        { value: "all", label: "全部" },
+                        { value: "pending", label: "待处理" },
+                        { value: "processing", label: "处理中" },
+                        { value: "completed", label: "已完成" },
+                        { value: "transferred", label: "已转派" },
+                      ]}
+                    />
+                  </div>
+                  <div className="col-span-1">
+                    <FilterHeader
+                      label="WQAR数据"
+                      value={faultFilters.wqar}
+                      onChange={(v) => setFaultFilter("wqar", v)}
+                      options={[
+                        { value: "all", label: "全部" },
+                        { value: "true", label: "有数据" },
+                        { value: "false", label: "无数据" },
+                      ]}
+                    />
+                  </div>
+                  <div className="col-span-2">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          type="button"
+                          className={`flex items-center gap-1 hover:text-foreground transition-colors ${
+                            faultFilters.due !== "all" || faultSort?.field === "dueDate"
+                              ? "text-primary font-medium"
+                              : ""
+                          }`}
+                        >
+                          应完成时间
+                          {faultSort?.field === "dueDate" ? (
+                            faultSort.dir === "asc" ? (
+                              <ArrowUp className="h-3 w-3" />
+                            ) : (
+                              <ArrowDown className="h-3 w-3" />
+                            )
+                          ) : (
+                            <ArrowUpDown className="h-3 w-3 opacity-50" />
+                          )}
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" className="min-w-[150px]">
+                        <DropdownMenuItem onClick={() => setFaultSort({ field: "dueDate", dir: "asc" })}>
+                          <ArrowUp className="h-4 w-4 mr-2" />
+                          升序排序
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setFaultSort({ field: "dueDate", dir: "desc" })}>
+                          <ArrowDown className="h-4 w-4 mr-2" />
+                          降序排序
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuCheckboxItem
+                          checked={faultFilters.due === "overdue"}
+                          onCheckedChange={(c) => setFaultFilter("due", c ? "overdue" : "all")}
+                        >
+                          逾期未完成
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                          checked={faultFilters.due === "pending"}
+                          onCheckedChange={(c) => setFaultFilter("due", c ? "pending" : "all")}
+                        >
+                          待处理
+                        </DropdownMenuCheckboxItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                   <div className="col-span-1">操作</div>
                 </div>
                 {filteredFaults.map((fault) => (
                   <div
                     key={fault.id}
-                    className="grid grid-cols-12 gap-2 px-4 py-3 text-sm border-b border-border hover:bg-secondary/30 transition-colors items-center"
+                    className={`${faultGridClass} px-4 py-3 text-sm border-b border-border hover:bg-secondary/30 transition-colors items-center`}
                   >
                     <div className="col-span-2 text-muted-foreground">{fault.time}</div>
+                    <div className="col-span-1">
+                      <Badge variant="outline" className="font-medium">
+                        {fault.model}
+                      </Badge>
+                    </div>
                     <div className="col-span-1 font-medium text-foreground">{fault.ata}</div>
                     <div className="col-span-1 text-muted-foreground">{fault.registration}</div>
                     <div className="col-span-1 text-muted-foreground truncate">{fault.location}</div>
-                    <div className="col-span-2 text-muted-foreground truncate">{fault.description}</div>
+                    <div className="col-span-3 text-muted-foreground truncate">{fault.description}</div>
                     <div className="col-span-1">{getStatusBadge(fault.status)}</div>
                     <div className="col-span-1">
                       {fault.hasWQAR ? (
@@ -537,11 +797,10 @@ export default function TaskManagementPage() {
                       )}
                     </div>
                     <div
-                      className={`col-span-2 ${
-                        isOverdue(fault.time, fault.status)
+                      className={`col-span-2 ${isOverdue(fault.time, fault.status)
                           ? "text-red-600 font-semibold"
                           : "text-muted-foreground"
-                      }`}
+                        }`}
                     >
                       {getDueDate(fault.time)}
                     </div>
