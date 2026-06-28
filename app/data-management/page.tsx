@@ -47,6 +47,9 @@ import {
   Cpu,
   History,
   Wrench,
+  BookOpen,
+  Layers,
+  Bookmark,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -232,6 +235,7 @@ const secondaryTabs = [
   { id: "template", name: "模板配置", icon: FileText },
   { id: "metadata", name: "元数据配置", icon: Tags },
   { id: "fault", name: "故障统计", icon: AlertTriangle },
+  { id: "casebase", name: "典型故障案例库", icon: BookOpen },
 ];
 
 // API 数据类型
@@ -334,13 +338,62 @@ const faultData: FaultRecord[] = [
   { id: 3, faultCode: "2700-12", cmsMessage: "ELAC 1 FAULT", registration: "B-9012", airline: "成都航空", airlineCode: "UEA", ataChapter: "27", faultDate: "2026-01-14 18:45:00", flightNo: "UEA2234", route: "PEK-SHA", severity: "medium", status: "analyzed", analysisId: "FA-2026-0148" },
   { id: 4, faultCode: "3200-08", cmsMessage: "BRAKE TEMP HI", registration: "B-3456", airline: "南方航空", airlineCode: "CSN", ataChapter: "32", faultDate: "2026-01-14 09:20:00", flightNo: "CZ3345", route: "CAN-CTU", severity: "medium", status: "no_qar" },
   { id: 5, faultCode: "4900-03", cmsMessage: "APU EGT OVLM", registration: "B-7890", airline: "东方航空", airlineCode: "CES", ataChapter: "49", faultDate: "2026-01-13 16:08:00", flightNo: "MU4456", route: "SHA-SZX", severity: "high", status: "analyzed", analysisId: "FA-2026-0142" },
-  { id: 6, faultCode: "7200-15", cmsMessage: "ENG 1 VIB HI", registration: "B-1234", airline: "成都�����空", airlineCode: "UEA", ataChapter: "72", faultDate: "2026-01-13 08:30:00", flightNo: "UEA6789", route: "PEK-CAN", severity: "high", status: "pending" },
+  { id: 6, faultCode: "7200-15", cmsMessage: "ENG 1 VIB HI", registration: "B-1234", airline: "成都�������空", airlineCode: "UEA", ataChapter: "72", faultDate: "2026-01-13 08:30:00", flightNo: "UEA6789", route: "PEK-CAN", severity: "high", status: "pending" },
   { id: 7, faultCode: "2900-06", cmsMessage: "HYD SYS 1 LO PR", registration: "B-5678", airline: "东方航空", airlineCode: "CES", ataChapter: "29", faultDate: "2026-01-12 22:15:00", flightNo: "MU7890", route: "SHA-PEK", severity: "medium", status: "ignored" },
   { id: 8, faultCode: "2400-09", cmsMessage: "GEN 1 FAULT", registration: "B-9012", airline: "成都航空", airlineCode: "UEA", ataChapter: "24", faultDate: "2026-01-12 14:50:00", flightNo: "UEA8901", route: "CAN-SHA", severity: "low", status: "analyzed", analysisId: "FA-2026-0135" },
   { id: 9, faultCode: "3600-02", cmsMessage: "PRSOV 1 FAULT", registration: "B-3456", airline: "南方航空", airlineCode: "CSN", ataChapter: "36", faultDate: "2026-01-12 10:30:00", flightNo: "CZ9012", route: "CTU-PVG", severity: "medium", status: "pending" },
   { id: 10, faultCode: "2100-08", cmsMessage: "DUCT OVHT", registration: "B-7890", airline: "东方航空", airlineCode: "CES", ataChapter: "21", faultDate: "2026-01-11 15:45:00", flightNo: "MU1234", route: "PEK-CAN", severity: "high", status: "no_qar" },
   { id: 11, faultCode: "3200-03", cmsMessage: "LGCIU 1 FAULT", registration: "B-1234", airline: "成都航空", airlineCode: "UEA", ataChapter: "32", faultDate: "2026-01-11 09:20:00", flightNo: "UEA5678", route: "SHA-PEK", severity: "low", status: "analyzed", analysisId: "FA-2026-0128" },
   { id: 12, faultCode: "4900-07", cmsMessage: "APU FIRE DET", registration: "B-5678", airline: "东方航空", airlineCode: "CES", ataChapter: "49", faultDate: "2026-01-10 18:00:00", flightNo: "MU2345", route: "CAN-PVG", severity: "high", status: "analyzed", analysisId: "FA-2026-0122" },
+];
+
+// 典型故障案例库 - ATA章节及其 LRU/典型故障
+interface CaseChapter {
+  ata: string;
+  name: string;
+  lrus: string[];
+}
+
+const caseChapters: CaseChapter[] = [
+  { ata: "21", name: "空调", lrus: ["冷凝器", "换热器", "压气机"] },
+  { ata: "27", name: "飞控", lrus: ["ELAC", "SEC", "副翼作动器", "扰流板作动器"] },
+  { ata: "29", name: "液压", lrus: ["EDP", "液压渗漏"] },
+  { ata: "32", name: "起落架", lrus: ["BCV", "SCV", "ACC", "前轮转弯", "刹车超温"] },
+  { ata: "34", name: "导航", lrus: ["ADIRU", "GPS", "雷达高度表"] },
+  { ata: "35", name: "氧气", lrus: ["氧气瓶", "旅客氧气面罩", "压力调节器"] },
+  { ata: "36", name: "引气", lrus: ["PRSOV", "HPV"] },
+  { ata: "49", name: "APU", lrus: ["BAV", "SCV"] },
+  { ata: "7X", name: "发动机", lrus: ["发动机振动", "EGT超温", "滑油系统"] },
+];
+
+// 已保存并标记的典型故障案例（关联故障案例分析结果）
+interface TypicalCase {
+  id: string;
+  ata: string;
+  lru: string;
+  title: string;
+  registration: string;
+  airline: string;
+  severity: "high" | "medium" | "low";
+  savedDate: string;
+  occurrences: number;
+  summary: string;
+  analysisId: string;
+}
+
+const typicalCaseData: TypicalCase[] = [
+  { id: "TC-2026-001", ata: "21", lru: "换热器", title: "组件出口温度高导致PACK 1 FAULT", registration: "B-1234", airline: "成都航空", severity: "high", savedDate: "2026-06-16", occurrences: 5, summary: "换热器换热效率下降，组件出口温度持续偏高，触发PACK保护跳开。", analysisId: "FA-2026-0156" },
+  { id: "TC-2026-002", ata: "21", lru: "压气机", title: "ACM压气机轴承磨损振动异常", registration: "B-7890", airline: "东方航空", severity: "medium", savedDate: "2026-05-20", occurrences: 3, summary: "空气循环机压气机端振动趋势上升，伴随轴承温度升高。", analysisId: "FA-2026-0151" },
+  { id: "TC-2026-003", ata: "27", lru: "ELAC", title: "ELAC 1 间歇性故障复位", registration: "B-9012", airline: "成都航空", severity: "medium", savedDate: "2026-05-12", occurrences: 4, summary: "升降副翼计算机供电瞬断导致间歇性故障，地面复测正常。", analysisId: "FA-2026-0148" },
+  { id: "TC-2026-004", ata: "29", lru: "EDP", title: "发动机驱动泵出口压力偏低", registration: "B-5678", airline: "东方航空", severity: "medium", savedDate: "2026-04-28", occurrences: 6, summary: "EDP磨损导致系统1压力在高需求阶段下降，触发低压告警。", analysisId: "FA-2026-0139" },
+  { id: "TC-2026-005", ata: "29", lru: "液压渗漏", title: "绿系统油量缓慢下降", registration: "B-3456", airline: "南方航空", severity: "high", savedDate: "2026-04-15", occurrences: 2, summary: "管路接头渗漏导致绿系统油量逐航段下降，需重点排查接头。", analysisId: "FA-2026-0137" },
+  { id: "TC-2026-006", ata: "32", lru: "刹车超温", title: "落地后多轮刹车温度超限", registration: "B-3456", airline: "南方航空", severity: "medium", savedDate: "2026-04-02", occurrences: 7, summary: "短停落地后刹车温度普遍偏高，与重刹车与冷却时间不足相关。", analysisId: "FA-2026-0131" },
+  { id: "TC-2026-007", ata: "32", lru: "前轮转弯", title: "前轮转弯角度反馈异常", registration: "B-1234", airline: "成都航空", severity: "low", savedDate: "2026-03-25", occurrences: 3, summary: "前轮转弯位置传感器反馈跳变，地面滑行偶发转弯受限。", analysisId: "FA-2026-0128" },
+  { id: "TC-2026-008", ata: "36", lru: "PRSOV", title: "PRSOV 1 关闭响应迟缓", registration: "B-3456", airline: "南方航空", severity: "medium", savedDate: "2026-03-10", occurrences: 5, summary: "压力调节关断活门关闭响应时间偏长，引气压力波动。", analysisId: "FA-2026-0125" },
+  { id: "TC-2026-009", ata: "36", lru: "HPV", title: "高压活门间歇开启异常", registration: "B-5678", airline: "东方航空", severity: "medium", savedDate: "2026-02-28", occurrences: 4, summary: "高压活门在巡航段间歇开启，导致引气源切换频繁。", analysisId: "FA-2026-0119" },
+  { id: "TC-2026-010", ata: "49", lru: "BAV", title: "APU引气活门开度异常", registration: "B-7890", airline: "东方航空", severity: "high", savedDate: "2026-02-14", occurrences: 3, summary: "APU引气活门(BAV)开度反馈异常，导致地面引气供气不稳。", analysisId: "FA-2026-0142" },
+  { id: "TC-2026-011", ata: "49", lru: "SCV", title: "APU喘振控制活门卡滞", registration: "B-5678", airline: "东方航空", severity: "high", savedDate: "2026-01-30", occurrences: 2, summary: "喘振控制活门(SCV)卡滞，APU起动阶段EGT超温。", analysisId: "FA-2026-0122" },
+  { id: "TC-2026-012", ata: "7X", lru: "发动机振动", title: "发动机1巡航振动趋势上升", registration: "B-1234", airline: "成都航空", severity: "high", savedDate: "2026-01-20", occurrences: 4, summary: "发动机1 N1振动值逐航段上升，需关注风扇配平与轴承状态。", analysisId: "FA-2026-0115" },
 ];
 
 // 航司列表
@@ -542,6 +595,15 @@ export default function DataManagementPage() {
     status: "",
     ata: ""
   });
+
+  // 典型故障案例库筛选状态
+  const [caseAta, setCaseAta] = useState<string>("21");
+  const [caseLru, setCaseLru] = useState<string>("");
+
+  const selectedCaseChapter = caseChapters.find((c) => c.ata === caseAta);
+  const filteredCases = typicalCaseData.filter(
+    (c) => c.ata === caseAta && (caseLru === "" || c.lru === caseLru),
+  );
 
   // API 管理状态
   const [apiList, setApiList] = useState<ApiConfig[]>(initialApiData);
@@ -829,7 +891,7 @@ export default function DataManagementPage() {
     setTemplateDialogOpen(false);
   };
 
-  // 切换参数选择
+  // 切换参数选��
   const toggleParameterSelection = (mnemonic: string) => {
     setTemplateForm(prev => ({
       ...prev,
@@ -2236,6 +2298,173 @@ export default function DataManagementPage() {
                     )}
                   </TableBody>
                 </Table>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* 典型故障案例库 */}
+        {activeTab === "casebase" && (
+          <div className="space-y-4">
+            {/* ATA章节筛选 */}
+            <Card className="border border-border">
+              <CardHeader className="border-b border-border py-3 px-4">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Layers className="h-4 w-4 text-primary" />
+                  ATA章节
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4">
+                <div className="flex flex-wrap gap-2">
+                  {caseChapters.map((chapter) => {
+                    const count = typicalCaseData.filter((c) => c.ata === chapter.ata).length;
+                    const isActive = caseAta === chapter.ata;
+                    return (
+                      <Button
+                        key={chapter.ata}
+                        variant={isActive ? "default" : "outline"}
+                        size="sm"
+                        className="gap-1.5"
+                        onClick={() => {
+                          setCaseAta(chapter.ata);
+                          setCaseLru("");
+                        }}
+                      >
+                        <span className="font-mono">{chapter.ata}</span>
+                        {chapter.name}
+                        <Badge
+                          variant="secondary"
+                          className={`ml-1 h-5 min-w-5 px-1 ${isActive ? "bg-primary-foreground/20 text-primary-foreground" : ""}`}
+                        >
+                          {count}
+                        </Badge>
+                      </Button>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* LRU/典型故障筛选 */}
+            <Card className="border border-border">
+              <CardHeader className="border-b border-border py-3 px-4">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Wrench className="h-4 w-4 text-primary" />
+                  LRU / 典型故障
+                  {selectedCaseChapter && (
+                    <span className="text-sm font-normal text-muted-foreground">
+                      （{selectedCaseChapter.ata} {selectedCaseChapter.name}）
+                    </span>
+                  )}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4">
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant={caseLru === "" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setCaseLru("")}
+                  >
+                    全部
+                  </Button>
+                  {selectedCaseChapter?.lrus.map((lru) => {
+                    const count = typicalCaseData.filter(
+                      (c) => c.ata === caseAta && c.lru === lru,
+                    ).length;
+                    return (
+                      <Button
+                        key={lru}
+                        variant={caseLru === lru ? "default" : "outline"}
+                        size="sm"
+                        className="gap-1.5"
+                        onClick={() => setCaseLru(lru)}
+                      >
+                        {lru}
+                        {count > 0 && (
+                          <Badge
+                            variant="secondary"
+                            className={`ml-1 h-5 min-w-5 px-1 ${caseLru === lru ? "bg-primary-foreground/20 text-primary-foreground" : ""}`}
+                          >
+                            {count}
+                          </Badge>
+                        )}
+                      </Button>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 案例列表 */}
+            <Card className="border border-border">
+              <CardHeader className="border-b border-border py-3 px-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Bookmark className="h-4 w-4 text-primary" />
+                    已标记典型案例
+                    <span className="text-sm font-normal text-muted-foreground">
+                      共 {filteredCases.length} 个
+                    </span>
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-4">
+                {filteredCases.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground">
+                    <BookOpen className="h-10 w-10 mb-3 opacity-40" />
+                    <p className="text-sm">该 LRU / 典型故障下暂无已标记的典型案例</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {filteredCases.map((c) => (
+                      <div
+                        key={c.id}
+                        className="border border-border rounded-lg p-4 hover:border-primary/50 hover:shadow-sm transition-all flex flex-col gap-3"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <Badge variant="outline" className="bg-purple-50 text-purple-600 font-mono">
+                              {c.ata}
+                            </Badge>
+                            <Badge variant="outline" className="bg-amber-50 text-amber-700">
+                              <Wrench className="h-3 w-3 mr-1" />
+                              {c.lru}
+                            </Badge>
+                            {getSeverityBadge(c.severity)}
+                          </div>
+                          <span className="font-mono text-xs text-muted-foreground shrink-0">{c.id}</span>
+                        </div>
+                        <h4 className="font-medium text-foreground text-pretty leading-relaxed">{c.title}</h4>
+                        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">{c.summary}</p>
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <Database className="h-3 w-3" />
+                            {c.registration} · {c.airline}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <History className="h-3 w-3" />
+                            发生 {c.occurrences} 次
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            {c.savedDate}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between border-t border-border pt-3 mt-auto">
+                          <span className="text-xs text-muted-foreground">
+                            关联分析：<span className="font-mono text-foreground">{c.analysisId}</span>
+                          </span>
+                          <Link href={`/task-management?analysisId=${c.analysisId}`}>
+                            <Button variant="outline" size="sm" className="gap-1 h-7">
+                              <ExternalLink className="h-3.5 w-3.5" />
+                              查看分析结果
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
