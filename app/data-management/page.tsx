@@ -2308,14 +2308,12 @@ export default function DataManagementPage() {
           <div className="space-y-4">
             {/* ATA章节筛选 */}
             <Card className="border border-border">
-              <CardHeader className="border-b border-border py-3 px-4">
-                <CardTitle className="text-base flex items-center gap-2">
-                  <Layers className="h-4 w-4 text-primary" />
-                  ATA章节
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-4">
-                <div className="flex flex-wrap gap-2">
+              <CardContent className="p-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="flex items-center gap-1.5 text-sm font-medium text-foreground mr-1 shrink-0">
+                    <Layers className="h-4 w-4 text-primary" />
+                    ATA章节
+                  </span>
                   {caseChapters.map((chapter) => {
                     const count = typicalCaseData.filter((c) => c.ata === chapter.ata).length;
                     const isActive = caseAta === chapter.ata;
@@ -2347,19 +2345,12 @@ export default function DataManagementPage() {
 
             {/* LRU/典型故障筛选 */}
             <Card className="border border-border">
-              <CardHeader className="border-b border-border py-3 px-4">
-                <CardTitle className="text-base flex items-center gap-2">
-                  <Wrench className="h-4 w-4 text-primary" />
-                  LRU / 典型故障
-                  {selectedCaseChapter && (
-                    <span className="text-sm font-normal text-muted-foreground">
-                      （{selectedCaseChapter.ata} {selectedCaseChapter.name}）
-                    </span>
-                  )}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-4">
-                <div className="flex flex-wrap gap-2">
+              <CardContent className="p-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="flex items-center gap-1.5 text-sm font-medium text-foreground mr-1 shrink-0">
+                    <Wrench className="h-4 w-4 text-primary" />
+                    LRU / 典型故障
+                  </span>
                   <Button
                     variant={caseLru === "" ? "default" : "outline"}
                     size="sm"
