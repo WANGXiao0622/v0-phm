@@ -24,6 +24,10 @@ import {
   ClipboardList,
   Users,
   Database,
+  ArrowUp,
+  ArrowDown,
+  ArrowUpDown,
+  CalendarClock,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -174,6 +178,46 @@ const otherTasks = [
   },
 ];
 
+// 获取任务的应完成时间字符串 (YYYY-MM-DD)
+function getItemDueDate(item: typeof allTodoItems[number]): string {
+  if (item.type === "fault") {
+    const datePart = (item as typeof faultTasks[number]).time.split(" ")[0];
+    const d = new Date(`${datePart}T00:00:00`);
+    d.setDate(d.getDate() + 3);
+    return d.toISOString().slice(0, 10);
+  }
+  if (item.type === "model") {
+    return (item as typeof modelTasks[number]).deadline;
+  }
+  return (item as typeof otherTasks[number]).time;
+}
+
+// 判断逾期状态
+type DueState = "overdue" | "urgent" | "normal" | "done";
+function getDueState(dueDate: string, status: string): DueState {
+  if (status === "completed") return "done";
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const due = new Date(`${dueDate}T00:00:00`);
+  const diffDays = Math.ceil((due.getTime() - today.getTime()) / 86400000);
+  if (diffDays < 0) return "overdue";
+  if (diffDays <= 3) return "urgent";
+  return "normal";
+}
+
+// 相对时间描述
+function relativeDue(dueDate: string, status: string): string {
+  if (status === "completed") return "已完成";
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const due = new Date(`${dueDate}T00:00:00`);
+  const diffDays = Math.ceil((due.getTime() - today.getTime()) / 86400000);
+  if (diffDays < 0) return `逾期 ${Math.abs(diffDays)} 天`;
+  if (diffDays === 0) return "今天到期";
+  if (diffDays === 1) return "明天到期";
+  return `还剩 ${diffDays} 天`;
+}
+
 // 合并所有待办任务
 type TodoItem =
   | (typeof faultTasks[number])
@@ -198,12 +242,25 @@ const myParameterConfigs = [
 
 export default function WorkspacePage() {
   const [completedIds, setCompletedIds] = useState<string[]>([]);
+  const [dueSort, setDueSort] = useState<"asc" | "desc" | null>(null);
 
   const toggleTodo = (id: string) => {
     setCompletedIds(prev =>
       prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
     );
   };
+
+  const toggleDueSort = () => {
+    setDueSort(prev => prev === "asc" ? "desc" : prev === "desc" ? null : "asc");
+  };
+
+  const sortedTodoItems = dueSort
+    ? [...allTodoItems].sort((a, b) => {
+        const da = getItemDueDate(a);
+        const db = getItemDueDate(b);
+        return dueSort === "asc" ? da.localeCompare(db) : db.localeCompare(da);
+      })
+    : allTodoItems;
 
   // 获取任务来源标签
   const getSourceBadge = (item: TodoItem) => {
@@ -267,16 +324,12 @@ export default function WorkspacePage() {
     }
   };
 
-  // 获取任务详情信息
+  // 获取任务详情信息（不含时间，时间已单独列出）
   const getTaskDetails = (item: TodoItem) => {
     if (item.type === "fault") {
       const faultItem = item as typeof faultTasks[number];
       return (
-        <div className="flex items-center gap-3 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <Clock className="h-3 w-3" />
-            {faultItem.time}
-          </span>
+        <div className="flex items-center gap-2 flex-wrap">
           <Badge variant="outline" className="text-xs h-5">ATA {faultItem.ata}</Badge>
           <Badge variant="outline" className="text-xs h-5">{faultItem.registration}</Badge>
           {faultItem.hasWQAR ? (
@@ -296,23 +349,59 @@ export default function WorkspacePage() {
     if (item.type === "model") {
       const modelItem = item as typeof modelTasks[number];
       return (
-        <div className="flex items-center gap-3 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <Clock className="h-3 w-3" />
-            截止: {modelItem.deadline}
-          </span>
-          <Badge variant="outline" className="text-xs h-5">{modelItem.source}</Badge>
-        </div>
+        <Badge variant="outline" className="text-xs h-5">{modelItem.source}</Badge>
       );
     }
     const otherItem = item as typeof otherTasks[number];
     return (
-      <div className="flex items-center gap-3 text-xs text-muted-foreground">
-        <span className="flex items-center gap-1">
-          <Clock className="h-3 w-3" />
-          {otherItem.time}
-        </span>
-        <Badge variant="outline" className="text-xs h-5">{otherItem.delivery}</Badge>
+      <Badge variant="outline" className="text-xs h-5">{otherItem.delivery}</Badge>
+    );
+  };
+
+  // 渲染应完成时间单元格
+  const renderDueCell = (item: TodoItem) => {
+    const isCompleted = completedIds.includes(item.id) || item.status === "completed";
+    const dueDate = getItemDueDate(item);
+    const state = getDueState(dueDate, isCompleted ? "completed" : item.status);
+    const relative = relativeDue(dueDate, isCompleted ? "completed" : item.status);
+
+    if (state === "done") {
+      return (
+        <div className="flex flex-col gap-0.5">
+          <span className="text-xs font-mono text-muted-foreground">{dueDate}</span>
+          <span className="text-xs text-emerald-600 font-medium">{relative}</span>
+        </div>
+      );
+    }
+    if (state === "overdue") {
+      return (
+        <div className="flex flex-col gap-0.5">
+          <div className="flex items-center gap-1">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
+            <span className="text-xs font-mono font-semibold text-red-600">{dueDate}</span>
+          </div>
+          <span className="text-xs text-red-500 font-semibold">{relative}</span>
+        </div>
+      );
+    }
+    if (state === "urgent") {
+      return (
+        <div className="flex flex-col gap-0.5">
+          <div className="flex items-center gap-1">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+            <span className="text-xs font-mono font-semibold text-amber-600">{dueDate}</span>
+          </div>
+          <span className="text-xs text-amber-500 font-semibold">{relative}</span>
+        </div>
+      );
+    }
+    return (
+      <div className="flex flex-col gap-0.5">
+        <div className="flex items-center gap-1">
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
+          <span className="text-xs font-mono text-foreground">{dueDate}</span>
+        </div>
+        <span className="text-xs text-muted-foreground">{relative}</span>
       </div>
     );
   };
@@ -445,45 +534,64 @@ export default function WorkspacePage() {
             </CardHeader>
             <CardContent className="p-0">
               {/* 表头 */}
-              <div className="grid grid-cols-12 gap-2 px-4 py-2 bg-secondary/50 text-xs text-muted-foreground border-b border-border">
-                <div className="col-span-1"></div>
-                <div className="col-span-3">任务描述</div>
-                <div className="col-span-2">任务来源</div>
-                <div className="col-span-3">详情信息</div>
-                <div className="col-span-2">状态</div>
-                <div className="col-span-1">操作</div>
+              <div className="grid grid-cols-[32px_minmax(0,1.2fr)_110px_minmax(0,1fr)_170px_100px_40px] gap-x-3 px-4 py-2 bg-secondary/50 text-xs text-muted-foreground border-b border-border items-center">
+                <div />
+                <div>任务描述</div>
+                <div>任务来源</div>
+                <div>详情信息</div>
+                <div>
+                  <button
+                    type="button"
+                    onClick={toggleDueSort}
+                    className={`flex items-center gap-1 hover:text-foreground transition-colors ${dueSort ? "text-primary font-medium" : ""}`}
+                  >
+                    <CalendarClock className="h-3 w-3" />
+                    应完成时间
+                    {dueSort === "asc" ? (
+                      <ArrowUp className="h-3 w-3" />
+                    ) : dueSort === "desc" ? (
+                      <ArrowDown className="h-3 w-3" />
+                    ) : (
+                      <ArrowUpDown className="h-3 w-3 opacity-40" />
+                    )}
+                  </button>
+                </div>
+                <div>状态</div>
+                <div />
               </div>
               {/* 任务列表 */}
-              <div className="divide-y divide-border max-h-[400px] overflow-y-auto">
-                {allTodoItems.map((item) => {
+              <div className="divide-y divide-border max-h-[440px] overflow-y-auto">
+                {sortedTodoItems.map((item) => {
                   const isCompleted = completedIds.includes(item.id) || item.status === "completed";
                   return (
                     <div
                       key={item.id}
-                      className={`grid grid-cols-12 gap-2 px-4 py-3 hover:bg-muted/50 transition-colors items-center ${isCompleted ? "opacity-50 bg-muted/20" : ""
-                        }`}
+                      className={`grid grid-cols-[32px_minmax(0,1.2fr)_110px_minmax(0,1fr)_170px_100px_40px] gap-x-3 px-4 py-3 hover:bg-muted/50 transition-colors items-center ${isCompleted ? "opacity-50 bg-muted/20" : ""}`}
                     >
-                      <div className="col-span-1">
+                      <div>
                         <Checkbox
                           checked={isCompleted}
                           onCheckedChange={() => toggleTodo(item.id)}
                         />
                       </div>
-                      <div className="col-span-3">
-                        <span className={`text-sm font-medium ${isCompleted ? "line-through text-muted-foreground" : "text-foreground"}`}>
+                      <div>
+                        <span className={`text-sm font-medium leading-relaxed ${isCompleted ? "line-through text-muted-foreground" : "text-foreground"}`}>
                           {item.title}
                         </span>
                       </div>
-                      <div className="col-span-2">
+                      <div>
                         {getSourceBadge(item)}
                       </div>
-                      <div className="col-span-3">
+                      <div>
                         {getTaskDetails(item)}
                       </div>
-                      <div className="col-span-2">
+                      <div>
+                        {renderDueCell(item)}
+                      </div>
+                      <div>
                         {getStatusBadge(item.status)}
                       </div>
-                      <div className="col-span-1">
+                      <div>
                         <Link href={getTaskLink(item)}>
                           <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
                             <ExternalLink className="h-3.5 w-3.5" />
