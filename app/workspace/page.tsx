@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -179,12 +179,19 @@ const otherTasks = [
 ];
 
 // 获取任务的应完成时间字符串 (YYYY-MM-DD)
+function addDays(dateStr: string, days: number): string {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const date = new Date(y, m - 1, d + days);
+  const yy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
+  return `${yy}-${mm}-${dd}`;
+}
+
 function getItemDueDate(item: typeof allTodoItems[number]): string {
   if (item.type === "fault") {
     const datePart = (item as typeof faultTasks[number]).time.split(" ")[0];
-    const d = new Date(`${datePart}T00:00:00`);
-    d.setDate(d.getDate() + 3);
-    return d.toISOString().slice(0, 10);
+    return addDays(datePart, 3);
   }
   if (item.type === "model") {
     return (item as typeof modelTasks[number]).deadline;
@@ -192,12 +199,11 @@ function getItemDueDate(item: typeof allTodoItems[number]): string {
   return (item as typeof otherTasks[number]).time;
 }
 
-// 判断逾期状态
+// 判断逾期状态（today 由组件在客户端挂载后传入，避免 SSR/客户端不一致）
 type DueState = "overdue" | "urgent" | "normal" | "done";
-function getDueState(dueDate: string, status: string): DueState {
+function getDueState(dueDate: string, status: string, today: Date | null): DueState {
   if (status === "completed") return "done";
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  if (!today) return "normal"; // 服务端渲染阶段返回中性值
   const due = new Date(`${dueDate}T00:00:00`);
   const diffDays = Math.ceil((due.getTime() - today.getTime()) / 86400000);
   if (diffDays < 0) return "overdue";
@@ -206,10 +212,9 @@ function getDueState(dueDate: string, status: string): DueState {
 }
 
 // 相对时间描述
-function relativeDue(dueDate: string, status: string): string {
+function relativeDue(dueDate: string, status: string, today: Date | null): string {
   if (status === "completed") return "已完成";
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  if (!today) return ""; // 服务端渲染阶段不输出，避免 hydration 不一致
   const due = new Date(`${dueDate}T00:00:00`);
   const diffDays = Math.ceil((due.getTime() - today.getTime()) / 86400000);
   if (diffDays < 0) return `逾期 ${Math.abs(diffDays)} 天`;
@@ -243,6 +248,13 @@ const myParameterConfigs = [
 export default function WorkspacePage() {
   const [completedIds, setCompletedIds] = useState<string[]>([]);
   const [dueSort, setDueSort] = useState<"asc" | "desc" | null>(null);
+  // 仅在客户端挂载后设置 today，避免 SSR/客户端时间不一致导致 hydration 错误
+  const [today, setToday] = useState<Date | null>(null);
+  useEffect(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    setToday(d);
+  }, []);
 
   const toggleTodo = (id: string) => {
     setCompletedIds(prev =>
@@ -360,10 +372,22 @@ export default function WorkspacePage() {
 
   // 渲染应完成时间单元格
   const renderDueCell = (item: TodoItem) => {
-    const isCompleted = completedIds.includes(item.id) || item.status === "completed";
     const dueDate = getItemDueDate(item);
-    const state = getDueState(dueDate, isCompleted ? "completed" : item.status);
-    const relative = relativeDue(dueDate, isCompleted ? "completed" : item.status);
+
+    // 在 today 未设置（SSR 阶段）时，只渲染日期字符串占位，不渲染任何依赖 today 的内容
+    // 这样服务端和客户端初次渲染完全一致，避免 hydration 不匹配
+    if (!today) {
+      return (
+        <div className="flex flex-col gap-0.5">
+          <span className="text-xs font-mono text-foreground">{dueDate}</span>
+        </div>
+      );
+    }
+
+    const isCompleted = completedIds.includes(item.id) || item.status === "completed";
+    const effectiveStatus = isCompleted ? "completed" : item.status;
+    const state = getDueState(dueDate, effectiveStatus, today);
+    const relative = relativeDue(dueDate, effectiveStatus, today);
 
     if (state === "done") {
       return (
