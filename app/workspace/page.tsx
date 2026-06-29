@@ -179,12 +179,19 @@ const otherTasks = [
 ];
 
 // 获取任务的应完成时间字符串 (YYYY-MM-DD)
+function addDays(dateStr: string, days: number): string {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const date = new Date(y, m - 1, d + days);
+  const yy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
+  return `${yy}-${mm}-${dd}`;
+}
+
 function getItemDueDate(item: typeof allTodoItems[number]): string {
   if (item.type === "fault") {
     const datePart = (item as typeof faultTasks[number]).time.split(" ")[0];
-    const d = new Date(`${datePart}T00:00:00`);
-    d.setDate(d.getDate() + 3);
-    return d.toISOString().slice(0, 10);
+    return addDays(datePart, 3);
   }
   if (item.type === "model") {
     return (item as typeof modelTasks[number]).deadline;
