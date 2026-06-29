@@ -534,7 +534,7 @@ export default function WorkspacePage() {
             </CardHeader>
             <CardContent className="p-0">
               {/* 表头 */}
-              <div className="grid grid-cols-[32px_1fr_100px_140px_160px_90px_40px] gap-x-3 px-4 py-2 bg-secondary/50 text-xs text-muted-foreground border-b border-border items-center">
+              <div className="grid grid-cols-[32px_minmax(0,1.2fr)_110px_minmax(0,1fr)_170px_100px_40px] gap-x-3 px-4 py-2 bg-secondary/50 text-xs text-muted-foreground border-b border-border items-center">
                 <div />
                 <div>任务描述</div>
                 <div>任务来源</div>
@@ -566,7 +566,7 @@ export default function WorkspacePage() {
                   return (
                     <div
                       key={item.id}
-                      className={`grid grid-cols-[32px_1fr_100px_140px_160px_90px_40px] gap-x-3 px-4 py-3 hover:bg-muted/50 transition-colors items-center ${isCompleted ? "opacity-50 bg-muted/20" : ""}`}
+                      className={`grid grid-cols-[32px_minmax(0,1.2fr)_110px_minmax(0,1fr)_170px_100px_40px] gap-x-3 px-4 py-3 hover:bg-muted/50 transition-colors items-center ${isCompleted ? "opacity-50 bg-muted/20" : ""}`}
                     >
                       <div>
                         <Checkbox
