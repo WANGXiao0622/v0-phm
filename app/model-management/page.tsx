@@ -326,28 +326,27 @@ const simpleModelData: SimpleModel[] = [
   {
     id: 101,
     name: "APU EGT趋势监控",
-    aircraftType: "C909/C919",
+    aircraftType: "C909",
     ataChapter: "49",
     ataName: "APU",
     lru: "APU",
-    description: "通过统计APU历史EGT均值与波动，快速识别温度趋势偏离",
+    description: "通过抓取APU历史地面阶段EGT最大值，快速识别EGT是否有偏高问题",
     applicability: "ALL",
     status: "active",
     version: "v1.0.0",
     updatedAt: "2026-05-10",
-    objective: "对APU排气温度(EGT)进行简易统计分析，识别温度趋势上升或波动异常，辅助维护人员判断APU健康状况。",
-    dataSource: "WQAR数据 / QAR下载",
+    objective: "对APU排气温度(EGT)进行简易统计分析，识别地面阶段温度最大值的趋势上升或波动异常，辅助判断APU EGT变化情况。",
+    dataSource: "WQAR数据",
     coreParams: [
       { name: "APU EGT", mnemonic: "APU_EGT", unit: "℃", description: "APU排气温度" },
-      { name: "APU转速", mnemonic: "APU_N", unit: "%", description: "APU转速百分比" },
-      { name: "引气状态", mnemonic: "APU_BLEED", unit: "/", description: "APU引气开关状态" },
+      { name: "APU转速", mnemonic: "APU_SPEED", unit: "%", description: "APU转速百分比" },
     ],
     applicabilityDetail: [
       { airline: "成都航空", airlineCode: "UEA", enabled: true },
       { airline: "东方航空", airlineCode: "CES", enabled: true },
       { airline: "南方航空", airlineCode: "CSN", enabled: true },
     ],
-    outputDescription: "输出近30航段EGT均值趋势图及超出基线范围的告警标记。",
+    outputDescription: "根据需要，输出航前EGT最高值的趋势图。",
   },
   {
     id: 102,
@@ -355,75 +354,49 @@ const simpleModelData: SimpleModel[] = [
     aircraftType: "C909",
     ataChapter: "36",
     ataName: "引气",
-    lru: "PRSOV, HPV",
-    description: "统计引气系统压力超限次数与持续时间，辅助活门健康判断",
+    lru: "PRSOV",
+    description: "分析爬升阶段，PRSOV的调压性能",
     applicability: "UEA, CES",
     status: "active",
     version: "v1.1.0",
-    updatedAt: "2026-04-18",
-    objective: "对引气系统压力参数进行简易阈值统计，记录超限事件频次与时长，为维护决策提供数据支撑。",
+    updatedAt: "2026-06-18",
+    objective: "分析爬升阶段，PRSOV下游引气压力变化，判断PRSOV对稳定下游压力输出的性能。",
     dataSource: "WQAR数据",
     coreParams: [
-      { name: "引气压力", mnemonic: "BLEED_PRESS", unit: "PSI", description: "引气系统出口压力" },
-      { name: "PRSOV状态", mnemonic: "PRSOV_POS", unit: "/", description: "压力调节关断活门位置" },
-      { name: "HPV状态", mnemonic: "HPV_POS", unit: "/", description: "高压活门位置反馈" },
+      { name: "PACK入口压力", mnemonic: "PACK_INLET_PRESS", unit: "PSI", description: "组件入口压力" },
     ],
     applicabilityDetail: [
       { airline: "成都航空", airlineCode: "UEA", enabled: true },
       { airline: "东方航空", airlineCode: "CES", enabled: true },
     ],
-    outputDescription: "输出按航段统计的超限事件列表及累计次数柱状图。",
+    outputDescription: "输出爬升阶段组件入口压力的中位数。",
   },
   {
     id: 103,
     name: "刹车温度快速核查",
-    aircraftType: "C909/C919",
+    aircraftType: "C909",
     ataChapter: "32",
     ataName: "起落架",
-    lru: "刹车组件, BSCU",
-    description: "对落地后刹车温度峰值进行快速汇总，定位高温机轮",
+    lru: "BCU",
+    description: "取落地后刹车同侧轮刹车温度差异，判断刹车控制性能变化",
     applicability: "ALL",
     status: "active",
     version: "v1.0.1",
     updatedAt: "2026-06-01",
-    objective: "快速提取落地后各轮刹车温度峰值并排序，辅助地面维护人员判断是否需要延迟起飞或进行刹车检查。",
-    dataSource: "WQAR数据 / 机载实时数据",
+    objective: "取落地后刹车同侧轮刹车温度差异，判断刹车控制性能变化",
+    dataSource: "WQAR数据",
     coreParams: [
-      { name: "1号刹车温度", mnemonic: "BRK_TEMP_L1", unit: "℃", description: "左主起1号轮刹车温度" },
-      { name: "2号刹车温度", mnemonic: "BRK_TEMP_L2", unit: "℃", description: "左主起2号轮刹车温度" },
-      { name: "3号刹车温度", mnemonic: "BRK_TEMP_R1", unit: "℃", description: "右主起1号轮刹车温度" },
-      { name: "4号刹车温度", mnemonic: "BRK_TEMP_R2", unit: "℃", description: "右主起2号轮刹车温度" },
+      { name: "左内轮刹车温度", mnemonic: "BRK_TEMP_L1", unit: "℃", description: "左内轮刹车温度" },
+      { name: "左外轮刹车温度", mnemonic: "BRK_TEMP_L2", unit: "℃", description: "左外轮刹车温度" },
+      { name: "右内轮刹车温度", mnemonic: "BRK_TEMP_R1", unit: "℃", description: "右内轮刹车温度" },
+      { name: "右外轮刹车温度", mnemonic: "BRK_TEMP_R2", unit: "℃", description: "右外轮刹车温度" },
     ],
     applicabilityDetail: [
       { airline: "成都航空", airlineCode: "UEA", enabled: true },
       { airline: "东方航空", airlineCode: "CES", enabled: true },
       { airline: "南方航空", airlineCode: "CSN", enabled: true },
     ],
-    outputDescription: "输出落地事件刹车温度峰值汇总表，标注超出阈值的机轮。",
-  },
-  {
-    id: 104,
-    name: "液压油量消耗统计",
-    aircraftType: "C919",
-    ataChapter: "29",
-    ataName: "液压",
-    lru: "液压泵",
-    description: "按航段统计液压油量变化，识别油量持续下降趋势",
-    applicability: "UEA",
-    status: "testing",
-    version: "v0.9.0-beta",
-    updatedAt: "2026-03-22",
-    objective: "通过逐航段统计液压系统油量变化量，快速发现异常消耗趋势，为深度液压检查提供预判依据。",
-    dataSource: "WQAR数据",
-    coreParams: [
-      { name: "绿系统油量", mnemonic: "HYD_G_QTY", unit: "L", description: "绿液压系统油量" },
-      { name: "蓝系统油量", mnemonic: "HYD_B_QTY", unit: "L", description: "蓝液压系统油量" },
-      { name: "黄系统油量", mnemonic: "HYD_Y_QTY", unit: "L", description: "黄液压系统油量" },
-    ],
-    applicabilityDetail: [
-      { airline: "成都航空", airlineCode: "UEA", enabled: true },
-    ],
-    outputDescription: "输出各系统油量趋势折线图，标注每航段消耗量及累计变化。",
+    outputDescription: "输出选取的时间范围内，同侧刹车轮温度差异的最大值。",
   },
 ];
 
@@ -447,7 +420,7 @@ const parameterTemplateData: ParameterTemplate[] = [
   { id: 4, name: "PRSOV开关响应", ataChapter: "36", lru: "PRSOV, FAV", coreParameters: 10, version: "v2.0", updatedAt: "2026-05-05", status: "active", description: "监控引气预冷器出口活门响应，评估活门健康状态" },
   { id: 5, name: "刹车温度不一致", ataChapter: "32", lru: "BSCU, 刹车组件", coreParameters: 16, version: "v1.5", updatedAt: "2026-06-03", status: "active", description: "监控各轮刹车温度差异，识别刹车磨损不均或传感器故障" },
   { id: 6, name: "起落架收放监控", ataChapter: "32", lru: "起落架作动筒, 位置传感器", coreParameters: 11, version: "v1.2", updatedAt: "2026-05-20", status: "active", description: "监控起落架收放时间与位置反馈，识别作动异常" },
-  { id: 7, name: "空调组件性能", ataChapter: "21", lru: "空调组件, 涡轮", coreParameters: 13, version: "v1.7", updatedAt: "2026-03-30", status: "active", description: "监控空调组件出口温度与涡轮转速，评估制冷性能" },
+  { id: 7, name: "空调组件性能", ataChapter: "21", lru: "空调组件, 涡轮", coreParameters: 13, version: "v1.7", updatedAt: "2026-03-30", status: "active", description: "监控空调组件出口温度与涡轮转速，评估换热性能" },
 ];
 
 // 拆分部件字符串为部件集合
@@ -609,21 +582,19 @@ export default function ModelManagementPage() {
         <div className="flex gap-2 mb-5 border-b border-border">
           <button
             onClick={() => setModelCategory("diagnostic")}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
-              modelCategory === "diagnostic"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${modelCategory === "diagnostic"
+              ? "border-primary text-primary"
+              : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
           >
             故障诊断与预测分析模型
           </button>
           <button
             onClick={() => setModelCategory("simple")}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
-              modelCategory === "simple"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${modelCategory === "simple"
+              ? "border-primary text-primary"
+              : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
           >
             简易数据分析模型
           </button>
@@ -653,11 +624,10 @@ export default function ModelManagementPage() {
                       <button
                         key={chapter.id}
                         onClick={() => setSimpleAta(chapter.id)}
-                        className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors flex items-center justify-between ${
-                          simpleAta === chapter.id
-                            ? "bg-primary/10 text-primary font-medium"
-                            : "hover:bg-muted text-foreground"
-                        }`}
+                        className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors flex items-center justify-between ${simpleAta === chapter.id
+                          ? "bg-primary/10 text-primary font-medium"
+                          : "hover:bg-muted text-foreground"
+                          }`}
                       >
                         <span>{chapter.name}</span>
                         <Badge variant="outline" className="text-xs h-5">
@@ -790,163 +760,163 @@ export default function ModelManagementPage() {
         )}
 
         {modelCategory === "diagnostic" && (
-        <div className="flex gap-6">
-          {/* 左侧ATA章节导航 */}
-          <div className="w-56 flex-shrink-0">
-            <Card className="border border-border sticky top-20">
-              <CardHeader className="py-3 px-4 border-b border-border">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Layers className="h-4 w-4 text-primary" />
-                  ATA章节
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-2">
-                <div className="space-y-1">
-                  {ataChapters.map((chapter) => (
-                    <button
-                      key={chapter.id}
-                      onClick={() => setSelectedAta(chapter.id)}
-                      className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors flex items-center justify-between ${selectedAta === chapter.id
+          <div className="flex gap-6">
+            {/* 左侧ATA章节导航 */}
+            <div className="w-56 flex-shrink-0">
+              <Card className="border border-border sticky top-20">
+                <CardHeader className="py-3 px-4 border-b border-border">
+                  <CardTitle className="text-sm font-medium flex items-center gap-2">
+                    <Layers className="h-4 w-4 text-primary" />
+                    ATA章节
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-2">
+                  <div className="space-y-1">
+                    {ataChapters.map((chapter) => (
+                      <button
+                        key={chapter.id}
+                        onClick={() => setSelectedAta(chapter.id)}
+                        className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors flex items-center justify-between ${selectedAta === chapter.id
                           ? "bg-primary/10 text-primary font-medium"
                           : "hover:bg-muted text-foreground"
-                        }`}
-                    >
-                      <span>{chapter.name}</span>
-                      <Badge variant="outline" className="text-xs h-5">
-                        {chapter.count}
-                      </Badge>
-                    </button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* 右侧模型列表 */}
-          <div className="flex-1">
-            <Card className="border border-border">
-              <CardHeader className="border-b border-border py-3 px-4">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <Cpu className="h-4 w-4 text-primary" />
-                    模型列表
-                    <Badge variant="outline" className="ml-2">
-                      {filteredModels.length} 个模型
-                    </Badge>
-                  </CardTitle>
-                  <div className="flex items-center gap-2">
-                    <div className="relative">
-                      <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        placeholder="搜索模型名称/LRU..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-8 h-8 w-[200px]"
-                      />
-                    </div>
-                    <Select value={statusFilter} onValueChange={setStatusFilter}>
-                      <SelectTrigger className="w-[120px] h-8">
-                        <SelectValue placeholder="状态筛选" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">全部状态</SelectItem>
-                        <SelectItem value="active">运行中</SelectItem>
-                        <SelectItem value="testing">测试中</SelectItem>
-                        <SelectItem value="inactive">已停用</SelectItem>
-                        <SelectItem value="deprecated">已弃用</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Button size="sm" variant="outline" className="gap-1">
-                      <RefreshCw className="h-4 w-4" />
-                      刷新
-                    </Button>
-                    <Button size="sm" className="gap-1">
-                      <Plus className="h-4 w-4" />
-                      新增模型
-                    </Button>
+                          }`}
+                      >
+                        <span>{chapter.name}</span>
+                        <Badge variant="outline" className="text-xs h-5">
+                          {chapter.count}
+                        </Badge>
+                      </button>
+                    ))}
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[80px]">适用机型</TableHead>
-                      <TableHead className="w-[220px]">模型名称</TableHead>
-                      <TableHead className="w-[100px]">ATA章节</TableHead>
-                      <TableHead className="w-[140px]">LRU部件</TableHead>
-                      <TableHead>模型描述</TableHead>
-                      <TableHead className="w-[120px]">适用性</TableHead>
-                      <TableHead className="w-[100px]">状态</TableHead>
-                      <TableHead className="w-[80px]">操作</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredModels.length === 0 ? (
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* 右侧模型列表 */}
+            <div className="flex-1">
+              <Card className="border border-border">
+                <CardHeader className="border-b border-border py-3 px-4">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Cpu className="h-4 w-4 text-primary" />
+                      模型列表
+                      <Badge variant="outline" className="ml-2">
+                        {filteredModels.length} 个模型
+                      </Badge>
+                    </CardTitle>
+                    <div className="flex items-center gap-2">
+                      <div className="relative">
+                        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          placeholder="搜索模型名称/LRU..."
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          className="pl-8 h-8 w-[200px]"
+                        />
+                      </div>
+                      <Select value={statusFilter} onValueChange={setStatusFilter}>
+                        <SelectTrigger className="w-[120px] h-8">
+                          <SelectValue placeholder="状态筛选" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">全部状态</SelectItem>
+                          <SelectItem value="active">运行中</SelectItem>
+                          <SelectItem value="testing">测试中</SelectItem>
+                          <SelectItem value="inactive">已停用</SelectItem>
+                          <SelectItem value="deprecated">已弃用</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Button size="sm" variant="outline" className="gap-1">
+                        <RefreshCw className="h-4 w-4" />
+                        刷新
+                      </Button>
+                      <Button size="sm" className="gap-1">
+                        <Plus className="h-4 w-4" />
+                        新增模型
+                      </Button>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <Table>
+                    <TableHeader>
                       <TableRow>
-                        <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
-                          没有找到匹配的模型
-                        </TableCell>
+                        <TableHead className="w-[80px]">适用机型</TableHead>
+                        <TableHead className="w-[220px]">模型名称</TableHead>
+                        <TableHead className="w-[100px]">ATA章节</TableHead>
+                        <TableHead className="w-[140px]">LRU部件</TableHead>
+                        <TableHead>模型描述</TableHead>
+                        <TableHead className="w-[120px]">适用性</TableHead>
+                        <TableHead className="w-[100px]">状态</TableHead>
+                        <TableHead className="w-[80px]">操作</TableHead>
                       </TableRow>
-                    ) : (
-                      filteredModels.map((model) => (
-                        <TableRow
-                          key={model.id}
-                          className="cursor-pointer hover:bg-muted/50"
-                          onClick={() => openModelDetail(model)}
-                        >
-                          <TableCell>
-                            <Badge variant="outline" className="bg-purple-50 text-purple-600">
-                              {model.aircraftType}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="font-medium">{model.name}</TableCell>
-                          <TableCell>
-                            <Badge variant="outline" className="bg-blue-50 text-blue-600">
-                              ATA {model.ataChapter}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex flex-wrap gap-1">
-                              {model.lru.split(", ").map((part, idx) => (
-                                <Badge key={idx} variant="outline" className="bg-amber-50 text-amber-700 text-xs">
-                                  {part}
-                                </Badge>
-                              ))}
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-sm text-muted-foreground max-w-[300px] truncate" title={model.description}>
-                            {model.description}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="outline" className={model.applicability === "ALL" ? "bg-emerald-50 text-emerald-600" : ""}>
-                              {model.applicability}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>{getStatusBadge(model.status)}</TableCell>
-                          <TableCell>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 w-7 p-0"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                openModelDetail(model);
-                              }}
-                              title="查看详情"
-                            >
-                              <Eye className="h-3.5 w-3.5" />
-                            </Button>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredModels.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                            没有找到匹配的模型
                           </TableCell>
                         </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
+                      ) : (
+                        filteredModels.map((model) => (
+                          <TableRow
+                            key={model.id}
+                            className="cursor-pointer hover:bg-muted/50"
+                            onClick={() => openModelDetail(model)}
+                          >
+                            <TableCell>
+                              <Badge variant="outline" className="bg-purple-50 text-purple-600">
+                                {model.aircraftType}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="font-medium">{model.name}</TableCell>
+                            <TableCell>
+                              <Badge variant="outline" className="bg-blue-50 text-blue-600">
+                                ATA {model.ataChapter}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex flex-wrap gap-1">
+                                {model.lru.split(", ").map((part, idx) => (
+                                  <Badge key={idx} variant="outline" className="bg-amber-50 text-amber-700 text-xs">
+                                    {part}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-sm text-muted-foreground max-w-[300px] truncate" title={model.description}>
+                              {model.description}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="outline" className={model.applicability === "ALL" ? "bg-emerald-50 text-emerald-600" : ""}>
+                                {model.applicability}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{getStatusBadge(model.status)}</TableCell>
+                            <TableCell>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-7 w-7 p-0"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openModelDetail(model);
+                                }}
+                                title="查看详情"
+                              >
+                                <Eye className="h-3.5 w-3.5" />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            </div>
           </div>
-        </div>
         )}
       </main>
 
