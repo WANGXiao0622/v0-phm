@@ -372,8 +372,19 @@ export default function WorkspacePage() {
 
   // 渲染应完成时间单元格
   const renderDueCell = (item: TodoItem) => {
-    const isCompleted = completedIds.includes(item.id) || item.status === "completed";
     const dueDate = getItemDueDate(item);
+
+    // 在 today 未设置（SSR 阶段）时，只渲染日期字符串占位，不渲染任何依赖 today 的内容
+    // 这样服务端和客户端初次渲染完全一致，避免 hydration 不匹配
+    if (!today) {
+      return (
+        <div className="flex flex-col gap-0.5">
+          <span className="text-xs font-mono text-foreground">{dueDate}</span>
+        </div>
+      );
+    }
+
+    const isCompleted = completedIds.includes(item.id) || item.status === "completed";
     const effectiveStatus = isCompleted ? "completed" : item.status;
     const state = getDueState(dueDate, effectiveStatus, today);
     const relative = relativeDue(dueDate, effectiveStatus, today);
