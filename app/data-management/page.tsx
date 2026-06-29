@@ -382,18 +382,13 @@ interface TypicalCase {
 }
 
 const typicalCaseData: TypicalCase[] = [
-  { id: "TC-2026-001", ata: "21", lru: "换热器", title: "组件出口温度高导致PACK 1 FAULT", registration: "B-1234", airline: "成都航空", severity: "high", savedDate: "2026-06-16", occurrences: 5, summary: "换热器换热效率下降，组件出口温度持续偏高，触发PACK保护跳开。", analysisId: "FA-2026-0156" },
-  { id: "TC-2026-002", ata: "21", lru: "压气机", title: "ACM压气机轴承磨损振动异常", registration: "B-7890", airline: "东方航空", severity: "medium", savedDate: "2026-05-20", occurrences: 3, summary: "空气循环机压气机端振动趋势上升，伴随轴承温度升高。", analysisId: "FA-2026-0151" },
-  { id: "TC-2026-003", ata: "27", lru: "ELAC", title: "ELAC 1 间歇性故障复位", registration: "B-9012", airline: "成都航空", severity: "medium", savedDate: "2026-05-12", occurrences: 4, summary: "升降副翼计算机供电瞬断导致间歇性故障，地面复测正常。", analysisId: "FA-2026-0148" },
-  { id: "TC-2026-004", ata: "29", lru: "EDP", title: "发动机驱动泵出口压力偏低", registration: "B-5678", airline: "东方航空", severity: "medium", savedDate: "2026-04-28", occurrences: 6, summary: "EDP磨损导致系统1压力在高需求阶段下降，触发低压告警。", analysisId: "FA-2026-0139" },
-  { id: "TC-2026-005", ata: "29", lru: "液压渗漏", title: "绿系统油量缓慢下降", registration: "B-3456", airline: "南方航空", severity: "high", savedDate: "2026-04-15", occurrences: 2, summary: "管路接头渗漏导致绿系统油量逐航段下降，需重点排查接头。", analysisId: "FA-2026-0137" },
-  { id: "TC-2026-006", ata: "32", lru: "刹车超温", title: "落地后多轮刹车温度超限", registration: "B-3456", airline: "南方航空", severity: "medium", savedDate: "2026-04-02", occurrences: 7, summary: "短停落地后刹车温度普遍偏高，与重刹车与冷却时间不足相关。", analysisId: "FA-2026-0131" },
-  { id: "TC-2026-007", ata: "32", lru: "前轮转弯", title: "前轮转弯角度反馈异常", registration: "B-1234", airline: "成都航空", severity: "low", savedDate: "2026-03-25", occurrences: 3, summary: "前轮转弯位置传感器反馈跳变，地面滑行偶发转弯受限。", analysisId: "FA-2026-0128" },
-  { id: "TC-2026-008", ata: "36", lru: "PRSOV", title: "PRSOV 1 关闭响应迟缓", registration: "B-3456", airline: "南方航空", severity: "medium", savedDate: "2026-03-10", occurrences: 5, summary: "压力调节关断活门关闭响应时间偏长，引气压力波动。", analysisId: "FA-2026-0125" },
-  { id: "TC-2026-009", ata: "36", lru: "HPV", title: "高压活门间歇开启异常", registration: "B-5678", airline: "东方航空", severity: "medium", savedDate: "2026-02-28", occurrences: 4, summary: "高压活门在巡航段间歇开启，导致引气源切换频繁。", analysisId: "FA-2026-0119" },
-  { id: "TC-2026-010", ata: "49", lru: "BAV", title: "APU引气活门开度异常", registration: "B-7890", airline: "东方航空", severity: "high", savedDate: "2026-02-14", occurrences: 3, summary: "APU引气活门(BAV)开度反馈异常，导致地面引气供气不稳。", analysisId: "FA-2026-0142" },
-  { id: "TC-2026-011", ata: "49", lru: "SCV", title: "APU喘振控制活门卡滞", registration: "B-5678", airline: "东方航空", severity: "high", savedDate: "2026-01-30", occurrences: 2, summary: "喘振控制活门(SCV)卡滞，APU起动阶段EGT超温。", analysisId: "FA-2026-0122" },
-  { id: "TC-2026-012", ata: "7X", lru: "发动机振动", title: "发动机1巡航振动趋势上升", registration: "B-1234", airline: "成都航空", severity: "high", savedDate: "2026-01-20", occurrences: 4, summary: "发动机1 N1振动值逐航段上升，需关注风扇配平与轴承状态。", analysisId: "FA-2026-0115" },
+  { id: "TC-2026-001", ata: "21", lru: "换热器", title: "R PACK FAULT", registration: "B-658H", airline: "中国国际航空", severity: "high", savedDate: "2026-05-13", occurrences: 5, summary: "过站检查发现EICAS : L PACK OVHT。", analysisId: "FA-2026-0156" },
+  { id: "TC-2026-002", ata: "21", lru: "压气机", title: "R PACK FAULT", registration: "B-658R", airline: "中国国际航空", severity: "high", savedDate: "2026-05-28", occurrences: 5, summary: "哈尔滨过站，机组反馈落地后报EICAS : R PACK FAULT，客舱有异响。", analysisId: "FA-2026-0151" },
+  { id: "TC-2026-003", ata: "29", lru: "EDP", title: "EDP壳体回油滤压差指示器弹出", registration: "B-651S", airline: "成都航空", severity: "medium", savedDate: "2026-05-09", occurrences: 6, summary: "更换左发EDP壳体回油滤，5月16日清洗EDP1A至EDP壳体回油滤之间的管路。", analysisId: "FA-2026-0139" },
+  { id: "TC-2026-004", ata: "29", lru: "液压渗漏", title: "2号液压油量泄漏至22%", registration: "B-655T", airline: "江西航空", severity: "high", savedDate: "2026-04-15", occurrences: 2, summary: "过站检查发现机身排液口泄漏液压油，2号液压系统油量22%，落地后出现HYD 2 QTY LO信息。", analysisId: "FA-2026-0137" },
+  { id: "TC-2026-005", ata: "32", lru: "刹车超温", title: "机务反馈右内轮刹车温度高，稳定在200摄氏度，检查CMS信息有R IB BTS:OPEN/SHORT/OUT OF RANGE", registration: "B-655A", airline: "南方航空", severity: "medium", savedDate: "2026-06-24", occurrences: 7, summary: "6月25日参考AMM手册更换右内刹车传感器和右内温度传感器线束。测试正常", analysisId: "FA-2026-0131" },
+  { id: "TC-2026-006", ata: "36", lru: "HPV", title: "航后检查有CMS: BAS:RIGHT BLEED LOW PRESS-HPV2 FAIL CLOSED历史信息", registration: "B-657N", airline: "南方航空", severity: "medium", savedDate: "2026-05-18", occurrences: 4, summary: "参考FIM手册测量相关导线连接正常，人工作动HPV有轻微卡阻，更换右发HPV，测试正常。", analysisId: "FA-2026-0119" },
+  { id: "TC-2026-007", ata: "49", lru: "SCV", title: "航前出港后APU引气故障，报：SCV POSITION FAILED, APU SCV LVDT EXCEEDS OPEN LIMIT", registration: "B-658U", airline: "东方航空", severity: "high", savedDate: "2026-06-17", occurrences: 3, summary: "发动机引气打开后，SCV仍保持全开开度，报APU BLEED FAULT,后重置引气开关，SCV位置卡滞在59%，故障指向明确。", analysisId: "FA-2026-0142" },
 ];
 
 // 航司列表
