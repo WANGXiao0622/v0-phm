@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Database, ClipboardList, Cpu, User, Activity, MessageSquare } from "lucide-react";
+import { Database, ClipboardList, Cpu, User, Activity, MessageSquare, BarChart2 } from "lucide-react";
 
 const navItems = [
   { id: "workspace", name: "个人工作台", icon: User, href: "/workspace" },
@@ -11,6 +11,7 @@ const navItems = [
   { id: "requirement-management", name: "需求管理", icon: MessageSquare, href: "/requirement-management" },
   { id: "task-management", name: "任务管理", icon: ClipboardList, href: "/task-management" },
   { id: "model-management", name: "模型管理", icon: Cpu, href: "/model-management" },
+  { id: "model-monitoring", name: "模型监控", icon: BarChart2, href: "/model-monitoring" },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {
