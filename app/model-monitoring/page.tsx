@@ -48,7 +48,6 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  ReferenceLine,
 } from "recharts";
 
 // ─────────────────────────────────────────────
@@ -572,19 +571,26 @@ export default function ModelMonitoringPage() {
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={260}>
-                <LineChart data={paramData} margin={{ top: 4, right: 12, left: -10, bottom: 0 }}>
+                <LineChart
+                  data={paramData.map((d) => ({ ...d, 阈值线: currentThreshold }))}
+                  margin={{ top: 4, right: 12, left: -10, bottom: 0 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                   <XAxis dataKey="seg" tick={{ fontSize: 10, fill: "var(--muted-foreground)" }} tickLine={false} />
                   <YAxis tick={{ fontSize: 10, fill: "var(--muted-foreground)" }} tickLine={false} axisLine={false} />
                   <Tooltip contentStyle={{ fontSize: 12, borderRadius: 6, border: "1px solid var(--border)" }} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
-                  <ReferenceLine
-                    y={currentThreshold}
-                    stroke="var(--color-chart-4)"
-                    strokeDasharray="4 3"
-                    label={{ value: `当前阈值 ${currentThreshold}`, fontSize: 10, fill: "var(--color-chart-4)", position: "insideTopLeft" }}
-                  />
                   <Line type="monotone" dataKey="参数值" stroke="var(--color-chart-1)" strokeWidth={2} dot={{ r: 3 }} />
+                  <Line
+                    type="monotone"
+                    dataKey="阈值线"
+                    name={`阈值线 (${currentThreshold}${thresholdConfig.unit})`}
+                    stroke="#e4572e"
+                    strokeWidth={2}
+                    strokeDasharray="6 4"
+                    dot={false}
+                    isAnimationActive={false}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </CardContent>
