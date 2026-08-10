@@ -37,12 +37,11 @@ import {
   ShieldAlert,
   BarChart,
   RefreshCw,
+  Settings2,
 } from "lucide-react";
 import {
   LineChart,
   Line,
-  BarChart as ReBarChart,
-  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -212,38 +211,35 @@ const alertRecords: AlertRecord[] = [
 // 图表数据生成
 // ─────────────────────────────────────────────
 
-// 近30天每天告警 + 故障趋势
-function generateTrendData(modelId: number, airlineFilter: string, regFilter: string) {
-  const seed = modelId * 13 + (airlineFilter === "all" ? 0 : airlineFilter.charCodeAt(0));
-  const days = 30;
-  return Array.from({ length: days }, (_, i) => {
-    const d = new Date(2026, 6, 5 + i); // July 5 ~ Aug 3
-    const label = `${d.getMonth() + 1}/${d.getDate()}`;
-    const alertVal = Math.max(0, Math.round(Math.sin((i + seed) * 0.7) * 2 + 1.5 + (Math.random() * 1.5)));
-    const faultVal = Math.max(0, Math.round(alertVal * 0.25 * Math.random()));
-    return { date: label, 告警次数: alertVal, 故障次数: faultVal };
-  });
-}
-
 // 各架机参数值趋势（近20航段）
 function generateParamData(modelId: number, reg: string) {
   const seed = modelId * 7 + reg.charCodeAt(reg.length - 1);
   return Array.from({ length: 20 }, (_, i) => {
     const base = 60 + (seed % 30);
     const val = parseFloat((base + Math.sin((i + seed * 0.3) * 0.8) * 8 + Math.random() * 4).toFixed(1));
-    const threshold = base + 15;
-    return { seg: `S${i + 1}`, 参数值: val, 阈值: threshold };
+    return { seg: `S${i + 1}`, 参数值: val };
   });
 }
 
-// 故障次数按航司分布
-function generateFaultByAirline(modelId: number) {
-  const seed = modelId * 5;
-  return airlines.map((a) => ({
-    airline: a.name,
-    故障次数: Math.max(0, Math.round((seed % 5) + Math.random() * 4)),
-    告警次数: Math.max(0, Math.round((seed % 8) + Math.random() * 6)),
-  }));
+// 阈值配置 —— 各模型对应的核心监控参数与设计标准
+interface ThresholdConfig {
+  paramName: string;
+  unit: string;
+  designStandard: number;
+}
+
+const thresholdConfigByModel: Record<number, ThresholdConfig> = {
+  1: { paramName: "APU EGT 温度", unit: "℃", designStandard: 90 },
+  2: { paramName: "HPV 响应时间", unit: "ms", designStandard: 75 },
+  3: { paramName: "PRSOV 响应时间", unit: "ms", designStandard: 85 },
+  4: { paramName: "左右刹车温度差", unit: "℃", designStandard: 70 },
+  5: { paramName: "液压系统泄漏率", unit: "ml/h", designStandard: 65 },
+  6: { paramName: "空调组件出口温度", unit: "℃", designStandard: 80 },
+  7: { paramName: "起落架收放时间", unit: "s", designStandard: 78 },
+};
+
+function getThresholdConfig(modelId: number): ThresholdConfig {
+  return thresholdConfigByModel[modelId] ?? { paramName: "核心参数", unit: "", designStandard: 80 };
 }
 
 // ─────────────────────────────────────────────
@@ -303,6 +299,10 @@ export default function ModelMonitoringPage() {
   const [selectedAirline, setSelectedAirline] = useState("all");
   const [selectedReg, setSelectedReg] = useState("all");
 
+  // 阈值配置：按模型ID存储自定义阈值（未配置时使用设计标准）
+  const [thresholds, setThresholds] = useState<Record<number, number>>({});
+  const [thresholdInput, setThresholdInput] = useState("");
+
   // 可选架机列表
   const availableAircraft = useMemo(() => {
     if (selectedAirline === "all") {
@@ -328,20 +328,25 @@ export default function ModelMonitoringPage() {
   });
 
   // 图表数据
-  const trendData = selectedModel
-    ? generateTrendData(selectedModel.id, selectedAirline, selectedReg)
-    : [];
   const paramData = selectedModel
     ? generateParamData(selectedModel.id, selectedReg === "all" ? "B-ALL" : selectedReg)
     : [];
-  const faultByAirlineData = selectedModel
-    ? generateFaultByAirline(selectedModel.id)
-    : [];
+
+  // 阈值配置
+  const thresholdConfig = selectedModel ? getThresholdConfig(selectedModel.id) : { paramName: "", unit: "", designStandard: 0 };
+  const currentThreshold = selectedModel
+    ? thresholds[selectedModel.id] ?? thresholdConfig.designStandard
+    : 0;
+  const thresholdDirty = selectedModel
+    ? parseFloat(thresholdInput) !== currentThreshold && thresholdInput !== ""
+    : false;
 
   const handleSelectModel = (model: MonitorModel) => {
     setSelectedModel(model);
     setSelectedAirline("all");
     setSelectedReg("all");
+    const config = getThresholdConfig(model.id);
+    setThresholdInput(String(thresholds[model.id] ?? config.designStandard));
   };
 
   const handleAirlineChange = (val: string) => {
@@ -422,135 +427,163 @@ export default function ModelMonitoringPage() {
             </CardContent>
           </Card>
 
-          {/* 统计卡片 */}
-          <div className="grid grid-cols-4 gap-4">
+          {/* 统计卡片（精简） */}
+          <div className="grid grid-cols-4 gap-3">
             <Card>
-              <CardContent className="pt-5 pb-4">
-                <div className="flex items-start justify-between">
+              <CardContent className="py-3 px-4">
+                <div className="flex items-center justify-between gap-2">
                   <div>
                     <p className="text-xs text-muted-foreground">近30天告警</p>
-                    <p className="text-2xl font-bold text-foreground mt-1">{selectedModel.alertCount}</p>
+                    <p className="text-lg font-bold text-foreground">{selectedModel.alertCount}</p>
                   </div>
-                  <div className="h-9 w-9 rounded-lg bg-amber-100 flex items-center justify-center">
-                    <Bell className="h-4 w-4 text-amber-600" />
+                  <div className="h-7 w-7 rounded-md bg-amber-100 flex items-center justify-center shrink-0">
+                    <Bell className="h-3.5 w-3.5 text-amber-600" />
                   </div>
                 </div>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="pt-5 pb-4">
-                <div className="flex items-start justify-between">
+              <CardContent className="py-3 px-4">
+                <div className="flex items-center justify-between gap-2">
                   <div>
                     <p className="text-xs text-muted-foreground">近30天故障</p>
-                    <p className="text-2xl font-bold text-foreground mt-1">{selectedModel.faultCount}</p>
+                    <p className="text-lg font-bold text-foreground">{selectedModel.faultCount}</p>
                   </div>
-                  <div className="h-9 w-9 rounded-lg bg-red-100 flex items-center justify-center">
-                    <ShieldAlert className="h-4 w-4 text-red-600" />
+                  <div className="h-7 w-7 rounded-md bg-red-100 flex items-center justify-center shrink-0">
+                    <ShieldAlert className="h-3.5 w-3.5 text-red-600" />
                   </div>
                 </div>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="pt-5 pb-4">
-                <div className="flex items-start justify-between">
+              <CardContent className="py-3 px-4">
+                <div className="flex items-center justify-between gap-2">
                   <div>
                     <p className="text-xs text-muted-foreground">模型准确率</p>
-                    <p className="text-2xl font-bold text-foreground mt-1">
+                    <p className="text-lg font-bold text-foreground">
                       {selectedModel.accuracy > 0 ? `${selectedModel.accuracy}%` : "-"}
                     </p>
                   </div>
-                  <div className="h-9 w-9 rounded-lg bg-blue-100 flex items-center justify-center">
-                    <TrendingUp className="h-4 w-4 text-blue-600" />
+                  <div className="h-7 w-7 rounded-md bg-blue-100 flex items-center justify-center shrink-0">
+                    <TrendingUp className="h-3.5 w-3.5 text-blue-600" />
                   </div>
                 </div>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="pt-5 pb-4">
-                <div className="flex items-start justify-between">
+              <CardContent className="py-3 px-4">
+                <div className="flex items-center justify-between gap-2">
                   <div>
                     <p className="text-xs text-muted-foreground">当前状态</p>
-                    <div className="mt-2">
+                    <div className="mt-0.5">
                       <StatusBadge status={selectedModel.status} />
                     </div>
                   </div>
-                  <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Activity className="h-4 w-4 text-primary" />
+                  <div className="h-7 w-7 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
+                    <Activity className="h-3.5 w-3.5 text-primary" />
                   </div>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* 图表区域 */}
-          <div className="grid grid-cols-2 gap-5">
-            {/* 告警/故障趋势 */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-semibold">近30天告警与故障趋势</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={220}>
-                  <LineChart data={trendData} margin={{ top: 4, right: 12, left: -10, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                    <XAxis
-                      dataKey="date"
-                      tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
-                      tickLine={false}
-                      interval={4}
+          {/* 阈值配置 */}
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                  <Settings2 className="h-4 w-4 text-muted-foreground" />
+                  阈值配置
+                </CardTitle>
+                {thresholdDirty && (
+                  <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 text-xs">
+                    尚未保存
+                  </Badge>
+                )}
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-end gap-6 flex-wrap">
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">监控参数</p>
+                  <p className="text-sm font-medium text-foreground">{thresholdConfig.paramName}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">设计标准</p>
+                  <p className="text-sm font-medium text-foreground">
+                    {thresholdConfig.designStandard} {thresholdConfig.unit}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground mb-1 block">当前阈值</label>
+                  <div className="flex items-center gap-1.5">
+                    <Input
+                      type="number"
+                      value={thresholdInput}
+                      onChange={(e) => setThresholdInput(e.target.value)}
+                      className="w-28 h-8 text-sm"
                     />
-                    <YAxis tick={{ fontSize: 10, fill: "var(--muted-foreground)" }} tickLine={false} axisLine={false} />
-                    <Tooltip
-                      contentStyle={{ fontSize: 12, borderRadius: 6, border: "1px solid var(--border)" }}
-                    />
-                    <Legend wrapperStyle={{ fontSize: 12 }} />
-                    <Line type="monotone" dataKey="告警次数" stroke="var(--color-chart-3)" strokeWidth={2} dot={false} />
-                    <Line type="monotone" dataKey="故障次数" stroke="var(--color-chart-4)" strokeWidth={2} dot={false} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            {/* 故障分布 by 航司 */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-semibold">各航司故障与告警分布</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={220}>
-                  <ReBarChart data={faultByAirlineData} margin={{ top: 4, right: 12, left: -10, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                    <XAxis dataKey="airline" tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} tickLine={false} />
-                    <YAxis tick={{ fontSize: 10, fill: "var(--muted-foreground)" }} tickLine={false} axisLine={false} />
-                    <Tooltip contentStyle={{ fontSize: 12, borderRadius: 6, border: "1px solid var(--border)" }} />
-                    <Legend wrapperStyle={{ fontSize: 12 }} />
-                    <Bar dataKey="告警次数" fill="var(--color-chart-3)" radius={[3, 3, 0, 0]} />
-                    <Bar dataKey="故障次数" fill="var(--color-chart-4)" radius={[3, 3, 0, 0]} />
-                  </ReBarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </div>
+                    <span className="text-xs text-muted-foreground">{thresholdConfig.unit}</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    className="h-8"
+                    onClick={() => {
+                      const val = parseFloat(thresholdInput);
+                      if (!isNaN(val)) {
+                        setThresholds((prev) => ({ ...prev, [selectedModel.id]: val }));
+                      }
+                    }}
+                    disabled={!thresholdDirty}
+                  >
+                    保存阈值
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8"
+                    onClick={() => {
+                      setThresholds((prev) => {
+                        const next = { ...prev };
+                        delete next[selectedModel.id];
+                        return next;
+                      });
+                      setThresholdInput(String(thresholdConfig.designStandard));
+                    }}
+                  >
+                    重置为设计标准
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* 参数趋势图（按架机） */}
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-semibold">
-                核心参数趋势
+                核心参数趋势 — {thresholdConfig.paramName}
                 {selectedReg !== "all" && (
                   <span className="ml-2 text-muted-foreground font-normal">— {selectedReg}</span>
                 )}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={220}>
+              <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={paramData} margin={{ top: 4, right: 12, left: -10, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                   <XAxis dataKey="seg" tick={{ fontSize: 10, fill: "var(--muted-foreground)" }} tickLine={false} />
                   <YAxis tick={{ fontSize: 10, fill: "var(--muted-foreground)" }} tickLine={false} axisLine={false} />
                   <Tooltip contentStyle={{ fontSize: 12, borderRadius: 6, border: "1px solid var(--border)" }} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
-                  <ReferenceLine y={paramData[0]?.阈值} stroke="var(--color-chart-4)" strokeDasharray="4 3" label={{ value: "阈值", fontSize: 10, fill: "var(--color-chart-4)" }} />
+                  <ReferenceLine
+                    y={currentThreshold}
+                    stroke="var(--color-chart-4)"
+                    strokeDasharray="4 3"
+                    label={{ value: `当前阈值 ${currentThreshold}`, fontSize: 10, fill: "var(--color-chart-4)", position: "insideTopLeft" }}
+                  />
                   <Line type="monotone" dataKey="参数值" stroke="var(--color-chart-1)" strokeWidth={2} dot={{ r: 3 }} />
                 </LineChart>
               </ResponsiveContainer>
